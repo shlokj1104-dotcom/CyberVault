@@ -240,6 +240,9 @@
   },
   "active": "d55132ee2e0181a2",
   "lastOpenFiles": [
+    "Vault.gitignore.txt",
+    "New Text Document.txt",
+    "New folder",
     "Templates/Project.md",
     "Templates/Revision.md",
     "Templates/CTF-Writeup.md",
@@ -257,8 +260,6 @@
     "09-Certs/CySA-Plus",
     "09-Certs/Security-Plus",
     "09-Certs/Network-Plus",
-    "09-Certs",
-    "08-Projects",
     "01-Foundations/Untitled.md",
     "Foundations.md",
     "00-Meta/Progress.md",
