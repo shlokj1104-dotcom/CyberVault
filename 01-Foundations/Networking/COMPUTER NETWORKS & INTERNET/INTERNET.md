@@ -8,7 +8,7 @@ tags:
 links: []
 status: learning
 ---
-# 1.1 What Is the Internet?
+[[]]# 1.1 What Is the Internet?
 
 > **One-Line Summary:** The Internet is a global system of billions of 
 > interconnected devices communicating through shared rules called protocols 
@@ -24,6 +24,7 @@ There are two ways to answer "What is the Internet?":
 2. Describe it as a **service infrastructure** for applications
 
 This section covers approach #1.
+
 
 ---
 
@@ -44,6 +45,9 @@ Today the list includes:
 
 The term *computer network* is starting to sound dated given how many 
 non-traditional devices are connected — but the name stuck.
+
+![[ChatGPT Image May 12, 2026, 10_19_25 AM 3.png]]
+
 
 ---
 
@@ -107,15 +111,19 @@ Two most prominent types of packet switches:
 - Used in the **network core** (the middle of the Internet).
 - Make intelligent forwarding decisions based on destination IP address.
 - Forward packets toward their ultimate destination.
+- **Analogy: Simply connects different networks to transfer data.**
 
 ### Link-Layer Switches
 - Used in **access networks** (closer to the edge — homes, offices).
 - Operate at a lower level than routers.
 - Forward frames within a local network.
+- **Analogy: Connects Host/ End System within same network (Local Network).**
 
 > The sequence of communication links and packet switches that a packet 
 > traverses from source to destination is called a **route** or **path** 
 > through the network.
+
+![[ChatGPT Image May 12, 2026, 04_52_52 PM.png]]
 
 ---
 
@@ -146,9 +154,8 @@ ISPs are organized in a tiered hierarchy:
 - Every ISP network — regardless of tier — independently runs the 
   **IP protocol** and conforms to naming/addressing conventions.
 
-![[isp-hierarchy.png]]
-*(Figure 1.1 — Mobile Network, Home Network, Enterprise Network all 
-connecting upward through Local ISP → National ISP → Internet)*
+![[ChatGPT Image May 12, 2026, 11_04_02 AM.png]]
+
 
 ---
 
@@ -170,30 +177,6 @@ Together they're called **TCP/IP** — the foundation of the Internet.
 > are sent and received among routers and end systems. This is why 
 > the Internet is sometimes called an **IP network**.
 
----
-
-## Internet Standards — Who Decides the Rules?
-
-For the Internet to work, everyone must agree on what each protocol does 
-so systems from different manufacturers can interoperate.
-
-This is handled by **standards bodies**:
-
-### IETF — Internet Engineering Task Force
-- Develops and maintains Internet standards.
-- Documents are called **RFCs** — **Requests for Comments**.
-- RFCs started as informal requests to solve network problems — the name stuck.
-- RFCs are highly technical and define protocols precisely.
-- Examples: TCP (RFC 793), IP (RFC 791), HTTP (RFC 2616), SMTP (RFC 5321).
-- There are currently **6,000+ RFCs**.
-
-### IEEE 802 Committee
-- Handles standards for **network hardware links**.
-- Covers **Ethernet** (wired LAN) and **WiFi** (wireless LAN) standards.
-
-> 🔑 Standards ensure that a Jio router in Kolkata and a Comcast router 
-> in New York can understand each other's packets — because they both 
-> follow the same RFCs.
 
 ---
 
@@ -261,6 +244,9 @@ delivery vs. ordinary mail). When you develop an Internet application,
 you choose which Internet service fits your needs. More on this in 
 Chapter 2.
 
+![[Pasted image 20260512170834.png]]
+
+
 ---
 
 # 1.1.3 What Is a Protocol?
@@ -297,10 +283,9 @@ A network protocol is the same idea, except the communicating entities
 are **hardware or software components** of devices (computers, routers, 
 smartphones, etc.).
 
-**Example — Requesting a Web Page (Figure 1.2):**
+**Example — Requesting a Web Page:**
 
-![[protocol-diagram.png]]
-*(Figure 1.2 — Human protocol (left) vs. network protocol (right))*
+![[Pasted image 20260512171528.png]]
 
 Every step — the format of the message, the order they happen in, the 
 actions taken — is defined by the protocol.
@@ -359,45 +344,36 @@ Breaking this definition down:
 
 ## Questions I Still Have
 
-- [ ] How exactly does a router decide which outgoing link to forward a 
-      packet on?
-- [ ] What happens when two ISPs don't have a peering agreement — does 
-      the packet get dropped?
+- [ ] How exactly does a router decide which outgoing link to forward a packet on?
+- [ ] What happens when two ISPs don't have a peering agreement — does the packet get dropped?
 - [ ] How is the Internet API different for TCP vs UDP services?
-- [ ] What does a real RFC document look like — how technical is it?
 - [ ] How does IP spoofing actually work at the packet level?
 
 ---
 
 ## Key Terms — Quick Reference
 
-| Term | Definition |
-|---|---|
-| **Host / End System** | Any device connected to the Internet |
-| **Packet** | A chunk of data with header bytes, sent through the network |
-| **Transmission rate** | Speed of a link in bits/second |
-| **Packet switch** | Device that forwards packets toward their destination |
-| **Router** | Packet switch used in the network core |
-| **Link-layer switch** | Packet switch used in access networks |
-| **Route / Path** | Sequence of links and switches a packet traverses |
-| **ISP** | Internet Service Provider — how end systems access the Internet |
-| **TCP** | Transmission Control Protocol — reliable delivery |
-| **IP** | Internet Protocol — packet format and addressing |
-| **RFC** | Request for Comments — IETF standard documents |
-| **IETF** | Internet Engineering Task Force — develops Internet standards |
-| **Distributed application** | App running across multiple end systems |
-| **Internet API** | Rules a program follows to use Internet delivery services |
-| **Protocol** | Rules defining format, order, and actions for communication |
+| Term                        | Definition                                                      |
+| --------------------------- | --------------------------------------------------------------- |
+| **Host / End System**       | Any device connected to the Internet                            |
+| **Packet**                  | A chunk of data with header bytes, sent through the network     |
+| **Transmission rate**       | Speed of a link in bits/second                                  |
+| **Packet switch**           | Device that forwards packets toward their destination           |
+| **Router**                  | Packet switch used in the network core                          |
+| **Link-layer switch**       | Packet switch used in access networks                           |
+| **Route / Path**            | Sequence of links and switches a packet traverses               |
+| **ISP**                     | Internet Service Provider — how end systems access the Internet |
+| **TCP**                     | Transmission Control Protocol — reliable delivery               |
+| **IP**                      | Internet Protocol — packet format and addressing                |
+| **Distributed application** | App running across multiple end systems                         |
+| **Internet API**            | Rules a program follows to use Internet delivery services       |
+| **Protocol**                | Rules defining format, order, and actions for communication     |
 
 ---
 
 ## Related Concepts
 
-- [[TCP - Three Way Handshake]]
-- [[IP Addressing and Subnetting]]
-- [[OSI Model vs TCP-IP Model]]
-- [[ISP Hierarchy and BGP]]
-- [[HTTP and the Web]]
+- [[X]]
 
 ---
 
