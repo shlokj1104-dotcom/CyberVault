@@ -1,5 +1,5 @@
 ---
-title: INTERNET
+title: INTRODUCTION
 date: 2026-05-12
 phase: phase-1
 tags:
@@ -9,7 +9,7 @@ links: []
 status: learning
 ---
 
-# INTERNET
+# INTRODUCTION
 
 ## One-Line Summary
 <What is this in one sentence?>
