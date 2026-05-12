@@ -119,17 +119,17 @@ Python is one of the most widely used languages in the world. You'll find it in:
 
 ## Common Beginner Mistakes
 
-| Mistake | What Happens |
-|---|---|
-| Mixing tabs and spaces | `IndentationError` — Python treats them differently |
-| Forgetting `:` after `if`, `for`, `def` | `SyntaxError` |
-| Thinking `=` checks equality | It doesn't — `=` assigns, `==` compares |
-| Modifying a list while looping over it | Unpredictable behaviour, skipped items |
-| Using Python 2 `print` without parentheses | `SyntaxError` in Python 3 |
+| Mistake                                    | What Happens                                        |
+| ------------------------------------------ | --------------------------------------------------- |
+| Mixing tabs and spaces                     | `IndentationError` — Python treats them differently |
+| Forgetting `:` after `if`, `for`, `def`    | `SyntaxError`                                       |
+| Thinking `=` checks equality               | It doesn't — `＝` assigns, `＝＝` compares compares    |
+| Modifying a list while looping over it     | Unpredictable behaviour, skipped items              |
+| Using Python 2 `print` without parentheses | `SyntaxError` in Python 3                           |
 
 
 ---
 
 ## Related Notes
 
-- 
+- [[VARIABLES &  SIMPLE DATA TYPES]]

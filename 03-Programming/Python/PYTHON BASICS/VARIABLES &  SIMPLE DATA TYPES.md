@@ -31,7 +31,7 @@ print(message)           # Output: Hello, Python!
 
 ### Variables — The Basics
 
-**Assignment** uses `=` (not equality — that's `==`).
+The assignment operator is `=` (not equality — that's `==`).
 
 ```python
 message = "Hello, Python!"
@@ -137,9 +137,16 @@ print(f"2 + 2 = {2 + 2}")    # 2 + 2 = 4
 print("Python")
 print("\tPython")         # tab before Python
 print("Languages:\nPython\nJava\nC")
-```
 
-Output: Python Python Languages: Python Java C
+Ouput:
+
+Python
+	Python
+Languages:
+Python
+Java
+C
+```
 
 **Stripping whitespace** is important for **user input** — extra spaces cause silent bugs:
 ```python
@@ -371,5 +378,5 @@ Key principles that shape how Python handles variables and types:
 
 ## Related Notes
 
-- [[1 - Introduction]]
-- [[3 - Introducing Lists]]
+- [[INTRODUCTION]]
+- 
