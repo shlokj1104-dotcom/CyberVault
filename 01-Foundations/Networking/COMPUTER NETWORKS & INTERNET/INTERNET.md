@@ -8,7 +8,7 @@ tags:
 links: []
 status: learning
 ---
-[[]]# 1.1 What Is the Internet?
+# 1.1 What Is the Internet?
 
 > **One-Line Summary:** The Internet is a global system of billions of 
 > interconnected devices communicating through shared rules called protocols 
