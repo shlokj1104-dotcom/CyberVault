@@ -377,4 +377,4 @@ Breaking this definition down:
 
 ---
 
-→ Next: [[1.2 - The Network Edge]]
+→ Next: [[THE NETWORK EDGE]]
