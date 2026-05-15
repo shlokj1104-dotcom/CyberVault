@@ -33,7 +33,7 @@ Figure 1.4 shows several types of access networks:
 - **Home Network** — residential broadband (DSL, cable, fiber)
 - **Enterprise Network** — corporate LANs with switches and routers
 
-![[access-networks-figure.png]]
+![[Pasted image 20260513194806.png]]
 *(Figure 1.4 — Access Networks: Mobile, Home, and Enterprise connecting to ISPs)*
 
 ---
@@ -80,7 +80,7 @@ A **splitter** is installed at the customer's home that separates:
 - Data signals → sent to DSL modem
 - Phone signals → sent to home telephone
 
-![[dsl-diagram.png]]
+![[Pasted image 20260513195025.png]]
 *(Figure 1.5 — DSL Internet Access: Modem, Splitter, DSLAM, Central Office)*
 
 **DSL Uses Frequency-Division Multiplexing (FDM):**
@@ -122,7 +122,7 @@ television company's **existing cable television infrastructure**.
 
 **Cable Topology:**
 
-![[cable-hfc-diagram.png]]
+![[Pasted image 20260513195217.png]]
 *(Figure 1.6 — Hybrid Fiber-Coaxial Access Network: Fiber backbone with coaxial 
 last-mile to homes)*
 
@@ -164,7 +164,7 @@ fiber path runs directly from the central office (CO) to the home.
 The simplest optical distribution architecture is **direct fiber** — one fiber 
 per home from CO. More common: **Passive Optical Network (PON)** —
 
-![[ftth-pon-diagram.png]]
+![[Pasted image 20260513195334.png]]
 *(Figure 1.7 — FTTH Internet Access using PON architecture)*
 
 - Each home has an **ONT** (Optical Network Terminator) — connected by dedicated 
@@ -222,7 +222,7 @@ increasingly home networks.
 - Typically provides **100 Mbps** access to the switch (though newer Gigabit 
   Ethernet provides 1 Gbps).
 
-![[ethernet-diagram.png]]
+![[Pasted image 20260513195541.png]]
 *(Figure 1.8 — Ethernet Internet Access: Multiple devices to switch, switch to 
 router, router to ISP)*
 
@@ -252,7 +252,7 @@ link is just the last connection; the institutional network behind it is wired.
 
 **Typical Home Network:**
 
-![[home-network-typical.png]]
+![[Pasted image 20260513195644.png]]
 *(Figure 1.9 — Typical Home Network: Devices to WiFi router, router to cable/DSL 
 modem, modem to ISP)*
 
