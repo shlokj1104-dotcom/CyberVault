@@ -437,11 +437,10 @@ Building on Structure 3, we add four more elements:
 - Reduces cost for all parties — traffic stays local rather than transiting
   expensive upstream links.
 
-### Network Structure 5 — Content Provider Networks Added
+![[Pasted image 20260515144248.png]]
 
-![[isp-interconnection-figure.png]]
-*(Figure 1.15 — Interconnection of ISPs: Tier-1 ISPs, Regional ISPs, Access
-ISPs, IXPs, and Content Provider Networks like Google)*
+
+### Network Structure 5 — Content Provider Networks Added
 
 **Network Structure 5 = Structure 4 + Content Provider Networks**
 
@@ -458,6 +457,8 @@ ISPs, IXPs, and Content Provider Networks like Google)*
 **Why content providers build their own networks:**
 - Reduces payments to upper-tier ISPs.
 - Greater control over how services are delivered to end users.
+
+![[Pasted image 20260515144646.png]]
 
 ---
 
@@ -562,11 +563,7 @@ Today's Internet:
 
 ## Related Concepts
 
-- [[1.2 - The Network Edge]]
-- [[Routing Protocols and BGP]]
-- [[IP Addressing and Forwarding]]
-- [[Queuing Theory and Network Delays]]
-- [[ISP Hierarchy and Peering]]
+- 
 
 ---
 

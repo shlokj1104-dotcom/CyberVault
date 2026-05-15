@@ -606,4 +606,4 @@ receiver** ground stations. The satellite:
 
 ---
 
-→ Next: [[1.3 - The Network Core]]
+→ Next: [[THE NETWORK CORE]]
