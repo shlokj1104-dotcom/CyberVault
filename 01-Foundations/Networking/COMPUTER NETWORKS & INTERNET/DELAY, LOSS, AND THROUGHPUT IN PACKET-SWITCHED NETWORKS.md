@@ -620,4 +620,4 @@ The core links don't matter — R_s and R_c dominate.
 - 
 ---
 
-→ Next: [[1.5 - Protocol Layers and Their Service Models]]
+→ Next: [[PROTOCOL LAYERS AND THEIR SERVICE MODELS]]
