@@ -567,4 +567,4 @@ Today's Internet:
 
 ---
 
-→ Next: [[1.4 - Delay, Loss, and Throughput in Packet-Switched Networks]]
+→ Next: [[DELAY, LOSS, AND THROUGHPUT IN PACKET-SWITCHED NETWORKS]]
