@@ -4,7 +4,7 @@ date: 2026-05-15
 phase: phase-1
 tags:
   - concept
-  - networking
+  - python
 links: []
 status: learning
 ---
