@@ -20,6 +20,8 @@ status: learning
 
 ## Why Security Matters
 
+![[Pasted image 20260517142312.png]]
+
 The Internet is now **mission critical** for:
 - Large and small companies
 - Universities
@@ -61,6 +63,8 @@ Today's Internet **does not** involve mutually trusting users. Users:
 
 ## What Is Malware?
 
+![[Pasted image 20260517142748.png]]
+
 When we attach devices to the Internet, we receive all kinds of good
 stuff — web pages, emails, MP3s, search results, videos. But along with
 the good stuff comes **malicious software** — collectively known as
@@ -79,6 +83,8 @@ the good stuff comes **malicious software** — collectively known as
 
 ## Botnets
 
+![[Pasted image 20260517143406.png]]
+
 > A **botnet** is a network of thousands of similarly compromised devices
 > that the bad guys control and leverage for:
 > - Spam email distribution
@@ -96,12 +102,14 @@ Much of today's malware is **self-replicating**:
 
 Two main forms:
 
-| Feature           | Virus                                              | Worm                                                        |
-|-------------------|----------------------------------------------------|-------------------------------------------------------------|
-| User interaction  | Required                                           | None needed                                                 |
-| Entry method      | User opens malicious email attachment              | Exploits vulnerable network application autonomously        |
-| Classic example   | Email attachment → user runs executable → executes | Attacker sends malware to open port → app accepts it        |
-| Self-replication  | Sends itself to every address in user's contacts   | Infected host scans Internet for same vulnerable app → spreads |
+| Feature          | Virus                                              | Worm                                                           |
+| ---------------- | -------------------------------------------------- | -------------------------------------------------------------- |
+| User interaction | Required                                           | None needed                                                    |
+| Entry method     | User opens malicious email attachment              | Exploits vulnerable network application autonomously           |
+| Classic example  | Email attachment → user runs executable → executes | Attacker sends malware to open port → app accepts it           |
+| Self-replication | Sends itself to every address in user's contacts   | Infected host scans Internet for same vulnerable app → spreads |
+![[Pasted image 20260517143012.png]]
+
 > Today malware is **pervasive and costly** to defend against.
 > Key design question: What can network designers do to defend
 > Internet-attached devices from malware attacks?
