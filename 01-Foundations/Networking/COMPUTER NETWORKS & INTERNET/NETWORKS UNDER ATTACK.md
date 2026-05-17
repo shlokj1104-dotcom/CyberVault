@@ -63,7 +63,7 @@ Today's Internet **does not** involve mutually trusting users. Users:
 
 ## What Is Malware?
 
-![[Pasted image 20260517142748.png]]
+![[Pasted image 20260517144940.png]]
 
 When we attach devices to the Internet, we receive all kinds of good
 stuff — web pages, emails, MP3s, search results, videos. But along with
@@ -83,7 +83,7 @@ the good stuff comes **malicious software** — collectively known as
 
 ## Botnets
 
-![[Pasted image 20260517143406.png]]
+![[Pasted image 20260517143406.png|646]]
 
 > A **botnet** is a network of thousands of similarly compromised devices
 > that the bad guys control and leverage for:
@@ -108,7 +108,7 @@ Two main forms:
 | Entry method     | User opens malicious email attachment              | Exploits vulnerable network application autonomously           |
 | Classic example  | Email attachment → user runs executable → executes | Attacker sends malware to open port → app accepts it           |
 | Self-replication | Sends itself to every address in user's contacts   | Infected host scans Internet for same vulnerable app → spreads |
-![[Pasted image 20260517143012.png]]
+![[Pasted image 20260517145349.png]]
 
 > Today malware is **pervasive and costly** to defend against.
 > Key design question: What can network designers do to defend
@@ -135,6 +135,7 @@ Internet DoS attacks are extremely common — thousands occur every year.
 
 ## Three Categories of DoS Attacks
 
+![[Pasted image 20260517144347.png]]
 ### 1. Vulnerability Attack
 
 ```
@@ -182,7 +183,7 @@ Attacker → floods target with half-open or fully open TCP connections
 
 ## DoS → DDoS (Distributed Denial-of-Service)
 
-![[Pasted image 20260517141719.png]]
+![[Pasted image 20260517144401.png]]
 
 **The single-source problem:**
 - If R is very large, a single attack source may not generate enough traffic.
@@ -217,6 +218,8 @@ Attacker ──"start"──→ Slave ──┐
 # Attack Category 3 — Packet Sniffing
 
 ## What Is a Packet Sniffer?
+
+![[Pasted image 20260517144524.png]]
 
 > A **packet sniffer** is a passive receiver that records a copy of every
 > packet that flies by.
@@ -294,6 +297,8 @@ Sniffer device → receives ALL packets on the link
 # Attack Category 4 — IP Spoofing
 
 ## What Is IP Spoofing?
+
+![[Pasted image 20260517144805.png]]
 
 It is surprisingly easy to create a packet with:
 - An **arbitrary source IP address**
