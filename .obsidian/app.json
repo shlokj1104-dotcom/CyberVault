@@ -3,5 +3,6 @@
   "attachmentFolderPath": "/",
   "newFileLocation": "folder",
   "newFileFolderPath": "10-Daily-Logs",
-  "promptDelete": false
+  "promptDelete": false,
+  "alwaysUpdateLinks": true
 }

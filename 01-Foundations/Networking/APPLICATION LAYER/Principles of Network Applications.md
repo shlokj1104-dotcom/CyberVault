@@ -30,7 +30,7 @@ At the core of network application development is writing programs that:
 - Even if you wanted to write application software for routers, you
   couldn't — they don't expose that interface
 
-![[app-layer-communication-figure.png]]
+![[Pasted image 20260519190023.png]]
 *(Figure 2.1 — Communication for a network application takes place
 between end systems at the application layer — the core just forwards)*
 
@@ -56,7 +56,7 @@ Two predominant architectural paradigms in modern network applications:
 
 ## Architecture 1 — Client-Server
 
-![[client-server-p2p-figure.png]]
+![[Pasted image 20260519190230.png]]
 *(Figure 2.2 — (a) Client-server architecture; (b) P2P architecture)*
 
 **Structure:**
@@ -194,7 +194,7 @@ underlying network. A process sends messages into — and receives
 messages from — the network through a **software interface called a
 socket**.
 
-![[socket-figure.png]]
+![[Pasted image 20260519190412.png]]
 *(Figure 2.3 — Application processes, sockets, and underlying transport
 protocol: socket is the interface between application layer and transport
 layer within a host)*
@@ -307,10 +307,10 @@ Transport-layer services can be classified along **four dimensions:**
 
 **Two types of applications:**
 
-| Type | Description | Examples |
-|---|---|---|
-| **Needs reliable transfer** | Data sent must arrive completely and correctly — app requires guaranteed delivery | Email, file transfer, web documents, financial apps |
-| **Loss-tolerant** | Can tolerate some amount of data loss — lost data results in a small glitch, not a critical failure | Multimedia audio/video, VoIP, streaming |
+| Type                        | Description                                                                                         | Examples                                            |
+| --------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| **Needs reliable transfer** | Data sent must arrive completely and correctly — app requires guaranteed delivery                   | Email, file transfer, web documents, financial apps |
+| **Loss-tolerant**           | Can tolerate some amount of data loss — lost data results in a small glitch, not a critical failure | Multimedia audio/video, VoIP, streaming             |
 
 > If a transport protocol provides guaranteed data delivery service,
 > it is said to provide **reliable data transfer**.
