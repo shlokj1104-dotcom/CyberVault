@@ -666,6 +666,6 @@ _Write your open questions here. Return later and answer them._
 
 - [[STRINGS]] — String methods like `.startswith()`, `.find()`, `.strip()`, `.rstrip()` are essential for parsing files
 - [[ITERATIVE STATEMENTS]] — for loops are used to iterate over lines in files; `continue` statement skips uninteresting lines
-- [[DICTIONARIES]] — Often used to store parsed data from files (e.g., word counts, domain counts)
+- [[DICTIONARIES, TUPLES & SETS]] — Often used to store parsed data from files (e.g., word counts, domain counts)
 - [[CONDITIONAL STATEMENT]] — Guardian patterns used to filter file content
 - [[FUNCTIONS]] — Break complex file processing into reusable functions

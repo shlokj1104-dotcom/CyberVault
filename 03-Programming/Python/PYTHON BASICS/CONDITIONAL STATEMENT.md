@@ -256,4 +256,4 @@ Spacing does not affect how Python runs the code — it just makes it easier to 
 ## Related Notes
 
 - [[VARIABLES &  SIMPLE DATA TYPES]]
-- [[04 - Dictionaries]]
+- [[DICTIONARIES, TUPLES & SETS]]
