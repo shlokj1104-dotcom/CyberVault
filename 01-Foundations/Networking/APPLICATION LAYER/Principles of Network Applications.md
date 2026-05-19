@@ -62,7 +62,7 @@ Two predominant architectural paradigms in modern network applications:
 **Structure:**
 
 - There is always an **always-on host** called the **server**
-- The server services requests from many other hosts called **clients**
+- The server takes requests from many other hosts called **clients**
 - Clients do **not** directly communicate with each other
 - The server has a **fixed, well-known IP address**
 - Because the server is always on, a client can always contact it
