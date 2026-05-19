@@ -430,7 +430,7 @@ first decisions is: **TCP or UDP?**
 - TCP also includes a **congestion-control mechanism**
 - This is a service for the **general welfare of the Internet** rather
   than for the direct benefit of the communicating processes
-- TCP congestion control **throttles a sending process** (client or
+- TCP congestion control **throttles of a sending process** (client or
   server) when the network is congested between sender and receiver
 - Also attempts to limit each TCP connection to its **fair share of
   network bandwidth**
