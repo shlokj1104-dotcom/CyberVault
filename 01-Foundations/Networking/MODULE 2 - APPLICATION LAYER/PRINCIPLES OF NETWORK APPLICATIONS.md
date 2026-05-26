@@ -645,41 +645,35 @@ Email Application
 
 ## Key Terms — Quick Reference
 
-| Term | Definition |
-|---|---|
-| **Process** | A program running within an end system |
-| **Socket** | Software interface between application layer and transport layer; the network API |
-| **Client process** | Process that initiates the communication session |
-| **Server process** | Process that waits to be contacted to begin the session |
-| **IP address** | 32-bit quantity uniquely identifying a host on the Internet |
-| **Port number** | Identifier specifying which process (socket) on the host to deliver to |
-| **Client-server architecture** | Always-on server services requests from clients; clients don't talk directly |
-| **P2P architecture** | Peers communicate directly without dedicated servers |
-| **Self-scalability** | P2P property: each new peer adds both workload and service capacity |
-| **Data center** | Housing for large numbers of hosts creating a powerful virtual server |
-| **Reliable data transfer** | Guarantee that all data arrives correctly and completely |
-| **Loss-tolerant application** | App that can tolerate some data loss (multimedia) |
-| **Bandwidth-sensitive app** | Requires minimum guaranteed throughput to function |
-| **Elastic application** | Can use as much or as little throughput as available |
-| **TCP** | Connection-oriented, reliable, congestion-controlled transport protocol |
-| **UDP** | Connectionless, unreliable, no-frills transport protocol |
-| **SSL/TLS** | Application-layer enhancement of TCP providing encryption and authentication |
-| **Application-layer protocol** | Defines how processes on different end systems pass messages |
-| **Full-duplex** | Both processes can send messages simultaneously over a TCP connection |
-| **Congestion control** | TCP mechanism that throttles sender when network is congested |
+| Term                           | Definition                                                                        |
+| ------------------------------ | --------------------------------------------------------------------------------- |
+| **Process**                    | A program running within an end system                                            |
+| **Socket**                     | Software interface between application layer and transport layer; the network API |
+| **Client process**             | Process that initiates the communication session                                  |
+| **Server process**             | Process that waits to be contacted to begin the session                           |
+| **IP address**                 | 32-bit quantity uniquely identifying a host on the Internet                       |
+| **Port number**                | Identifier specifying which process (socket) on the host to deliver to            |
+| **Client-server architecture** | Always-on server services requests from clients; clients don't talk directly      |
+| **P2P architecture**           | Peers communicate directly without dedicated servers                              |
+| **Self-scalability**           | P2P property: each new peer adds both workload and service capacity               |
+| **Data center**                | Housing for large numbers of hosts creating a powerful virtual server             |
+| **Reliable data transfer**     | Guarantee that all data arrives correctly and completely                          |
+| **Loss-tolerant application**  | App that can tolerate some data loss (multimedia)                                 |
+| **Bandwidth-sensitive app**    | Requires minimum guaranteed throughput to function                                |
+| **Elastic application**        | Can use as much or as little throughput as available                              |
+| **TCP**                        | Connection-oriented, reliable, congestion-controlled transport protocol           |
+| **UDP**                        | Connectionless, unreliable, no-frills transport protocol                          |
+| **SSL/TLS**                    | Application-layer enhancement of TCP providing encryption and authentication      |
+| **Application-layer protocol** | Defines how processes on different end systems pass messages                      |
+| **Full-duplex**                | Both processes can send messages simultaneously over a TCP connection             |
+| **Congestion control**         | TCP mechanism that throttles sender when network is congested                     |
 
 ---
 
 ## Related Concepts
 
-- [[1.5 - Protocol Layers and Their Service Models]]
-- [[1.6 - Networks Under Attack]]
-- [[TCP Three-Way Handshake — Chapter 3 Preview]]
-- [[HTTP and the Web — Section 2.2]]
-- [[DNS — Section 2.4]]
-- [[Socket Programming — Section 2.7]]
-- [[SSL and TLS — Chapter 8 Preview]]
+- 
 
 ---
 
-→ Next: [[2.2 - The Web and HTTP]]
+→ Next: [[THE WEB & HTTP]]
