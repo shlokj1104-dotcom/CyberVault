@@ -1,7 +1,841 @@
-.obsidian/workspace.json
-.obsidian/cache
-.obsidian/graph.json
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Master Roadmap · Shlok</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Source+Serif+4:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080B10;--s1:#0E1218;--s2:#141A22;--s3:#1C2433;
+  --border:#1E2B3A;--border2:#263545;
+  --text:#B8C4D0;--text-b:#E4EAF2;--text-dim:#6B7A8D;
+  --green:#34D399;--gdim:rgba(52,211,153,0.08);--gborder:rgba(52,211,153,0.2);
+  --amber:#FBBF24;--adim:rgba(251,191,36,0.08);--aborder:rgba(251,191,36,0.2);
+  --blue:#60A5FA;--bdim:rgba(96,165,250,0.08);--bborder:rgba(96,165,250,0.2);
+  --purple:#A78BFA;--pdim:rgba(167,139,250,0.08);--pborder:rgba(167,139,250,0.2);
+  --red:#F87171;--rdim:rgba(248,113,113,0.08);
+  --cyan:#22D3EE;--cdim:rgba(34,211,238,0.08);--cborder:rgba(34,211,238,0.2);
+  --orange:#FB923C;--odim:rgba(251,146,60,0.08);--oborder:rgba(251,146,60,0.2);
+  --display:'Bebas Neue',sans-serif;
+  --body:'Source Serif 4',serif;
+  --mono:'DM Mono',monospace;
+  --nav-h:58px;
+}
+body{font-family:var(--body);background:var(--bg);color:var(--text);font-size:14px;line-height:1.7;font-weight:300;min-height:100vh}
+::-webkit-scrollbar{width:3px;height:3px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2)}
+.nav{position:sticky;top:0;z-index:300;background:var(--s1);border-bottom:1px solid var(--border);height:var(--nav-h);display:flex;align-items:center;padding:0 1.75rem;gap:0}
+.nav-brand{font-family:var(--display);font-size:1.2rem;letter-spacing:.1em;color:var(--amber);padding-right:1.75rem;border-right:1px solid var(--border2);white-space:nowrap;flex-shrink:0}
+.nav-brand small{display:block;font-family:var(--mono);font-size:.48rem;color:var(--text-dim);letter-spacing:.2em;margin-top:-4px}
+.nav-tabs{display:flex;align-items:stretch;flex:1;overflow-x:auto;scrollbar-width:none;height:100%;padding-left:1.25rem}
+.nav-tabs::-webkit-scrollbar{display:none}
+.tab{height:100%;padding:0 .9rem;display:flex;align-items:center;font-family:var(--mono);font-size:.6rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s;position:relative;top:1px}
+.tab:hover{color:var(--text-b)}
+.tab.active{color:var(--amber);border-bottom-color:var(--amber)}
+.tab[data-tab="books"].active{color:var(--green);border-bottom-color:var(--green)}
+.tab[data-tab="security"].active{color:var(--red);border-bottom-color:var(--red)}
+.tab[data-tab="dsa"].active{color:var(--cyan);border-bottom-color:var(--cyan)}
+.tab[data-tab="quick"].active{color:var(--purple);border-bottom-color:var(--purple)}
+.pane{display:none;max-width:1280px;margin:0 auto;padding:0 1.75rem 5rem}
+.pane.active{display:block}
+.hero{padding:3.5rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem;position:relative;overflow:hidden}
+.hero-bg{position:absolute;right:-.02em;bottom:-.1em;font-family:var(--display);font-size:clamp(9rem,16vw,16rem);color:rgba(255,255,255,.02);letter-spacing:-.02em;line-height:1;user-select:none;pointer-events:none}
+.hero-label{font-family:var(--mono);font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;margin-bottom:.5rem}
+.hero-title{font-family:var(--display);font-size:clamp(3rem,6vw,6rem);letter-spacing:.04em;line-height:.9;color:var(--text-b);margin-bottom:.85rem;position:relative;z-index:1}
+.hero-sub{font-size:.82rem;color:var(--text-dim);max-width:580px;line-height:1.8;font-family:var(--mono);font-weight:300}
+.sec{display:flex;align-items:center;gap:.85rem;margin:2.25rem 0 1rem}
+.sec-title{font-family:var(--display);font-size:1.45rem;letter-spacing:.06em;color:var(--text-b);white-space:nowrap}
+.sec-rule{flex:1;height:1px;background:var(--border)}
+.sec-num{font-family:var(--mono);font-size:.55rem;color:var(--text-dim);letter-spacing:.1em}
+.card{background:var(--s1);border:1px solid var(--border);padding:1.35rem;margin-bottom:.85rem;border-top:2px solid var(--border2)}
+.card-g{border-top-color:var(--green)}.card-a{border-top-color:var(--amber)}.card-b{border-top-color:var(--blue)}.card-p{border-top-color:var(--purple)}.card-c{border-top-color:var(--cyan)}.card-r{border-top-color:var(--red)}.card-o{border-top-color:var(--orange)}
+.card-title{font-family:var(--mono);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.85rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.85rem}
+@media(max-width:720px){.g2,.g3{grid-template-columns:1fr}}
+.row{display:flex;gap:10px;align-items:flex-start;padding:.5rem 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:none}
+.dot{width:5px;height:5px;transform:rotate(45deg);margin-top:7px;flex-shrink:0;background:var(--border2)}
+.dot-g{background:var(--green)}.dot-a{background:var(--amber)}.dot-b{background:var(--blue)}.dot-p{background:var(--purple)}.dot-c{background:var(--cyan)}.dot-r{background:var(--red)}.dot-o{background:var(--orange)}
+.row-body{font-size:.81rem;line-height:1.6;color:var(--text)}
+.row-sub{font-size:.63rem;font-family:var(--mono);color:var(--text-dim);margin-top:2px;display:block}
+.badge{display:inline-block;font-family:var(--mono);font-size:.54rem;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border:1px solid;margin:1px}
+.bg{color:var(--green);border-color:var(--gborder);background:var(--gdim)}
+.ba{color:var(--amber);border-color:var(--aborder);background:var(--adim)}
+.bb{color:var(--blue);border-color:var(--bborder);background:var(--bdim)}
+.bp{color:var(--purple);border-color:var(--pborder);background:var(--pdim)}
+.bc{color:var(--cyan);border-color:var(--cborder);background:var(--cdim)}
+.br{color:var(--red);border-color:rgba(248,113,113,.2);background:var(--rdim)}
+.bo{color:var(--orange);border-color:var(--oborder);background:var(--odim)}
+.bx{color:var(--text-dim);border-color:var(--border2);background:var(--s3)}
+.alert{padding:.75rem 1.1rem;border-left:3px solid;margin-bottom:.85rem;font-size:.79rem;line-height:1.7}
+.alert-g{background:var(--gdim);border-color:var(--green);color:#A8E6CC}
+.alert-a{background:var(--adim);border-color:var(--amber);color:#D4B06A}
+.alert-b{background:var(--bdim);border-color:var(--blue);color:#9EC3EA}
+.alert-p{background:var(--pdim);border-color:var(--purple);color:#C4B3F8}
+.alert-r{background:var(--rdim);border-color:var(--red);color:#F4A0A0}
+.code{background:var(--s2);border:1px solid var(--border);border-left:3px solid var(--green);padding:1rem 1.25rem;font-family:var(--mono);font-size:.71rem;color:#8EC9A4;line-height:2;margin-bottom:.85rem;overflow-x:auto}
+.code-c{color:#445566;font-style:italic}.code-k{color:var(--amber);font-weight:500}.code-s{color:var(--green)}.code-v{color:var(--blue)}.code-p{color:var(--purple)}
+.tbl{width:100%;border-collapse:collapse;font-size:.78rem;margin-bottom:.85rem}
+.tbl th{font-family:var(--mono);font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);border-bottom:1px solid var(--border2);padding:.45rem .65rem;text-align:left}
+.tbl td{border-bottom:1px solid var(--border);padding:.48rem .65rem;color:var(--text);vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--s2)}
+.mono{font-family:var(--mono)}
+.tag{display:inline-block;font-family:var(--mono);font-size:.62rem;padding:1px 6px;background:var(--s2);border:1px solid var(--border2);color:var(--text-dim)}
+.tl-row{display:flex;gap:.85rem;align-items:stretch;padding-bottom:0}
+.tl-left{min-width:64px;font-family:var(--mono);font-size:.55rem;color:var(--text-dim);text-align:right;padding-top:4px;letter-spacing:.07em}
+.tl-spine{display:flex;flex-direction:column;align-items:center;width:14px;flex-shrink:0}
+.tl-dot{width:7px;height:7px;transform:rotate(45deg);margin-top:5px;flex-shrink:0}
+.tl-line{width:1px;flex:1;background:var(--border);margin-top:3px}
+.tl-body{flex:1;padding-bottom:1.1rem}
+.tl-t{font-family:var(--mono);font-size:.79rem;font-weight:500;color:var(--text-b);margin-bottom:2px}
+.tl-d{font-size:.77rem;color:var(--text-dim);line-height:1.7}
+.book-block{background:var(--s1);border:1px solid var(--border);margin-bottom:1.25rem}
+.book-head{display:flex;align-items:center;gap:1rem;padding:.85rem 1.25rem;border-bottom:1px solid var(--border);background:var(--s2)}
+.book-num{font-family:var(--display);font-size:2.2rem;color:var(--border2);line-height:1;flex-shrink:0}
+.book-name{font-family:var(--display);font-size:1rem;letter-spacing:.04em;color:var(--text-b)}
+.book-abbr{font-family:var(--mono);font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);margin-top:2px}
+.book-verdict{font-family:var(--mono);font-size:.58rem;padding:3px 10px;border:1px solid;flex-shrink:0;margin-left:auto;letter-spacing:.08em}
+.book-body{padding:1rem 1.25rem}
+.ch-tbl{width:100%;border-collapse:collapse;font-size:.76rem}
+.ch-tbl th{font-family:var(--mono);font-size:.52rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);border-bottom:1px solid var(--border2);padding:.35rem .55rem;text-align:left}
+.ch-tbl td{border-bottom:1px solid var(--border);padding:.42rem .55rem;color:var(--text);vertical-align:top}
+.ch-tbl tr:last-child td{border-bottom:none}
+.ch-tbl tr:hover td{background:var(--s2)}
+.status{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:.56rem;font-weight:500;letter-spacing:.08em;padding:2px 7px;border:1px solid;white-space:nowrap}
+.s-read{color:var(--green);border-color:var(--gborder);background:var(--gdim)}
+.s-skim{color:var(--amber);border-color:var(--aborder);background:var(--adim)}
+.s-skip{color:var(--text-dim);border-color:var(--border2);background:var(--s3)}
+.s-gold{color:var(--cyan);border-color:var(--cborder);background:var(--cdim)}
+.stage-pill{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border:1px solid}
+.flow{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin:.85rem 0}
+.flow-box{background:var(--s2);border:1px solid var(--border2);padding:.45rem .85rem;font-family:var(--mono);font-size:.66rem;color:var(--text-b);white-space:nowrap}
+.flow-arr{font-family:var(--mono);font-size:.66rem;color:var(--text-dim);padding:0 5px}
+.flow-box.g{border-color:var(--gborder);color:var(--green)}
+.flow-box.a{border-color:var(--aborder);color:var(--amber)}
+.flow-box.b{border-color:var(--bborder);color:var(--blue)}
+.flow-box.p{border-color:var(--pborder);color:var(--purple)}
+.flow-box.c{border-color:var(--cborder);color:var(--cyan)}
+.flow-box.r{border-color:rgba(248,113,113,.2);color:var(--red)}
+.dsa-card{background:var(--s1);border:1px solid var(--border);border-left:3px solid var(--cyan);padding:1rem 1.25rem;margin-bottom:.7rem}
+.dsa-title{font-family:var(--mono);font-size:.75rem;font-weight:500;color:var(--cyan);margin-bottom:.3rem}
+.dsa-body{font-size:.79rem;color:var(--text);line-height:1.7}
+.lib-row{display:flex;gap:12px;padding:.65rem 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.lib-row:last-child{border-bottom:none}
+.lib-name{font-family:var(--mono);font-size:.75rem;font-weight:500;color:var(--text-b);min-width:130px;flex-shrink:0}
+.lib-desc{font-size:.78rem;color:var(--text-dim);line-height:1.6}
+.big{font-family:var(--display);font-size:2.8rem;letter-spacing:.02em;line-height:1}
+em{font-style:italic;color:var(--text-b);font-weight:400}
+strong{color:var(--text-b);font-weight:600}
+</style>
+</head>
+<body>
 
-.DS_Store
-Thumbs.db
-/Images/
+<nav class="nav">
+  <div class="nav-brand">SHLOK<small>Python Master Roadmap</small></div>
+  <div class="nav-tabs">
+    <button class="tab active" data-tab="plan">Master Plan</button>
+    <button class="tab" data-tab="books">Book Chapters</button>
+    <button class="tab" data-tab="security">Security Python</button>
+    <button class="tab" data-tab="dsa">DSA Track</button>
+    <button class="tab" data-tab="quick">Quick Ref</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- TAB 1: MASTER PLAN                             -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="pane active" id="tab-plan">
+  <div class="hero">
+    <div class="hero-bg">01</div>
+    <div class="hero-label" style="color:var(--amber)">The Problem · The Fix · Five Stages</div>
+    <div class="hero-title">MASTER<br>PLAN</div>
+    <div class="hero-sub">You're not confused by Python. You're confused by having 5 books open at once with no order. The fix is a strict stage sequence — each book dominates exactly one stage, used for what it's uniquely good at.</div>
+  </div>
+
+  <div class="sec"><div class="sec-title">The Core Problem</div><div class="sec-num">01</div><div class="sec-rule"></div></div>
+  <div class="g3">
+    <div class="card card-r">
+      <div class="card-title" style="color:var(--red)">Problem 1 · Overlap</div>
+      <div style="font-size:.82rem;line-height:1.8;color:var(--text)">Python for Everybody, Python Crash Course, and Automate the Boring Stuff all cover <strong>the exact same fundamentals</strong> (variables, loops, functions, lists, dicts) in Chapters 1–6. You're reading the same material three times and feeling like you're falling behind. <em>Stop reading all three simultaneously.</em></div>
+    </div>
+    <div class="card card-r">
+      <div class="card-title" style="color:var(--red)">Problem 2 · Wrong Timing</div>
+      <div style="font-size:.82rem;line-height:1.8;color:var(--text)">Fluent Python is a <strong>Stage 4 book</strong> — it assumes you've written 5,000+ lines of Python and hit real limitations. Reading it now is like reading the advanced physics textbook before finishing Year 11. You'll understand the words and miss the meaning completely.</div>
+    </div>
+    <div class="card card-r">
+      <div class="card-title" style="color:var(--red)">Problem 3 · Missing DSA</div>
+      <div style="font-size:.82rem;line-height:1.8;color:var(--text)"><strong>None of your five books cover DSA.</strong> This is the biggest gap. Your roadmap explicitly lists DSA as critical (for tech interviews, for graph-based AD attack tools, for writing efficient scanners). You need to add dedicated resources — none of your current books fill this.</div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">Book Verdict</div><div class="sec-num">02</div><div class="sec-rule"></div></div>
+  <div class="alert alert-g">Your books are <em>not wrong</em> — they're great. The problem is you're treating them as equals when each one belongs to a specific stage. Here's the verdict on each.</div>
+  <div class="g2">
+    <div>
+      <div class="card card-g">
+        <div class="card-title g">✅ Python Crash Course (PCC)</div>
+        <div style="font-size:.81rem;line-height:1.8;color:var(--text)"><strong>Use for:</strong> Stage 1 foundations. Best practice exercises of all your books. Cleaner explanations than P4E. <strong>Unique value:</strong> Ch 10–11 (files + exceptions), Ch 15–17 (data viz — useful for security dashboards). <strong>Skip:</strong> Ch 18–20 (Django web app — not on your track).</div>
+      </div>
+      <div class="card card-g">
+        <div class="card-title g">✅ Python for Everybody (P4E)</div>
+        <div style="font-size:.81rem;line-height:1.8;color:var(--text)"><strong>Use for:</strong> Specific chapters only — its unique value is Ch 11–15. <strong>Unique value:</strong> Ch 12 (Networked Programs — HTTP, sockets — directly feeds into Black Hat Python), Ch 13 (Web Services / REST APIs), Ch 15 (Databases + SQL). <strong>Skip:</strong> Ch 1–10 if PCC is clear.</div>
+      </div>
+      <div class="card card-g">
+        <div class="card-title g">✅ Automate the Boring Stuff (ATBS)</div>
+        <div style="font-size:.81rem;line-height:1.8;color:var(--text)"><strong>Use for:</strong> Stage 2 practical scripting. Completely skip Ch 1–6 (covered by PCC already). <strong>Unique value:</strong> Ch 7 (Regex — gold), Ch 9–10 (file ops — critical for log parsing and forensics), Ch 12 (web scraping), Ch 16 (CSV/JSON). <strong>Skip:</strong> Ch 13–15 (Excel/Sheets/PDF — low priority for your track).</div>
+      </div>
+    </div>
+    <div>
+      <div class="card card-g">
+        <div class="card-title g">✅ Black Hat Python (BHP)</div>
+        <div style="font-size:.81rem;line-height:1.8;color:var(--text)"><strong>Use for:</strong> Stage 3 — the entire book, in order. This is your most important book for cybersecurity. Don't touch it until you've finished Stage 1 + Stage 2. <strong>Unique value:</strong> Every chapter is unique. Ch 2–4 are networking fundamentals turned into weapons. Ch 5 is web hacking. Ch 10–11 are Windows/forensics. <strong>Skip:</strong> Nothing.</div>
+      </div>
+      <div class="card card-a">
+        <div class="card-title a">⚠️ Fluent Python</div>
+        <div style="font-size:.81rem;line-height:1.8;color:var(--text)"><strong>Use for:</strong> Stage 4 only — after you've finished all other books. Read selectively. <strong>Unique value:</strong> Ch 1–3 (Python internals), Ch 7+9 (decorators), Ch 17 (generators), Ch 19–20 (concurrency — critical for writing fast scanners). <strong>Skip now:</strong> Ch 4, 5, 8, 10–16, 18, 22–24. They're brilliant but premature.</div>
+      </div>
+      <div class="card card-r">
+        <div class="card-title" style="color:var(--red)">❌ DSA — Completely Missing</div>
+        <div style="font-size:.81rem;line-height:1.8;color:var(--text)">None of your books cover this. You need to add: <strong>Grokking Algorithms</strong> (visual, beginner-friendly) + <strong>runestone.academy</strong> (free, Python-based textbook) + <strong>LeetCode</strong> practice. Run this as a parallel daily track from Stage 1 onwards. See the DSA tab for the full breakdown.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">Five Stages — Master Sequence</div><div class="sec-num">03</div><div class="sec-rule"></div></div>
+  <div class="alert alert-b">Each stage has a <em>dominant book</em> and a clear goal. Don't jump stages. Don't run Stage 3 before Stage 2 is solid.</div>
+
+  <div>
+    <div class="tl-row">
+      <div class="tl-left">3–4 WKS</div>
+      <div class="tl-spine"><div class="tl-dot" style="background:var(--green)"></div><div class="tl-line"></div></div>
+      <div class="tl-body">
+        <div class="tl-t" style="color:var(--green)">Stage 1 · Foundations</div>
+        <div class="tl-d"><strong>Dominant book:</strong> Python Crash Course (PCC) Ch 1–11. <strong>Supplement with:</strong> P4E Ch 1–10 only if PCC is unclear on something. Goal: write classes, handle files and exceptions, understand OOP. End-of-stage test: can you write a 100-line Python script from scratch without googling syntax? <strong>DSA parallel:</strong> Grokking Algorithms Ch 1–4 (arrays, selection sort, recursion, quicksort) + 20 LeetCode Easy problems.</div>
+        <div style="margin-top:6px"><span class="badge bg">PCC Ch 1–11</span><span class="badge ba">P4E Ch 1–10 (reference)</span><span class="badge bc">Grokking Ch 1–4</span></div>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-left">3–4 WKS</div>
+      <div class="tl-spine"><div class="tl-dot" style="background:var(--amber)"></div><div class="tl-line"></div></div>
+      <div class="tl-body">
+        <div class="tl-t" style="color:var(--amber)">Stage 2 · Practical Scripting + Networking</div>
+        <div class="tl-d"><strong>Dominant book:</strong> ATBS Ch 7–12, 16–17 (skip Ch 1–6 entirely). <strong>Add unique P4E chapters:</strong> P4E Ch 11 (Regex reinforcement), Ch 12 (Networked Programs — HTTP sockets), Ch 13 (Web Services/JSON APIs), Ch 15 (SQL/databases). This stage makes you a competent scripter. Goal: write a working web scraper, a file parser, and a socket-based client. <strong>DSA parallel:</strong> Grokking Ch 5–8 + 30 more LeetCode Easy.</div>
+        <div style="margin-top:6px"><span class="badge ba">ATBS Ch 7–12, 16–17</span><span class="badge bg">P4E Ch 11–15</span><span class="badge bc">Grokking Ch 5–8</span></div>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-left">6–8 WKS</div>
+      <div class="tl-spine"><div class="tl-dot" style="background:var(--red)"></div><div class="tl-line"></div></div>
+      <div class="tl-body">
+        <div class="tl-t" style="color:var(--red)">Stage 3 · Security Python — Black Hat Python</div>
+        <div class="tl-d"><strong>Dominant book:</strong> Black Hat Python — all 11 chapters in order. Prerequisites: Stages 1 and 2 must be complete. You'll also start using security libraries not in any book: <span class="tag">scapy</span>, <span class="tag">paramiko</span>, <span class="tag">cryptography</span>, <span class="tag">pwntools</span>. Goal: write your own port scanner, packet sniffer, web brute-forcer, and basic C2 tool. See the Security Python tab for the full library breakdown. <strong>DSA parallel:</strong> runestone.academy + LeetCode Medium (graphs, trees).</div>
+        <div style="margin-top:6px"><span class="badge br">Black Hat Python ALL</span><span class="badge bo">scapy / paramiko / pwntools</span><span class="badge bc">LeetCode Medium</span></div>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-left">6–8 WKS</div>
+      <div class="tl-spine"><div class="tl-dot" style="background:var(--blue)"></div><div class="tl-line"></div></div>
+      <div class="tl-body">
+        <div class="tl-t" style="color:var(--blue)">Stage 4 · Advanced Python — Fluent Python (Selective)</div>
+        <div class="tl-d"><strong>Dominant book:</strong> Fluent Python — but only 9 specific chapters. This stage makes your Python idiomatic and efficient. You'll write faster scanners (asyncio), cleaner frameworks (decorators), and understand performance (data model internals). Required chapters: Ch 1, 2, 3, 6, 7, 9, 17, 19, 20. See Book Chapters tab for details. <strong>Also:</strong> PCC Ch 15–17 (data viz for security dashboards) fits well here.</div>
+        <div style="margin-top:6px"><span class="badge bb">Fluent Python Ch 1,2,3,6,7,9,17,19,20</span><span class="badge bg">PCC Ch 15–17</span></div>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-left">ONGOING</div>
+      <div class="tl-spine"><div class="tl-dot" style="background:var(--purple)"></div></div>
+      <div class="tl-body">
+        <div class="tl-t" style="color:var(--purple)">Stage 5 · DSA Deep Dive + Portfolio Projects</div>
+        <div class="tl-d">By now DSA has been a parallel track for months. Stage 5 is when you push it to intermediate-advanced: trees, graphs, dynamic programming, heaps. Connect everything to security projects: BFS/DFS for network topology tools, graphs for AD attack path analysis (how BloodHound works), hash maps for password cracking lookup tables. Write portfolio scripts that combine security + DSA thinking.</div>
+        <div style="margin-top:6px"><span class="badge bp">Graphs + Trees + DP</span><span class="badge bg">Security project integration</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">The Parallel DSA Track</div><div class="sec-num">04</div><div class="sec-rule"></div></div>
+  <div class="alert alert-a"><strong>Critical rule:</strong> DSA runs alongside the main track from Day 1. 30 minutes per day, 3 days per week. Never sacrifice your main Python track for DSA — it's additive, not a replacement. Your roadmap says Month 2 start — stick to that.</div>
+  <div class="g2">
+    <div class="card card-c">
+      <div class="card-title c">Stage 1 parallel (Weeks 1–4)</div>
+      <div class="row"><div class="dot dot-c"></div><div class="row-body">Grokking Algorithms Ch 1–4<span class="row-sub">Arrays, Big-O, selection sort, recursion, quicksort — visual and easy</span></div></div>
+      <div class="row"><div class="dot dot-c"></div><div class="row-body">LeetCode Easy: arrays and strings only<span class="row-sub">Two Sum, Valid Parentheses, Reverse String, Palindrome Check. 20 problems.</span></div></div>
+    </div>
+    <div class="card card-c">
+      <div class="card-title c">Stage 2 parallel (Weeks 5–8)</div>
+      <div class="row"><div class="dot dot-c"></div><div class="row-body">Grokking Algorithms Ch 5–8<span class="row-sub">Hash tables, BFS/DFS, Dijkstra, greedy algorithms</span></div></div>
+      <div class="row"><div class="dot dot-c"></div><div class="row-body">LeetCode Easy: hash maps, stacks<span class="row-sub">Valid Anagram, Group Anagrams, Contains Duplicate. 30 more problems.</span></div></div>
+    </div>
+    <div class="card card-c">
+      <div class="card-title c">Stage 3 parallel (Weeks 9–16)</div>
+      <div class="row"><div class="dot dot-c"></div><div class="row-body">runestone.academy: trees + graphs<span class="row-sub">Binary trees, BST, BFS/DFS implementation from scratch. Free resource.</span></div></div>
+      <div class="row"><div class="dot dot-c"></div><div class="row-body">LeetCode Medium: trees, graphs<span class="row-sub">Binary Tree Level Order, Number of Islands, Course Schedule. 40 problems.</span></div></div>
+    </div>
+    <div class="card card-c">
+      <div class="card-title c">Stage 4–5 parallel</div>
+      <div class="row"><div class="dot dot-c"></div><div class="row-body">DP basics: Grokking Ch 9 + LeetCode Medium<span class="row-sub">Knapsack, Fibonacci memoization, climbing stairs — security relevance: password generation analysis</span></div></div>
+      <div class="row"><div class="dot dot-c"></div><div class="row-body">Build a security tool using DSA<span class="row-sub">Graph-based network mapper, hash table for cracking lookup, BFS for AD path analysis</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- TAB 2: BOOK CHAPTERS                           -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="pane" id="tab-books">
+  <div class="hero">
+    <div class="hero-bg">02</div>
+    <div class="hero-label" style="color:var(--green)">Chapter-by-Chapter Guide · All 5 Books</div>
+    <div class="hero-title">BOOK<br>CHAPTERS</div>
+    <div class="hero-sub">Exact chapter-level breakdown for every book. READ = essential, GOLD = uniquely valuable for your track, SKIM = quick read, SKIP = skip entirely and save the time.</div>
+  </div>
+
+  <div class="alert alert-g">Status legend: <span class="status s-gold">★ GOLD</span> = uniquely valuable, don't skip. <span class="status s-read">✓ READ</span> = do this chapter fully. <span class="status s-skim">~ SKIM</span> = read quickly, exercises optional. <span class="status s-skip">✗ SKIP</span> = skip entirely, not relevant.</div>
+
+  <!-- BOOK 1: PCC -->
+  <div class="book-block">
+    <div class="book-head">
+      <div class="book-num">01</div>
+      <div>
+        <div class="book-name">Python Crash Course</div>
+        <div class="book-abbr">PCC · Al Sweigart · Stage 1 Primary Book</div>
+      </div>
+      <div class="book-verdict" style="color:var(--green);border-color:var(--gborder)">Stage 1 · Primary</div>
+    </div>
+    <div class="book-body">
+      <div class="alert alert-g" style="margin-bottom:1rem">Your best foundation book. Do Part 1 in full. Part 2 only needs Ch 15–17 for your track (data viz). Skip Ch 12–14 (game dev) and Ch 18–20 (Django) entirely.</div>
+      <table class="ch-tbl">
+        <thead><tr><th>Ch</th><th>Title</th><th>Status</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">1</td><td>Getting Started</td><td><span class="status s-read">✓ READ</span></td><td>Install Python, VSCode, first script. Do this even if you've done it before.</td></tr>
+          <tr><td class="mono">2</td><td>Variables and Simple Data Types</td><td><span class="status s-read">✓ READ</span></td><td>Strings, numbers, f-strings. Do the exercises — PCC exercises are excellent.</td></tr>
+          <tr><td class="mono">3</td><td>Introducing Lists</td><td><span class="status s-read">✓ READ</span></td><td>Indexing, slicing, append/insert/pop. Foundation for everything.</td></tr>
+          <tr><td class="mono">4</td><td>Working with Lists</td><td><span class="status s-read">✓ READ</span></td><td>List comprehensions, enumerate, range. Critical Python idioms.</td></tr>
+          <tr><td class="mono">5</td><td>if Statements</td><td><span class="status s-read">✓ READ</span></td><td>Conditionals with lists and strings. Quick chapter.</td></tr>
+          <tr><td class="mono">6</td><td>Dictionaries</td><td><span class="status s-gold">★ GOLD</span></td><td>Python dicts are your most-used data structure in security scripting. Master nesting.</td></tr>
+          <tr><td class="mono">7</td><td>User Input and while Loops</td><td><span class="status s-read">✓ READ</span></td><td>while loops, break/continue. Do the exercises.</td></tr>
+          <tr><td class="mono">8</td><td>Functions</td><td><span class="status s-gold">★ GOLD</span></td><td>*args, **kwargs, default params, return values. Reread this chapter until it's natural.</td></tr>
+          <tr><td class="mono">9</td><td>Classes</td><td><span class="status s-gold">★ GOLD</span></td><td>OOP: __init__, inheritance, class vs instance attrs. Your Java background makes this fast.</td></tr>
+          <tr><td class="mono">10</td><td>Files and Exceptions</td><td><span class="status s-gold">★ GOLD</span></td><td>open(), read/write, try/except/finally. Critical for log parsing and forensics scripts.</td></tr>
+          <tr><td class="mono">11</td><td>Testing Your Code</td><td><span class="status s-skim">~ SKIM</span></td><td>unittest basics. Understand the concept, don't spend more than 1 hour here.</td></tr>
+          <tr><td class="mono">12–14</td><td>Alien Invasion (game project)</td><td><span class="status s-skip">✗ SKIP</span></td><td>pygame game dev. Not on your track. Skip entirely.</td></tr>
+          <tr><td class="mono">15</td><td>Generating Data (matplotlib/Plotly)</td><td><span class="status s-read">✓ READ</span></td><td>Visualizing data — useful for security dashboards and SIEM-style outputs. Do in Stage 4.</td></tr>
+          <tr><td class="mono">16</td><td>Downloading Data (CSV + JSON)</td><td><span class="status s-read">✓ READ</span></td><td>Parsing CSV and JSON with Python. Do in Stage 2 (after ATBS Ch 16).</td></tr>
+          <tr><td class="mono">17</td><td>Working with APIs</td><td><span class="status s-gold">★ GOLD</span></td><td>GitHub/weather API calls, requests library, visualizing API data. Perfect bridge to BHP Ch 5.</td></tr>
+          <tr><td class="mono">18–20</td><td>Web Application (Django)</td><td><span class="status s-skip">✗ SKIP</span></td><td>Django web framework — not on your cybersecurity track. Skip entirely.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- BOOK 2: P4E -->
+  <div class="book-block">
+    <div class="book-head">
+      <div class="book-num">02</div>
+      <div>
+        <div class="book-name">Python for Everybody</div>
+        <div class="book-abbr">P4E · Charles Severance · Use Selectively for Unique Chapters</div>
+      </div>
+      <div class="book-verdict" style="color:var(--amber);border-color:var(--aborder)">Stage 1–2 · Supplement</div>
+    </div>
+    <div class="book-body">
+      <div class="alert alert-a" style="margin-bottom:1rem">Skip Ch 1–10 if PCC is clear. The real value is Ch 11–15 — these chapters have no equivalent in your other books. Ch 12 (Networked Programs) is the single most important chapter in P4E for your cybersecurity track.</div>
+      <table class="ch-tbl">
+        <thead><tr><th>Ch</th><th>Title</th><th>Status</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">1</td><td>Why Should You Learn to Write Programs</td><td><span class="status s-skip">✗ SKIP</span></td><td>Motivation chapter. You already know why. Skip.</td></tr>
+          <tr><td class="mono">2</td><td>Variables, Expressions, Statements</td><td><span class="status s-skim">~ SKIM</span></td><td>Only if PCC Ch 2 left any gaps. Otherwise skip.</td></tr>
+          <tr><td class="mono">3</td><td>Conditional Execution</td><td><span class="status s-skip">✗ SKIP</span></td><td>Covered by PCC Ch 5.</td></tr>
+          <tr><td class="mono">4</td><td>Functions</td><td><span class="status s-skip">✗ SKIP</span></td><td>Covered by PCC Ch 8.</td></tr>
+          <tr><td class="mono">5</td><td>Iteration</td><td><span class="status s-skip">✗ SKIP</span></td><td>Covered by PCC Ch 4, 7.</td></tr>
+          <tr><td class="mono">6</td><td>Strings</td><td><span class="status s-skim">~ SKIM</span></td><td>P4E has slightly better string method coverage. Quick read after PCC.</td></tr>
+          <tr><td class="mono">7</td><td>Files</td><td><span class="status s-skip">✗ SKIP</span></td><td>Covered by PCC Ch 10. Skip.</td></tr>
+          <tr><td class="mono">8</td><td>Lists</td><td><span class="status s-skip">✗ SKIP</span></td><td>Covered by PCC Ch 3–4.</td></tr>
+          <tr><td class="mono">9</td><td>Dictionaries</td><td><span class="status s-skip">✗ SKIP</span></td><td>Covered by PCC Ch 6.</td></tr>
+          <tr><td class="mono">10</td><td>Tuples</td><td><span class="status s-skim">~ SKIM</span></td><td>P4E explains tuple immutability better. Quick 20-minute read.</td></tr>
+          <tr><td class="mono">11</td><td>Regular Expressions</td><td><span class="status s-gold">★ GOLD</span></td><td>Read this before ATBS Ch 7. P4E's intro is gentler. Regex is critical for log parsing.</td></tr>
+          <tr><td class="mono">12</td><td>Networked Programs</td><td><span class="status s-gold">★ GOLD</span></td><td>HTTP requests via raw sockets, urllib. This is THE bridge chapter to Black Hat Python. Read carefully.</td></tr>
+          <tr><td class="mono">13</td><td>Using Web Services (XML/JSON/APIs)</td><td><span class="status s-gold">★ GOLD</span></td><td>REST APIs, JSON parsing, web service authentication. Essential for security automation.</td></tr>
+          <tr><td class="mono">14</td><td>Object-Oriented Programming</td><td><span class="status s-read">✓ READ</span></td><td>Good complement to PCC Ch 9 — different angle on same concepts.</td></tr>
+          <tr><td class="mono">15</td><td>Using Databases and SQL</td><td><span class="status s-gold">★ GOLD</span></td><td>SQLite, SELECT/INSERT/WHERE. SIEM queries (SPL, KQL) are SQL-adjacent. Do this before Phase 2 of roadmap.</td></tr>
+          <tr><td class="mono">16</td><td>Visualizing Data</td><td><span class="status s-skim">~ SKIM</span></td><td>Use PCC Ch 15–17 instead — better coverage.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- BOOK 3: ATBS -->
+  <div class="book-block">
+    <div class="book-head">
+      <div class="book-num">03</div>
+      <div>
+        <div class="book-name">Automate the Boring Stuff</div>
+        <div class="book-abbr">ATBS · Al Sweigart · Stage 2 Practical Scripting</div>
+      </div>
+      <div class="book-verdict" style="color:var(--green);border-color:var(--gborder)">Stage 2 · Skip Ch 1–6</div>
+    </div>
+    <div class="book-body">
+      <div class="alert alert-g" style="margin-bottom:1rem">The first 6 chapters are just Python basics again — skip them entirely. The real value is Part 2 (Ch 7 onwards), which gives you practical scripting skills directly applicable to security work: regex, file manipulation, web scraping, CSV/JSON.</div>
+      <table class="ch-tbl">
+        <thead><tr><th>Ch</th><th>Title</th><th>Status</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">1–6</td><td>Python Basics (all foundational chapters)</td><td><span class="status s-skip">✗ SKIP</span></td><td>Covered entirely by PCC. Skip all 6. Start at Ch 7.</td></tr>
+          <tr><td class="mono">7</td><td>Pattern Matching with Regular Expressions</td><td><span class="status s-gold">★ GOLD</span></td><td>Best regex chapter in any of your books. re.compile, groups, findall, sub. Do every exercise. Critical for log parsing, IDS rules, network data extraction.</td></tr>
+          <tr><td class="mono">8</td><td>Input Validation (PyInputPlus)</td><td><span class="status s-skim">~ SKIM</span></td><td>Useful for building robust security CLI tools. Quick read.</td></tr>
+          <tr><td class="mono">9</td><td>Reading and Writing Files</td><td><span class="status s-gold">★ GOLD</span></td><td>shelve, pathlib, shutil. Critical for forensics scripts — log parsing, evidence preservation, report generation.</td></tr>
+          <tr><td class="mono">10</td><td>Organizing Files</td><td><span class="status s-read">✓ READ</span></td><td>os.walk, glob, zipfile. Walking directory trees is used constantly in forensics and scanning.</td></tr>
+          <tr><td class="mono">11</td><td>Debugging</td><td><span class="status s-read">✓ READ</span></td><td>pdb, logging module, assert. Solid debugging practice. Read this properly.</td></tr>
+          <tr><td class="mono">12</td><td>Web Scraping (requests + BeautifulSoup)</td><td><span class="status s-gold">★ GOLD</span></td><td>requests, BeautifulSoup4 — the foundation for web-based security tools. Read before BHP Ch 5.</td></tr>
+          <tr><td class="mono">13</td><td>Working with Excel Spreadsheets</td><td><span class="status s-skip">✗ SKIP</span></td><td>openpyxl — not on your security track.</td></tr>
+          <tr><td class="mono">14</td><td>Working with Google Sheets</td><td><span class="status s-skip">✗ SKIP</span></td><td>EZSheets — not on your track.</td></tr>
+          <tr><td class="mono">15</td><td>Working with PDF and Word Documents</td><td><span class="status s-skip">✗ SKIP</span></td><td>PyPDF2, docx — not on your track.</td></tr>
+          <tr><td class="mono">16</td><td>Working with CSV Files and JSON Data</td><td><span class="status s-gold">★ GOLD</span></td><td>csv module, json module. Security logs are almost always CSV or JSON. Critical for SIEM data handling.</td></tr>
+          <tr><td class="mono">17</td><td>Keeping Time, Scheduling, Launching Programs</td><td><span class="status s-read">✓ READ</span></td><td>time, datetime, subprocess. subprocess.run() is how Python calls system tools like nmap, nikto, metasploit.</td></tr>
+          <tr><td class="mono">18</td><td>Sending Email and Text Messages</td><td><span class="status s-skim">~ SKIM</span></td><td>smtplib, Twilio. Useful for building alert systems (security alerts via email/SMS). Optional.</td></tr>
+          <tr><td class="mono">19–20</td><td>Manipulating Images / GUI Automation</td><td><span class="status s-skip">✗ SKIP</span></td><td>Pillow, pyautogui — not relevant to your track.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- BOOK 4: BHP -->
+  <div class="book-block">
+    <div class="book-head">
+      <div class="book-num">04</div>
+      <div>
+        <div class="book-name">Black Hat Python (2nd Ed)</div>
+        <div class="book-abbr">BHP · Justin Seitz &amp; Tim Arnold · Stage 3 — Read ALL in Order</div>
+      </div>
+      <div class="book-verdict" style="color:var(--red);border-color:rgba(248,113,113,.2)">Stage 3 · Read All</div>
+    </div>
+    <div class="book-body">
+      <div class="alert alert-r" style="margin-bottom:1rem">Your most important book. Don't touch it until Stages 1 and 2 are complete — the socket programming in Ch 2 assumes you understand TCP/IP and can read Python fluently. Every chapter is unique — nothing to skip.</div>
+      <table class="ch-tbl">
+        <thead><tr><th>Ch</th><th>Title</th><th>Status</th><th>Prerequisites</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">1</td><td>Setting Up Your Environment</td><td><span class="status s-read">✓ READ</span></td><td>Kali setup, virtual environments, IDE config. Do this exactly as written.</td></tr>
+          <tr><td class="mono">2</td><td>Basic Networking Tools</td><td><span class="status s-gold">★ GOLD</span></td><td>socket module deep dive — TCP client, server, netcat clone, SSH client. Builds on your C socket knowledge + P4E Ch 12. Most important chapter for Phase 1 of your roadmap.</td></tr>
+          <tr><td class="mono">3</td><td>Raw Sockets and Sniffing</td><td><span class="status s-gold">★ GOLD</span></td><td>Packet sniffing with raw sockets, struct for packet parsing. Your C binary knowledge is a direct advantage here. Understand every line.</td></tr>
+          <tr><td class="mono">4</td><td>Owning the Network with Scapy</td><td><span class="status s-gold">★ GOLD</span></td><td>Scapy for packet crafting, ARP poisoning, PCAP processing. Read alongside the scapy docs. Critical for Phase 1 roadmap projects.</td></tr>
+          <tr><td class="mono">5</td><td>Web Hackery</td><td><span class="status s-gold">★ GOLD</span></td><td>Web directory brute-forcing, HTML parser, web credential brute-forcer. Direct preparation for Phase 3 of your roadmap. Requires ATBS Ch 12 first.</td></tr>
+          <tr><td class="mono">6</td><td>Extending Burp Suite</td><td><span class="status s-read">✓ READ</span></td><td>Python-powered Burp extensions via Jython. Understand even if you don't implement — teaches you how Burp works internally.</td></tr>
+          <tr><td class="mono">7</td><td>GitHub Command and Control</td><td><span class="status s-read">✓ READ</span></td><td>C2 using GitHub as a communication channel. Teaches you how real-world C2 frameworks work. Important for Red Team understanding.</td></tr>
+          <tr><td class="mono">8</td><td>Common Trojans (Windows)</td><td><span class="status s-read">✓ READ</span></td><td>File exfiltration, keylogger, screenshot capture. Understanding attacker tooling is essential for building defenses. Read on a VM.</td></tr>
+          <tr><td class="mono">9</td><td>Fun with IE and Chrome</td><td><span class="status s-skim">~ SKIM</span></td><td>Browser automation for credential theft. Skim for concepts — browser-based attacks are real but this chapter is somewhat dated.</td></tr>
+          <tr><td class="mono">10</td><td>Windows Privilege Escalation</td><td><span class="status s-gold">★ GOLD</span></td><td>ctypes, process injection, DLL injection. Your C knowledge makes this chapter far more accessible than for most readers. Critical for Phase 3 roadmap.</td></tr>
+          <tr><td class="mono">11</td><td>Offensive Forensics</td><td><span class="status s-gold">★ GOLD</span></td><td>Volatility for memory forensics from Python. Bridges Blue Team (memory forensics) and Red Team (understand what defenders find). Critical for Phase 2 of roadmap.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- BOOK 5: FLUENT PYTHON -->
+  <div class="book-block">
+    <div class="book-head">
+      <div class="book-num">05</div>
+      <div>
+        <div class="book-name">Fluent Python (2nd Ed)</div>
+        <div class="book-abbr">FP · Luciano Ramalho · Stage 4 — Selective Chapters Only</div>
+      </div>
+      <div class="book-verdict" style="color:var(--amber);border-color:var(--aborder)">Stage 4 · Read 9 Chapters</div>
+    </div>
+    <div class="book-body">
+      <div class="alert alert-a" style="margin-bottom:1rem">Read exactly these 9 chapters: 1, 2, 3, 6, 7, 9, 17, 19, 20. Skip everything else for now. The skipped chapters aren't bad — they're just not relevant to your security/scripting track. Come back to them if you develop a deep Python interest.</div>
+      <table class="ch-tbl">
+        <thead><tr><th>Ch</th><th>Title</th><th>Status</th><th>Why It Matters for Security</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">1</td><td>The Python Data Model</td><td><span class="status s-gold">★ GOLD</span></td><td>How Python's dunder methods work — understanding __repr__, __str__, __len__. Makes all frameworks make sense.</td></tr>
+          <tr><td class="mono">2</td><td>An Array of Sequences</td><td><span class="status s-gold">★ GOLD</span></td><td>List vs tuple vs array performance. Critical for writing efficient parsers — log files can be millions of lines.</td></tr>
+          <tr><td class="mono">3</td><td>Dictionaries and Sets</td><td><span class="status s-gold">★ GOLD</span></td><td>Dict internals (hash tables), set operations — understanding hash collisions matters when you're building lookup tables for cracking.</td></tr>
+          <tr><td class="mono">4</td><td>Unicode Text Versus Bytes</td><td><span class="status s-skip">✗ SKIP</span></td><td>Important generally but not critical for your current stage. Come back if encoding issues arise.</td></tr>
+          <tr><td class="mono">5</td><td>Data Class Builders</td><td><span class="status s-skip">✗ SKIP</span></td><td>dataclasses, NamedTuple — useful but not urgent. Skip for now.</td></tr>
+          <tr><td class="mono">6</td><td>Object References, Mutability, and Recycling</td><td><span class="status s-gold">★ GOLD</span></td><td>Memory management — shallow vs deep copy, reference semantics. Your C memory model knowledge makes this click instantly. Critical for writing correct multi-threaded scanners.</td></tr>
+          <tr><td class="mono">7</td><td>Functions as First-Class Objects</td><td><span class="status s-gold">★ GOLD</span></td><td>Functions as arguments, closures, partial functions. Used in every modern security framework. Understand before reading decorator code.</td></tr>
+          <tr><td class="mono">8</td><td>Type Hints in Functions</td><td><span class="status s-skip">✗ SKIP</span></td><td>Type annotations — nice but not critical for your track. Skip.</td></tr>
+          <tr><td class="mono">9</td><td>Decorators and Closures</td><td><span class="status s-gold">★ GOLD</span></td><td>@decorators are everywhere in frameworks (Flask routes, pytest, Burp plugins). This chapter explains how they actually work.</td></tr>
+          <tr><td class="mono">10</td><td>Design Patterns with First-Class Functions</td><td><span class="status s-skip">✗ SKIP</span></td><td>Advanced design patterns — useful but not urgent. Skip.</td></tr>
+          <tr><td class="mono">11–16</td><td>Classes, Protocols, Operator Overloading</td><td><span class="status s-skip">✗ SKIP</span></td><td>Deep OOP — important eventually but not for your security scripting track now.</td></tr>
+          <tr><td class="mono">17</td><td>Iterators, Generators, and Coroutines</td><td><span class="status s-gold">★ GOLD</span></td><td>yield keyword, generator expressions, lazy evaluation. Writing a port scanner that processes results as they arrive (instead of loading all into memory) uses generators. Critical for large-scale scanning.</td></tr>
+          <tr><td class="mono">18</td><td>with, match, and else Blocks</td><td><span class="status s-skim">~ SKIM</span></td><td>Context managers and structural pattern matching. Quick read — context managers are useful for socket handling.</td></tr>
+          <tr><td class="mono">19</td><td>Concurrency Models in Python</td><td><span class="status s-gold">★ GOLD</span></td><td>GIL, threading, multiprocessing, asyncio. Understanding this is the difference between a scanner that takes 10 minutes and one that takes 10 seconds. Critical for your tools.</td></tr>
+          <tr><td class="mono">20</td><td>Concurrent Executors</td><td><span class="status s-gold">★ GOLD</span></td><td>ThreadPoolExecutor, ProcessPoolExecutor. This is how you write fast concurrent network scanners. Read carefully.</td></tr>
+          <tr><td class="mono">21</td><td>Asynchronous Programming</td><td><span class="status s-read">✓ READ</span></td><td>asyncio in depth. If you want to build high-performance tools, this matters. Read after Ch 19–20.</td></tr>
+          <tr><td class="mono">22–24</td><td>Dynamic Attributes, Descriptors, Metaprogramming</td><td><span class="status s-skip">✗ SKIP</span></td><td>Python framework internals. Fascinating but not on your track. Come back after 2 years of Python.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- TAB 3: SECURITY PYTHON                         -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="pane" id="tab-security">
+  <div class="hero">
+    <div class="hero-bg">03</div>
+    <div class="hero-label" style="color:var(--red)">Libraries Not in Your Books · What's Missing · Project Sequence</div>
+    <div class="hero-title">SECURITY<br>PYTHON</div>
+    <div class="hero-sub">Black Hat Python covers the concepts but not every critical security library. Here's what you need that no book fully covers — plus the exact project sequence to build your portfolio.</div>
+  </div>
+
+  <div class="sec"><div class="sec-title">Libraries Not Covered in Your Books</div><div class="sec-num">01</div><div class="sec-rule"></div></div>
+  <div class="alert alert-r">These libraries are either entirely absent from your books or covered too briefly. You need all of these — learn them from their official docs + tutorials, not a book.</div>
+
+  <div class="card card-r">
+    <div class="card-title" style="color:var(--red)">Critical Missing Libraries</div>
+    <div class="lib-row">
+      <div class="lib-name" style="color:var(--red)">cryptography</div>
+      <div class="lib-desc"><strong>Not covered in any of your books.</strong> AES encryption/decryption, RSA key generation, HMAC, hashing, Fernet symmetric encryption. Essential for building your own C2 tools (encrypting C2 traffic), password managers, and understanding TLS internals. Install: <span class="tag">pip install cryptography</span>. Learn from: <span class="tag">cryptography.io/en/latest/</span></div>
+    </div>
+    <div class="lib-row">
+      <div class="lib-name" style="color:var(--red)">paramiko</div>
+      <div class="lib-desc"><strong>Mentioned in your roadmap but not in any book.</strong> SSH client/server in Python — connecting to remote machines, running commands, file transfer via SFTP. Used in: automated SSH brute-forcers, remote command execution in pentests, secure file exfiltration. Learn from: <span class="tag">paramiko.org</span> + BHP Ch 2 (uses related concepts).</div>
+    </div>
+    <div class="lib-row">
+      <div class="lib-name" style="color:var(--red)">pwntools</div>
+      <div class="lib-desc"><strong>Not in any book. Critical for Phase 3 binary exploitation.</strong> Python framework for exploit development: connecting to remote processes, packing/unpacking binary data, ROP chain building, shellcode generation. Without pwntools, writing exploits is painful. Your C knowledge makes learning this significantly easier. Learn from: <span class="tag">docs.pwntools.com</span>. Install: <span class="tag">pip install pwntools</span></div>
+    </div>
+    <div class="lib-row">
+      <div class="lib-name" style="color:var(--amber)">scapy (deep)</div>
+      <div class="lib-desc"><strong>BHP Ch 4 covers basics — but scapy is much deeper.</strong> Custom protocol layers, fuzzing, protocol dissection, ARP spoofing, VLAN hopping. The official scapy docs + scapy.readthedocs.io have lab exercises. Work through BHP Ch 4 first, then explore the docs independently.</div>
+    </div>
+    <div class="lib-row">
+      <div class="lib-name" style="color:var(--amber)">impacket</div>
+      <div class="lib-desc"><strong>Not in any book. Essential for Phase 3 AD attacks.</strong> Python implementations of SMB, NTLM, Kerberos, LDAP. Powers tools like secretsdump.py (credential dumping), psexec.py (remote execution), GetTGT.py (Kerberos tickets). Learn by reading the impacket examples directory on GitHub after completing BHP.</div>
+    </div>
+    <div class="lib-row">
+      <div class="lib-name" style="color:var(--blue)">asyncio</div>
+      <div class="lib-desc"><strong>Fluent Python Ch 19–21 covers this.</strong> Asynchronous I/O — writing a scanner that checks 1,000 ports concurrently instead of sequentially. The difference: sequential scan of 1000 ports = 1000 seconds. Async scan = 2–3 seconds. Critical for building production-quality security tools.</div>
+    </div>
+    <div class="lib-row">
+      <div class="lib-name" style="color:var(--blue)">boto3</div>
+      <div class="lib-desc"><strong>Phase 4 (Cloud). Not in any book.</strong> AWS SDK for Python — programmatic access to S3, EC2, IAM, CloudTrail, GuardDuty. Essential for cloud security scripting: bucket misconfiguration scanners, IAM permission auditors, CloudTrail log parsers. Learn from: <span class="tag">boto3.amazonaws.com/v1/documentation/api/latest/</span></div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">Security Library Progression by Stage</div><div class="sec-num">02</div><div class="sec-rule"></div></div>
+  <div class="g3">
+    <div class="card card-g">
+      <div class="card-title g">Stage 1–2 (Foundation Tools)</div>
+      <div class="row"><div class="dot dot-g"></div><div class="row-body"><span class="tag">socket</span> — TCP/UDP connections<span class="row-sub">stdlib. BHP Ch 2. Your C sockets → Python.</span></div></div>
+      <div class="row"><div class="dot dot-g"></div><div class="row-body"><span class="tag">struct</span> — binary data packing<span class="row-sub">stdlib. BHP Ch 3. Parsing packet headers.</span></div></div>
+      <div class="row"><div class="dot dot-g"></div><div class="row-body"><span class="tag">requests</span> — HTTP client<span class="row-sub">pip install. ATBS Ch 12 + BHP Ch 5.</span></div></div>
+      <div class="row"><div class="dot dot-g"></div><div class="row-body"><span class="tag">re</span> — regular expressions<span class="row-sub">stdlib. ATBS Ch 7 + P4E Ch 11.</span></div></div>
+      <div class="row"><div class="dot dot-g"></div><div class="row-body"><span class="tag">hashlib</span> — cryptographic hashing<span class="row-sub">stdlib. MD5, SHA1, SHA256. Password hashing.</span></div></div>
+    </div>
+    <div class="card card-a">
+      <div class="card-title a">Stage 3 (Security Core)</div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body"><span class="tag">scapy</span> — packet crafting/sniffing<span class="row-sub">pip install scapy. BHP Ch 4 + docs.</span></div></div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body"><span class="tag">paramiko</span> — SSH automation<span class="row-sub">pip install paramiko. Docs only.</span></div></div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body"><span class="tag">cryptography</span> — encryption<span class="row-sub">pip install cryptography. Docs only.</span></div></div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body"><span class="tag">pwntools</span> — exploit dev<span class="row-sub">pip install pwntools. Phase 3 only.</span></div></div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body"><span class="tag">bs4</span> — HTML/web parsing<span class="row-sub">pip install beautifulsoup4. ATBS Ch 12.</span></div></div>
+    </div>
+    <div class="card card-b">
+      <div class="card-title b">Stage 4+ (Advanced)</div>
+      <div class="row"><div class="dot dot-b"></div><div class="row-body"><span class="tag">asyncio</span> — async networking<span class="row-sub">stdlib. Fluent Python Ch 19–21.</span></div></div>
+      <div class="row"><div class="dot dot-b"></div><div class="row-body"><span class="tag">impacket</span> — SMB/NTLM/Kerberos<span class="row-sub">pip install impacket. GitHub examples.</span></div></div>
+      <div class="row"><div class="dot dot-b"></div><div class="row-body"><span class="tag">boto3</span> — AWS SDK<span class="row-sub">pip install boto3. Phase 4 cloud work.</span></div></div>
+      <div class="row"><div class="dot dot-b"></div><div class="row-body"><span class="tag">volatility3</span> — memory forensics<span class="row-sub">BHP Ch 11. Blue team Phase 2 tool.</span></div></div>
+      <div class="row"><div class="dot dot-b"></div><div class="row-body"><span class="tag">pandas</span> — log analysis<span class="row-sub">pip install pandas. ML anomaly detection project.</span></div></div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">Security Project Sequence</div><div class="sec-num">03</div><div class="sec-rule"></div></div>
+  <div class="alert alert-a">These projects are in the order you should build them. Each one uses the libraries you've just learned. Every project goes on GitHub with a proper README.</div>
+
+  <div class="g2">
+    <div>
+      <div class="tl-row">
+        <div class="tl-left">STAGE 1</div>
+        <div class="tl-spine"><div class="tl-dot" style="background:var(--green)"></div><div class="tl-line"></div></div>
+        <div class="tl-body">
+          <div class="tl-t" style="color:var(--green)">Port Scanner — socket only</div>
+          <div class="tl-d">TCP connect scanner using raw socket.connect_ex(). Threading with ThreadPoolExecutor. Banner grabbing. argparse CLI. JSON output. Your Java/C socket background makes this very fast to build. 100–150 lines.</div>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-left">STAGE 2</div>
+        <div class="tl-spine"><div class="tl-dot" style="background:var(--amber)"></div><div class="tl-line"></div></div>
+        <div class="tl-body">
+          <div class="tl-t" style="color:var(--amber)">Log Parser + Anomaly Finder</div>
+          <div class="tl-d">Read Apache/nginx access logs with regex (ATBS Ch 7 + P4E Ch 11). Extract IPs, status codes, timestamps. Flag: brute-force attempts (>10 401s from same IP), path traversal (../ patterns), SQL injection attempts. Output CSV report.</div>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-left">STAGE 2</div>
+        <div class="tl-spine"><div class="tl-dot" style="background:var(--amber)"></div><div class="tl-line"></div></div>
+        <div class="tl-body">
+          <div class="tl-t" style="color:var(--amber)">DNS Reconnaissance Tool</div>
+          <div class="tl-d">dnspython library. Enumerate A/MX/TXT/CNAME records. Subdomain brute-force from wordlist. Check for SPF/DMARC misconfigurations (email spoofing detection). P4E Ch 13 (APIs) + ATBS Ch 12 (web requests) feed directly into this.</div>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-left">STAGE 3</div>
+        <div class="tl-spine"><div class="tl-dot" style="background:var(--red)"></div><div class="tl-line"></div></div>
+        <div class="tl-body">
+          <div class="tl-t" style="color:var(--red)">Packet Sniffer — scapy</div>
+          <div class="tl-d">Capture live packets with scapy. Filter by protocol. Reconstruct HTTP requests (show URL, method, headers). Flag unencrypted credentials. Write captured sessions to PCAP file. BHP Ch 3–4. Your C struct experience transfers directly.</div>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-left">STAGE 3</div>
+        <div class="tl-spine"><div class="tl-dot" style="background:var(--red)"></div><div class="tl-line"></div></div>
+        <div class="tl-body">
+          <div class="tl-t" style="color:var(--red)">Web Vulnerability Scanner</div>
+          <div class="tl-d">Crawl a target (BeautifulSoup), extract all forms and input fields, inject SQL/XSS payloads, check response for error indicators. Test DVWA locally. Header security checker (missing CSP, HSTS, X-Frame-Options). HTML report output.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="tl-row">
+        <div class="tl-left">STAGE 3</div>
+        <div class="tl-spine"><div class="tl-dot" style="background:var(--red)"></div><div class="tl-line"></div></div>
+        <div class="tl-body">
+          <div class="tl-t" style="color:var(--red)">SSH Brute-Forcer — paramiko</div>
+          <div class="tl-d">paramiko SSH connection attempts against a target (your own test VM only). Password wordlist, threading, connection timeout handling, rate limiting. BHP Ch 2 concepts extended with paramiko. Your Java multithreading background helps with concurrent SSH attempts.</div>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-left">STAGE 3</div>
+        <div class="tl-spine"><div class="tl-dot" style="background:var(--red)"></div><div class="tl-line"></div></div>
+        <div class="tl-body">
+          <div class="tl-t" style="color:var(--red)">Buffer Overflow Helper — pwntools</div>
+          <div class="tl-d">Use pwntools to build the offset-finding and exploit payload generation for the buffer overflow you write in C (from your roadmap Phase 3 project). p32/p64 for address packing, cyclic() for offset finding, process() for local and remote() for network targets.</div>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-left">STAGE 4</div>
+        <div class="tl-spine"><div class="tl-dot" style="background:var(--blue)"></div><div class="tl-line"></div></div>
+        <div class="tl-body">
+          <div class="tl-t" style="color:var(--blue)">Async Network Scanner — asyncio</div>
+          <div class="tl-d">Rewrite your Stage 1 port scanner using asyncio and async/await. Benchmark: compare ThreadPoolExecutor version vs asyncio version speed on a /24 subnet scan. Fluent Python Ch 19–20. This demonstrates understanding of Python concurrency models.</div>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-left">STAGE 4</div>
+        <div class="tl-spine"><div class="tl-dot" style="background:var(--blue)"></div><div class="tl-line"></div></div>
+        <div class="tl-body">
+          <div class="tl-t" style="color:var(--blue)">AWS S3 Misconfiguration Auditor</div>
+          <div class="tl-d">boto3. List all S3 buckets, check: public access settings, encryption, server access logging, bucket policies for wildcard principals. Map findings to CIS AWS Benchmark controls. JSON + terminal output. Phase 4 cloud security project.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">Book Gaps — What to Add to Your Library</div><div class="sec-num">04</div><div class="sec-rule"></div></div>
+  <div class="g2">
+    <div class="card card-a">
+      <div class="card-title a">Genuinely Missing Books</div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body"><strong>Hacking: The Art of Exploitation</strong> — Jon Erickson<span class="row-sub">The only book that truly covers binary exploitation from first principles. Your C background makes this uniquely accessible — most readers struggle here, you won't. Buy this when you reach Phase 3 of your roadmap.</span></div></div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body"><strong>Violent Python</strong> — TJ O'Connor (free PDF)<span class="row-sub">Older but still excellent. Covers SSH automation, port scanning, MITM attacks, forensics scripting differently from BHP. Good supplement, not a replacement. Free online.</span></div></div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body"><strong>The Web Application Hacker's Handbook</strong> — Stuttard &amp; Pinto<span class="row-sub">Best web app hacking reference. Not Python-specific but pairs perfectly with BHP Ch 5. Get this before OSCP prep.</span></div></div>
+    </div>
+    <div class="card card-g">
+      <div class="card-title g">What You Don't Need (Save Money)</div>
+      <div class="row"><div class="dot dot-g"></div><div class="row-body"><strong>Learning Python</strong> — Mark Lutz<span class="row-sub">1600 pages of Python basics. Way too much for your needs — you have PCC which covers everything better.</span></div></div>
+      <div class="row"><div class="dot dot-g"></div><div class="row-body"><strong>Python for Data Science / Machine Learning books</strong><span class="row-sub">Don't buy these yet. The ML anomaly detection project you need can be done with scikit-learn docs alone.</span></div></div>
+      <div class="row"><div class="dot dot-g"></div><div class="row-body"><strong>CEH Python books / "Certified Ethical Hacker Python"</strong><span class="row-sub">These are watered-down versions of BHP. You already have the real thing. Don't buy redundant security Python books.</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- TAB 4: DSA TRACK                               -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="pane" id="tab-dsa">
+  <div class="hero">
+    <div class="hero-bg">04</div>
+    <div class="hero-label" style="color:var(--cyan)">The Missing Piece · Resources · Security Connections</div>
+    <div class="hero-title">DSA<br>TRACK</div>
+    <div class="hero-sub">None of your five books cover DSA. This tab is the complete fix: what resources to use, what topics to cover in what order, and how each DSA concept connects directly to your cybersecurity work.</div>
+  </div>
+
+  <div class="sec"><div class="sec-title">Resources to Add</div><div class="sec-num">01</div><div class="sec-rule"></div></div>
+  <div class="alert alert-r"><strong>Critical gap:</strong> Not one of your five books mentions arrays vs linked lists, binary search, BFS, or dynamic programming. You need to add dedicated DSA resources alongside your Python track.</div>
+  <div class="g3">
+    <div class="card card-c">
+      <div class="card-title c">1. Grokking Algorithms</div>
+      <div style="font-size:.81rem;line-height:1.8;color:var(--text)"><strong>By:</strong> Aditya Bhargava<br><strong>Cost:</strong> ~₹900–1500 (Manning)<br><strong>For:</strong> Stage 1–2 parallel<br><br>The most beginner-friendly DSA book in existence. All diagrams, no academic notation. Perfect starting point. Covers: arrays, linked lists, selection sort, recursion, quicksort, hash tables, BFS, DFS, Dijkstra, greedy, DP basics. Uses Python throughout. <strong>Start here.</strong></div>
+    </div>
+    <div class="card card-c">
+      <div class="card-title c">2. runestone.academy (Free)</div>
+      <div style="font-size:.81rem;line-height:1.8;color:var(--text)"><strong>URL:</strong> runestone.academy<br><strong>Book:</strong> "Problem Solving with Algorithms and Data Structures using Python"<br><strong>Cost:</strong> Completely free<br><strong>For:</strong> Stage 3+ parallel<br><br>The gold standard academic Python DSA textbook. Interactive — you run code in the browser. Covers everything: stacks, queues, deques, linked lists, trees, AVL trees, heaps, graphs, sorting algorithms, search. Goes deeper than Grokking. Use after Grokking.</div>
+    </div>
+    <div class="card card-c">
+      <div class="card-title c">3. LeetCode Practice</div>
+      <div style="font-size:.81rem;line-height:1.8;color:var(--text)"><strong>URL:</strong> leetcode.com<br><strong>Cost:</strong> Free tier sufficient<br><strong>For:</strong> From Stage 1 onwards<br><br>30 min × 3 days/week. Start: Easy array/string problems. Never skip writing the solution yourself before checking answers. Always write your solution in Python. Progress tracker: Easy (50 problems) → Medium (40 problems) → Medium hard (20 problems). That's your target before graduation.</div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">DSA Curriculum — What to Learn and When</div><div class="sec-num">02</div><div class="sec-rule"></div></div>
+  <div class="alert alert-a">Topics are ordered by difficulty and prerequisite dependency. Master each level before advancing. The security connection column shows exactly why each topic matters for your cybersecurity path.</div>
+
+  <table class="tbl">
+    <thead><tr><th>Stage</th><th>Topic</th><th>Python Tool</th><th>Security Connection</th><th>Priority</th></tr></thead>
+    <tbody>
+      <tr><td class="mono" style="color:var(--green)">1</td><td>Arrays and Dynamic Arrays</td><td><span class="tag">list</span></td><td>Storing scan results, IP lists, packet data in memory</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--green)">1</td><td>Strings and String Algorithms</td><td><span class="tag">str, re</span></td><td>Pattern matching in logs, regex IDS rules, payload detection</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--green)">1</td><td>Hash Tables</td><td><span class="tag">dict, set</span></td><td>Password hash lookup tables, IP reputation databases, IOC lookup</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--green)">1</td><td>Big-O Notation</td><td>Mental model</td><td>Why a naive O(n²) log scanner dies on million-line files — you need O(n log n)</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--green)">1</td><td>Recursion</td><td><span class="tag">function calls</span></td><td>Directory traversal in forensics, XML/JSON tree parsing, attack tree generation</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--amber)">2</td><td>Stack and Queue</td><td><span class="tag">deque</span></td><td>Undo/redo in exploit dev, BFS/DFS frontier, parsing nested data (JSON, XML, HTML)</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--amber)">2</td><td>Linked Lists</td><td>Custom class</td><td>Implementing memory allocators (your C malloc project), packet chain structures</td><td><span class="badge ba">IMPORTANT</span></td></tr>
+      <tr><td class="mono" style="color:var(--amber)">2</td><td>Binary Search</td><td><span class="tag">bisect</span></td><td>Fast IP range lookups, searching sorted log timestamps, CVE database search</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--amber)">2</td><td>Sorting Algorithms</td><td><span class="tag">sorted, heapq</span></td><td>Sorting hosts by vulnerability score, log entry ordering, priority queue for scan results</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--amber)">2</td><td>Two Pointers / Sliding Window</td><td>Pattern</td><td>Sliding time-window for brute-force detection (10 failed logins in 60 seconds)</td><td><span class="badge ba">IMPORTANT</span></td></tr>
+      <tr><td class="mono" style="color:var(--red)">3</td><td>Trees (Binary, BST)</td><td>Custom class</td><td>File system traversal in forensics, XML tree parsing, process tree analysis (Sysmon)</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--red)">3</td><td>Breadth-First Search (BFS)</td><td><span class="tag">deque</span></td><td>Network topology discovery, AD attack path shortest route (what BloodHound does internally)</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--red)">3</td><td>Depth-First Search (DFS)</td><td>Recursion / stack</td><td>Web crawler for recon, directory traversal, finding all paths in AD graph</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--red)">3</td><td>Graphs (undirected, directed)</td><td><span class="tag">dict of lists</span></td><td>Network topology as a graph, AD trust relationships, attack path modeling, lateral movement</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--red)">3</td><td>Heaps / Priority Queues</td><td><span class="tag">heapq</span></td><td>Prioritizing high-severity findings in a scan, Dijkstra for shortest attack path</td><td><span class="badge ba">IMPORTANT</span></td></tr>
+      <tr><td class="mono" style="color:var(--blue)">4</td><td>Dynamic Programming (memoization)</td><td><span class="tag">functools.lru_cache</span></td><td>Optimizing recursive vulnerability scoring, knapsack for optimal exploit chain selection</td><td><span class="badge ba">IMPORTANT</span></td></tr>
+      <tr><td class="mono" style="color:var(--blue)">4</td><td>Tries</td><td>Custom class</td><td>Fast prefix matching — useful for subdomain enumeration, URL path matching in scanners</td><td><span class="badge bo">NICE</span></td></tr>
+      <tr><td class="mono" style="color:var(--blue)">4</td><td>Backtracking</td><td>Recursion + pruning</td><td>Brute-force password generation with constraints, maze/pathfinding in network topology</td><td><span class="badge bo">NICE</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec"><div class="sec-title">DSA Security Projects</div><div class="sec-num">03</div><div class="sec-rule"></div></div>
+  <div class="g2">
+    <div class="dsa-card">
+      <div class="dsa-title">Graph-Based AD Attack Path Analyzer</div>
+      <div class="dsa-body">Build a simplified BloodHound in Python. Input: list of AD trusts (JSON). Build a directed graph. Use BFS to find the shortest path from a compromised user → Domain Admin. Output: attack path with intermediate nodes. <em>DSA used: graphs, BFS, Dijkstra.</em> Stage 3 project.</div>
+    </div>
+    <div class="dsa-card">
+      <div class="dsa-title">Hash Table Password Cracker</div>
+      <div class="dsa-body">Build a rainbow table lookup in Python. Pre-hash a large wordlist (MD5/SHA1) into a dict. Given a hash, do O(1) lookup. Compare against naive O(n) sequential search. Benchmark the difference. <em>DSA used: hash tables, Big-O analysis.</em> Stage 2 project.</div>
+    </div>
+    <div class="dsa-card">
+      <div class="dsa-title">Log Anomaly Detector (Sliding Window)</div>
+      <div class="dsa-body">Parse auth logs. Use a sliding window (deque) to count events per IP per time window. Flag IPs with >10 failed logins in 60 seconds as brute-force. Flag new admin logins outside business hours. <em>DSA used: sliding window, heap for top-N attackers.</em> Stage 2–3 project.</div>
+    </div>
+    <div class="dsa-card">
+      <div class="dsa-title">Directory Traversal Forensics Tool</div>
+      <div class="dsa-body">Walk a filesystem tree recursively (DFS), compute SHA256 hash of every file, compare against a baseline hash file to find modified/new/deleted files. Flag files modified after a specific timestamp. <em>DSA used: DFS tree traversal, hashing, binary search on sorted timestamps.</em> Stage 3 project.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- TAB 5: QUICK REFERENCE                         -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="pane" id="tab-quick">
+  <div class="hero">
+    <div class="hero-bg">05</div>
+    <div class="hero-label" style="color:var(--purple)">Master Reading Order · Key Rules · Print This</div>
+    <div class="hero-title">QUICK<br>REF</div>
+    <div class="hero-sub">The complete reading order in one place. Print this tab, stick it next to your desk. This is the answer to "what do I read next?"</div>
+  </div>
+
+  <div class="sec"><div class="sec-title">Master Reading Order</div><div class="sec-num">01</div><div class="sec-rule"></div></div>
+  <table class="tbl">
+    <thead><tr><th>Order</th><th>Book</th><th>Chapters</th><th>Stage</th><th>Skip These</th></tr></thead>
+    <tbody>
+      <tr style="background:var(--gdim)"><td class="mono" style="color:var(--green)">1</td><td><strong>PCC</strong> — Python Crash Course</td><td>Ch 1–11</td><td><span class="badge bg">Stage 1</span></td><td>Ch 12–14, 18–20</td></tr>
+      <tr><td class="mono" style="color:var(--amber)">2</td><td><strong>P4E</strong> — Python for Everybody</td><td>Ch 11–15 only</td><td><span class="badge ba">Stage 2</span></td><td>Ch 1–10 (unless stuck)</td></tr>
+      <tr><td class="mono" style="color:var(--amber)">3</td><td><strong>ATBS</strong> — Automate the Boring Stuff</td><td>Ch 7–12, 16–18</td><td><span class="badge ba">Stage 2</span></td><td>Ch 1–6, 13–15, 19–20</td></tr>
+      <tr><td class="mono" style="color:var(--amber)">4</td><td><strong>PCC</strong> — Python Crash Course (return)</td><td>Ch 15–17 (data viz)</td><td><span class="badge ba">Stage 2</span></td><td>Already skipped 12–14, 18–20</td></tr>
+      <tr style="background:var(--rdim)"><td class="mono" style="color:var(--red)">5</td><td><strong>BHP</strong> — Black Hat Python</td><td>All 11 chapters</td><td><span class="badge br">Stage 3</span></td><td>Nothing — read all</td></tr>
+      <tr><td class="mono" style="color:var(--blue)">6</td><td><strong>Fluent Python</strong></td><td>Ch 1,2,3,6,7,9,17,19,20</td><td><span class="badge bb">Stage 4</span></td><td>Ch 4,5,8,10–16,18,22–24</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec"><div class="sec-title">DSA Parallel Track Order</div><div class="sec-num">02</div><div class="sec-rule"></div></div>
+  <table class="tbl">
+    <thead><tr><th>Runs Alongside</th><th>Resource</th><th>What to Cover</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge bg">Stage 1</span></td><td>Grokking Algorithms Ch 1–4</td><td>Arrays, Big-O, selection sort, recursion, quicksort + LeetCode Easy (arrays/strings, 20 problems)</td></tr>
+      <tr><td><span class="badge ba">Stage 2</span></td><td>Grokking Algorithms Ch 5–8</td><td>Hash tables, BFS/DFS, Dijkstra, greedy + LeetCode Easy (hash maps/stacks, 30 more problems)</td></tr>
+      <tr><td><span class="badge br">Stage 3</span></td><td>runestone.academy — Trees + Graphs</td><td>BST, binary trees, BFS/DFS from scratch, graph representation + LeetCode Medium (trees/graphs, 40 problems)</td></tr>
+      <tr><td><span class="badge bb">Stage 4</span></td><td>Grokking Algorithms Ch 9 + LeetCode Medium</td><td>Dynamic programming basics + heap problems + build 2 security DSA projects</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec"><div class="sec-title">Five Unbreakable Rules</div><div class="sec-num">03</div><div class="sec-rule"></div></div>
+  <div class="g2">
+    <div class="card card-p">
+      <div class="card-title p">Reading Rules</div>
+      <div class="row"><div class="dot dot-p"></div><div class="row-body"><strong>Rule 1:</strong> Never read two books covering the same stage at the same time. One dominant book per stage.<span class="row-sub">The confusion you feel right now comes from this. Fix this first.</span></div></div>
+      <div class="row"><div class="dot dot-p"></div><div class="row-body"><strong>Rule 2:</strong> Skip the ATBS foundations (Ch 1–6) completely.<span class="row-sub">You have PCC for this. Reading the same material a third time won't help you.</span></div></div>
+      <div class="row"><div class="dot dot-p"></div><div class="row-body"><strong>Rule 3:</strong> Don't open Fluent Python until you've written 2,000+ lines of Python.<span class="row-sub">It will make sense when you have the context. Right now you'll read words without understanding.</span></div></div>
+      <div class="row"><div class="dot dot-p"></div><div class="row-body"><strong>Rule 4:</strong> Don't read Black Hat Python until Stages 1 and 2 are complete.<span class="row-sub">BHP Ch 2 starts with socket programming at full speed. Foundations must be solid first.</span></div></div>
+    </div>
+    <div class="card card-p">
+      <div class="card-title p">Practice Rules</div>
+      <div class="row"><div class="dot dot-p"></div><div class="row-body"><strong>Rule 5:</strong> Every chapter must produce a script or project — no passive reading.<span class="row-sub">After each chapter, write something. Even 20 lines. Code that runs once teaches more than re-reading.</span></div></div>
+      <div class="row"><div class="dot dot-p"></div><div class="row-body"><strong>DSA Rule:</strong> 30 min of LeetCode 3× per week, starting Week 2.<span class="row-sub">This is additive — it doesn't replace Python reading. Keep them fully separate.</span></div></div>
+      <div class="row"><div class="dot dot-p"></div><div class="row-body"><strong>Security Rule:</strong> For every BHP chapter, build the project in the chapter yourself before looking at the provided code.<span class="row-sub">BHP gives you finished code. Write yours first, compare, understand the differences.</span></div></div>
+      <div class="row"><div class="dot dot-p"></div><div class="row-body"><strong>Library Rule:</strong> When you hit a library not in any book (cryptography, pwntools, paramiko), use official docs + one tutorial video.<span class="row-sub">Never buy another book just for one library. Docs are better than any book for libraries.</span></div></div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">What You're Building Toward</div><div class="sec-num">04</div><div class="sec-rule"></div></div>
+  <div class="flow" style="flex-wrap:wrap;gap:4px">
+    <div class="flow-box g">PCC foundations</div><div class="flow-arr">→</div>
+    <div class="flow-box a">P4E networking/SQL</div><div class="flow-arr">→</div>
+    <div class="flow-box a">ATBS scripting</div><div class="flow-arr">→</div>
+    <div class="flow-box r">Black Hat Python</div><div class="flow-arr">→</div>
+    <div class="flow-box b">Fluent Python</div><div class="flow-arr">→</div>
+    <div class="flow-box p">Security toolsmith</div>
+  </div>
+  <div class="flow" style="flex-wrap:wrap;gap:4px;margin-top:4px">
+    <div class="flow-box c">Grokking Algorithms</div><div class="flow-arr">→</div>
+    <div class="flow-box c">runestone.academy</div><div class="flow-arr">→</div>
+    <div class="flow-box c">LeetCode Easy→Medium</div><div class="flow-arr">→</div>
+    <div class="flow-box c">DSA security projects</div><div class="flow-arr">→</div>
+    <div class="flow-box c">Interview-ready</div>
+  </div>
+
+  <div class="sec"><div class="sec-title">At Each Stage You Should Be Able To...</div><div class="sec-num">05</div><div class="sec-rule"></div></div>
+  <div class="g2">
+    <div class="card card-g">
+      <div class="card-title g">After Stage 1 (PCC Ch 1–11)</div>
+      <div class="row"><div class="dot dot-g"></div><div class="row-body">Write a class with __init__, methods, and inheritance</div></div>
+      <div class="row"><div class="dot dot-g"></div><div class="row-body">Read and write files, handle exceptions with try/except</div></div>
+      <div class="row"><div class="dot dot-g"></div><div class="row-body">Use list comprehensions, dict comprehensions</div></div>
+      <div class="row"><div class="dot dot-g"></div><div class="row-body">Write a 100-line script without googling basic syntax</div></div>
+      <div class="row"><div class="dot dot-g"></div><div class="row-body">Solve 20 LeetCode Easy problems (arrays and strings)</div></div>
+    </div>
+    <div class="card card-a">
+      <div class="card-title a">After Stage 2 (ATBS + P4E Ch 11–15)</div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body">Write regex patterns to extract IPs, URLs, timestamps from logs</div></div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body">Write an HTTP client that makes API calls and parses JSON</div></div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body">Scrape a webpage with BeautifulSoup, extract forms and links</div></div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body">Write a basic SQL query and execute it from Python</div></div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body">Use subprocess to call nmap and parse the output</div></div>
+    </div>
+    <div class="card card-r">
+      <div class="card-title" style="color:var(--red)">After Stage 3 (Black Hat Python)</div>
+      <div class="row"><div class="dot dot-r"></div><div class="row-body">Build a TCP port scanner with threading and banner grabbing</div></div>
+      <div class="row"><div class="dot dot-r"></div><div class="row-body">Capture and parse live network packets with scapy</div></div>
+      <div class="row"><div class="dot dot-r"></div><div class="row-body">Write a web directory brute-forcer</div></div>
+      <div class="row"><div class="dot dot-r"></div><div class="row-body">SSH into a target and run commands with paramiko</div></div>
+      <div class="row"><div class="dot dot-r"></div><div class="row-body">Use pwntools to build a basic buffer overflow exploit</div></div>
+    </div>
+    <div class="card card-b">
+      <div class="card-title b">After Stage 4 (Fluent Python selected)</div>
+      <div class="row"><div class="dot dot-b"></div><div class="row-body">Write async network scanners using asyncio that are 100× faster</div></div>
+      <div class="row"><div class="dot dot-b"></div><div class="row-body">Write decorators for logging, timing, and retry logic in security tools</div></div>
+      <div class="row"><div class="dot dot-b"></div><div class="row-body">Use generators to stream large log files without memory issues</div></div>
+      <div class="row"><div class="dot dot-b"></div><div class="row-body">Explain why your code is or isn't thread-safe and how to fix it</div></div>
+      <div class="row"><div class="dot dot-b"></div><div class="row-body">Write production-quality Python that other security engineers respect</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-' + tab.dataset.tab)?.classList.add('active');
+    window.scrollTo(0, 0);
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,288 @@
+{
+  "main": {
+    "id": "623e80f4775c2ec5",
+    "type": "split",
+    "children": [
+      {
+        "id": "a05ac3ca4a675793",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "957f1a7ff8e9ae06",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "c2378241f94658a3",
+    "type": "split",
+    "children": [
+      {
+        "id": "b2d0cb8292a88d0f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "8fcd1ab0efc64805",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "byCreatedTimeReverse",
+                "autoReveal": true
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "49209244bc942a12",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "28d4cbd63388c208",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "8b2ed25bb442dc85",
+    "type": "split",
+    "children": [
+      {
+        "id": "69fb304364891c59",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ef163d20a02b5a03",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "0ed2436fbd2814d8",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "8f472a7329de97af",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "2e7b2cfd5fee05ac",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "eaffad466a38f732",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          },
+          {
+            "id": "ba0ad7db76a898b4",
+            "type": "leaf",
+            "state": {
+              "type": "calendar",
+              "state": {},
+              "icon": "calendar-with-checkmark",
+              "title": "Calendar"
+            }
+          },
+          {
+            "id": "2f001bc9f3951aa9",
+            "type": "leaf",
+            "state": {
+              "type": "review-queue-list-view",
+              "state": {},
+              "icon": "SpacedRepIcon",
+              "title": "Notes Review Queue"
+            }
+          },
+          {
+            "id": "9cb6b951b82c8891",
+            "type": "leaf",
+            "state": {
+              "type": "git-view",
+              "state": {},
+              "icon": "git-pull-request",
+              "title": "Source Control"
+            }
+          },
+          {
+            "id": "21c81c52488ab65c",
+            "type": "leaf",
+            "state": {
+              "type": "advanced-tables-toolbar",
+              "state": {},
+              "icon": "spreadsheet",
+              "title": "Advanced Tables"
+            }
+          },
+          {
+            "id": "c5600b65f3acd81e",
+            "type": "leaf",
+            "state": {
+              "type": "file-properties",
+              "state": {},
+              "icon": "lucide-info",
+              "title": "File properties"
+            }
+          }
+        ],
+        "currentTab": 6
+      }
+    ],
+    "direction": "horizontal",
+    "width": 200,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false,
+      "templater-obsidian:Templater": false,
+      "obsidian-git:Open Git source control": false,
+      "obsidian-spaced-repetition:Review flashcards": false,
+      "table-editor-obsidian:Advanced Tables Toolbar": false,
+      "pdf-plus:PDF++: Toggle auto-copy": false,
+      "pdf-plus:PDF++: Toggle auto-focus": false,
+      "pdf-plus:PDF++: Toggle auto-paste": false,
+      "obsidian-extract-pdf-highlights:PDF Highlights": false
+    }
+  },
+  "active": "957f1a7ff8e9ae06",
+  "lastOpenFiles": [
+    "10-Daily-Logs/2026-05-26.md",
+    "10-Daily-Logs/2026-05-17.md",
+    "03-Programming/Python/PYTHON BASICS/WEB SERVICES.md",
+    "03-Programming/Python/PYTHON BASICS/NETWORKED PROGRAMS.md",
+    "01-Foundations/Networking/MODULE 2 - APPLICATION LAYER/THE WEB & HTTP.md",
+    "01-Foundations/Networking/MODULE 2 - APPLICATION LAYER/PRINCIPLES OF NETWORK APPLICATIONS.md",
+    "Images/Pasted image 20260526214557.png",
+    "Images/Pasted image 20260526214407.png",
+    "Images/Pasted image 20260526214140.png",
+    "Images/Pasted image 20260526213931.png",
+    "Images/Pasted image 20260526213610.png",
+    "Images/Pasted image 20260526213422.png",
+    "Images/Pasted image 20260526213247.png",
+    "Images/Pasted image 20260526213043.png",
+    "10-Daily-Logs/2.3 - File Transfer FTP.md",
+    "03-Programming/Python/PYTHON BASICS/REGEX.md",
+    "03-Programming/Python/PYTHON BASICS/COLLECTIONS.md",
+    "03-Programming/Python/PYTHON BASICS/OBJECT-ORIENTED PROGRAMMING (OOP).md",
+    "03-Programming/Python/PYTHON CRASH COURSE.pdf",
+    "03-Programming/Python/PYTHON BASICS/DICTIONARIES, TUPLES & SETS.md",
+    "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/NETWORKS UNDER ATTACK.md",
+    "Images/Pasted image 20260519190412.png",
+    "Images/Pasted image 20260519190230.png",
+    "01-Foundations/Networking/MODULE 2 - APPLICATION LAYER",
+    "03-Programming/Python/PYTHON BASICS/FUNCTIONS.md",
+    "03-Programming/Python/PYTHON BASICS/ITERATIVE STATEMENTS.md",
+    "03-Programming/Python/PYTHON BASICS/LIST.md",
+    "03-Programming/Python/PYTHON BASICS/FILE HANDLING.md",
+    "03-Programming/Python/PYTHON BASICS/CONDITIONAL STATEMENT.md",
+    "03-Programming/Python/PYTHON BASICS/STRINGS.md",
+    "10-Daily-Logs/2025-05-16.md",
+    "10-Daily-Logs/2026-05-12.md",
+    "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/PROTOCOL LAYERS AND THEIR SERVICE MODELS.md",
+    "03-Programming/Python/Untitled.md",
+    "10-Daily-Logs/2026-05-15.md",
+    "10-Daily-Logs/Untitled.base",
+    "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/DELAY, LOSS, AND THROUGHPUT IN PACKET-SWITCHED NETWORKS.md",
+    "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/THE NETWORK EDGE.md",
+    "Untitled.canvas",
+    "Canvas/Untitled.canvas",
+    "Canvas",
+    "03-Programming/Python/PYTHON BASICS",
+    "Images",
+    "01-Foundations/Linux/THE LINUX COMMAND LINE.pdf",
+    "01-Foundations/Networking/BOOK 1 - KUROSE ROSS.pdf",
+    "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET",
+    "Vault.gitignore.txt"
+  ]
+}
