@@ -766,4 +766,4 @@ If-Modified-Since (in conditional GET)
 
 ---
 
-→ Next: [[2.3 - File Transfer FTP]]
+→ Next: [[FILE TRANSFER - FTP]]
