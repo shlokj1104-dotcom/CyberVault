@@ -254,4 +254,4 @@ The numeric code is what software acts on; the message is for human operators re
 
 ---
 
-→ Next: [[2.4 - Electronic Mail in the Internet]]
+→ Next: [[ELECTRONIC MAIL]]
