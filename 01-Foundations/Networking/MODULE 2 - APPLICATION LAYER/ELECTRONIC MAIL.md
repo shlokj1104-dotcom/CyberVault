@@ -507,4 +507,4 @@ The key insight: HTTP only handles the **last mile** between the user's browser 
 
 ---
 
-→ Next: [[2.5 - DNS — The Internet's Directory Service]]
+→ Next: [[DNS]]
