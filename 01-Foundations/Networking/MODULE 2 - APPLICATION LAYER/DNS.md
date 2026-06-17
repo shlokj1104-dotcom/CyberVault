@@ -344,7 +344,7 @@ The meaning of `Name` and `Value` **depends entirely on `Type`**:
 
 There are exactly two kinds of DNS messages — **query** and **reply** — and both share the **same format**.
 
-![[1781714206182_image.png]] _(Figure 2.23 — DNS message format: a 12-byte header section (identification, flags, and four count fields) followed by four variable-length sections — questions, answers, authority, and additional information)_
+![[Pasted image 20260617223046.png]] _(Figure 2.23 — DNS message format: a 12-byte header section (identification, flags, and four count fields) followed by four variable-length sections — questions, answers, authority, and additional information)_
 
 ### The Header Section (First 12 Bytes)
 
@@ -495,9 +495,7 @@ Once registration is complete, people can visit `www.networkutopia.com` and send
 
 ## Related Concepts
 
-- [[2.2 - The Web and HTTP]] — DNS resolution is the prerequisite step before any HTTP request can be sent; the hostname in a URL must be resolved before the TCP connection in Section 2.2 can even begin
-- [[2.4 - Electronic Mail in the Internet]] — Mail server aliasing (Type MX records) directly extends the mail server architecture discussed there; SMTP servers rely on DNS MX lookups to find each other
-- [[2.3 - File Transfer FTP]] — FTP clients also resolve the remote host's hostname via DNS before establishing the control connection
+- 
 
 ---
 
