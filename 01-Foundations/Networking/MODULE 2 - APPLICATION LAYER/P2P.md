@@ -61,7 +61,7 @@ A simple mathematical model makes the comparison precise rather than just intuit
 
 The model assumes every bottleneck sits in the access links (the "last mile" connecting a server or peer to the Internet), not inside the Internet's core, and that no other traffic is competing for that bandwidth at the same time.
 
-![[Screenshot_2026-06-18_144143.png]] _(Figure 2.24 — A server holding file F connects to the Internet at upload rate u_s; N peers connect with their own upload rates u_1...u_N and download rates d_1...d_N)_
+![[Pasted image 20260618152734.png]] _(Figure 2.24 — A server holding file F connects to the Internet at upload rate u_s; N peers connect with their own upload rates u_1...u_N and download rates d_1...d_N)_
 
 ### Client-Server Distribution Time (D_cs)
 
@@ -90,7 +90,7 @@ This is more subtle because peers redistribute pieces to each other as they rece
 D_p2p = max { F/u_s ,  F/d_min ,  NF / (u_s + u_1 + ... + u_N) }      (Equation 2.3)
 ```
 
-![[Screenshot_2026-06-18_144203.png]] _(Figure 2.25 — Client-server distribution time grows linearly without bound as N increases; the P2P curve flattens out and stays under one hour for any N)_
+![[Pasted image 20260618152831.png]] _(Figure 2.25 — Client-server distribution time grows linearly without bound as N increases; the P2P curve flattens out and stays under one hour for any N)_
 
 The P2P formula is friendlier because the same NF bits of delivery work get spread across the combined upload capacity of every peer plus the server — and every new peer that joins adds its own upload rate to that combined capacity at the same time it adds demand. That's the literal mathematical definition of self-scaling.
 
@@ -125,7 +125,7 @@ In BitTorrent terminology, all the peers participating in distributing one parti
 
 When a new peer joins a torrent, the tracker hands it a randomly selected subset of currently-participating peers — fifty is a typical example. The new peer attempts to open TCP connections with all fifty; whichever connections succeed become its neighboring peers, and that set keeps shifting as other peers join and leave over time.
 
-![[Screenshot_2026-06-18_144220.png]] _(Figure 2.26 — A new peer obtains a list of candidate peers from the tracker, establishes TCP connections with a subset of them, and trades chunks back and forth across that mesh)_
+![[Pasted image 20260618152938.png]] _(Figure 2.26 — A new peer obtains a list of candidate peers from the tracker, establishes TCP connections with a subset of them, and trades chunks back and forth across that mesh)_
 
 ### Two Big Decisions Every Peer Must Make
 
@@ -193,7 +193,7 @@ This rule only works cheaply if a peer can actually figure out who the closest s
 
 The fix is to arrange the peers themselves into a ring, where each peer tracks only its immediate successor and immediate predecessor around that ring (modulo 2^n).
 
-![[Screenshot_2026-06-18_144245.png]] _(Figure 2.27 — (a) A circular DHT with peers at identifiers 1, 3, 4, 5, 8, 10, 12, 15, where peer 3 is trying to find who's responsible for key 11. (b) The same ring with shortcut links added for faster routing)_
+![[Pasted image 20260618153018.png]] _(Figure 2.27 — (a) A circular DHT with peers at identifiers 1, 3, 4, 5, 8, 10, 12, 15, where peer 3 is trying to find who's responsible for key 11. (b) The same ring with shortcut links added for faster routing)_
 
 In this arrangement, peer 5 knows the address of peers 8 and 4 — its successor and predecessor — and nothing more. It has no idea who else exists in the DHT.
 
@@ -333,9 +333,7 @@ Suppose a peer with identifier 13 wants to join, knowing only the existence of p
 
 ## Related Concepts
 
-- [[2.5 - DNS - The Internet's Directory Service]] — another distributed database, but built as a hierarchical tree of delegated authority rather than a peer-organized ring; useful to contrast against the DHT's structure
-- Hash functions, covered in more depth in Chapter 7
-- Content Distribution Networks (CDNs) — a hybrid model where infrastructure providers like Akamai replicate content geographically, rather than relying purely on user peers
+- 
 
 ---
 
