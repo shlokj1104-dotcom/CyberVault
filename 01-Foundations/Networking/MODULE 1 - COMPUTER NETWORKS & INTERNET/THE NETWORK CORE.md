@@ -509,7 +509,7 @@ Today's Internet:
 
 ## Summary — Packet Switching vs Circuit Switching
 
-||Packet Switching|Circuit Switching|
+| |Packet Switching|Circuit Switching|
 |---|---|---|
 |**Resource use**|On demand|Reserved|
 |**Delay**|Variable (queuing)|Fixed|
@@ -527,15 +527,7 @@ Today's Internet:
 
 ## Sources Cited (New Edition)
 
-- [Tian 2012] — China's multi-tier ISP hierarchy (provincial → national → tier-1)
-- [Van der Berg 2008] — Peering and customer-provider relationships
-- [Ager 2012] — IXP facility structure
-- [PeeringDB 2025] — Current IXP count (600+)
-- [Google datacenters 2024] — Google data center count/distribution
-- [Google Cloud 2025] — Google's worldwide cloud network map (Figure 1.15)
-- [Labovitz 2010] — Content providers bypassing upper-tier ISPs
-- [Arnold 2020] — Cloud providers reaching 76% of the Internet without tier-1 transit
-- [Molinero-Fernandez 2002] — Packet vs. circuit switching discussion
+- 
 
 ---
 
