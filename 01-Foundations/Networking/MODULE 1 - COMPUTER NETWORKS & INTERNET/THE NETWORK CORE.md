@@ -227,7 +227,7 @@ A circuit in a link is implemented using one of two multiplexing approaches:
 - Each slot = 8 bits.
 - Transmission rate of one circuit = 8,000 × 8 = **64 kbps**.
 
-![[Pasted image 20260515142153.png]] _(Figure 1.14 — FDM vs TDM: FDM gives each circuit a frequency band; TDM gives each circuit a time slot in every frame)_
+![[Pasted image 20260619131657.png]] _(Figure 1.14 — FDM vs TDM: FDM gives each circuit a frequency band; TDM gives each circuit a time slot in every frame)_
 
 ### Key Weakness of Circuit Switching — Silent Periods
 
@@ -340,7 +340,7 @@ The Internet's ISP interconnection structure evolved through five conceptual "ne
 - Access ISPs are **customers**; the global ISP is the **provider**.
 - Very expensive to build — not realistic.
 
-![[Pasted image 20260515142418.png]]
+![[Pasted image 20260619131901.png]]
 
 ### Network Structure 2 — Multiple Global Transit ISPs
 
@@ -349,7 +349,7 @@ The Internet's ISP interconnection structure evolved through five conceptual "ne
 - Global transit ISPs must **interconnect** so their customers can reach each other.
 - Two-tier hierarchy: global ISPs at top, access ISPs at bottom.
 
-![[Pasted image 20260515142805.png]]
+![[Pasted image 20260619132044.png]]
 
 ### Network Structure 3 — Regional ISPs Added
 
