@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/NETWORKS UNDER ATTACK.md",
+                "file": "01-Foundations/Networking/MODULE 2 - APPLICATION LAYER/PRINCIPLES OF NETWORK APPLICATIONS.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "NETWORKS UNDER ATTACK"
+              "title": "PRINCIPLES OF NETWORK APPLICATIONS"
             }
           }
         ]
@@ -250,8 +250,13 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "2f001bc9f3951aa9",
+  "active": "957f1a7ff8e9ae06",
   "lastOpenFiles": [
+    "Pasted image 20260619174400.png",
+    "Pasted image 20260619174208.png",
+    "Pasted image 20260619173910.png",
+    "Pasted image 20260619173653.png",
+    "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/NETWORKS UNDER ATTACK.md",
     "Pasted image 20260619144712.png",
     "Pasted image 20260619144512.png",
     "Pasted image 20260619144316.png",
@@ -259,11 +264,7 @@
     "Pasted image 20260619143911.png",
     "Pasted image 20260619143628.png",
     "Pasted image 20260619143409.png",
-    "Pasted image 20260619143205.png",
     "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/PROTOCOL LAYERS AND THEIR SERVICE MODELS.md",
-    "Pasted image 20260619142143.png",
-    "Pasted image 20260619141905.png",
-    "Pasted image 20260619141609.png",
     "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/DELAY, LOSS, AND THROUGHPUT IN PACKET-SWITCHED NETWORKS.md",
     "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/THE NETWORK CORE.md",
     "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/THE NETWORK EDGE.md",
@@ -289,7 +290,6 @@
     "03-Programming/Python/PYTHON BASICS/OBJECT-ORIENTED PROGRAMMING (OOP).md",
     "03-Programming/Python/PYTHON CRASH COURSE.pdf",
     "03-Programming/Python/PYTHON BASICS/DICTIONARIES, TUPLES & SETS.md",
-    "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/NETWORKS UNDER ATTACK.md",
     "01-Foundations/Networking/MODULE 2 - APPLICATION LAYER",
     "03-Programming/Python/PYTHON BASICS/FUNCTIONS.md",
     "10-Daily-Logs/Untitled.base",
