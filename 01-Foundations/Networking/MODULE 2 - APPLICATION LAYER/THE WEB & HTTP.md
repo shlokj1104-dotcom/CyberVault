@@ -319,6 +319,7 @@ Entity body    →  (empty for GET; present for POST)
 
 `SP` = a space character, `CRLF` = carriage return + line feed (`\r\n`)
 
+![[Pasted image 20260619214701.png]]
 _(Figure 2.8 — General format of an HTTP request message)_
 
 The general format closely follows the example above. After the header lines (and the additional CRLF) there is an **entity body**. The entity body is empty with the `GET` method but is used with `POST`. An HTTP client often uses `POST` when the user fills out a form — for example, providing search words to a search engine. With a `POST` message, the user is still requesting a Web page, but the specific contents of the page depend on what was entered into the form fields; if the method field is `POST`, the entity body contains what the user entered into the form fields.
@@ -386,6 +387,7 @@ Header line 2  →  field-name: value  CRLF
 Entity body    →  the requested object (HTML, JPEG, etc.)
 ```
 
+![[Pasted image 20260619214717.png]]
 _(Figure 2.9 — General format of an HTTP response message)_
 
 ---
@@ -413,11 +415,12 @@ _(Figure 2.9 — General format of an HTTP response message)_
 > `304 Not Modified` is a special status code used specifically in response to a **conditional GET** — covered in §2.2.5.
 
 > **Practical exercise — see a real HTTP request and response:** From a command-line prompt, enter:
-> 
-> ```
-> curl -v http://gaia.cs.umass.edu/kurose_ross/index.php
-> ```
-> 
+
+ 
+```
+ curl -v http://gaia.cs.umass.edu/kurose_ross/index.php
+```
+
 > This sends an HTTP GET request to the `gaia.cs.umass.edu` Web server to retrieve `/kurose_ross/index.php` — the authors' homepage for this textbook. The verbose option (`-v`) displays the text content of both the HTTP GET request and the response received, as text. To see the response rendered, just enter the URL into a browser instead.
 
 The HTTP specification defines many more header lines than the ones covered here — a browser generates header lines as a function of the browser type/version, the user's browser configuration, and whether the browser already has a cached (but possibly out-of-date) version of the object. Web servers behave similarly: different products, versions, and configurations all influence which header lines are included in response messages.
@@ -486,7 +489,7 @@ One week later:
   Amazon can recommend products based on pages Susan visited in the past
 ```
 
-![[Pasted image 20260526213931.png]] _(Figure 2.10 — Keeping user state with cookies: the server creates the ID and sets the cookie in the response; all subsequent requests carry the Cookie header; the server's backend database maps ID to user data)_
+![[Pasted image 20260619214943.png]] _(Figure 2.10 — Keeping user state with cookies: the server creates the ID and sets the cookie in the response; all subsequent requests carry the Cookie header; the server's backend database maps ID to user data)_
 
 **Registration and "one-click shopping":** If Susan also registers with Amazon — providing her full name, e-mail address, postal address, and credit card information — Amazon can associate this information with her identification number (and with every page she has ever visited at the site). This is how Amazon and other e-commerce sites provide **"one-click shopping"**: when Susan chooses to purchase an item on a subsequent visit, she doesn't need to re-enter her name, card number, or address.
 
@@ -640,6 +643,7 @@ You may now be thinking: "Hold on — haven't we been told the Internet has exac
 
 However, even though QUIC is not, strictly speaking, a transport-layer protocol, **from the application developer's perspective it is one**. Network application developers can write applications by creating QUIC sockets, similar to how they create TCP and UDP sockets. When an application establishes a QUIC socket, the QUIC sublayer creates a UDP socket beneath it. The application can then send and receive messages through the QUIC socket without concerning itself with QUIC's inner workings.
 
+![[Pasted image 20260619215149.png]]
 _(Figure 2.11 — a. Traditional secure HTTP protocol stack: HTTP/2 over TLS over TCP over IP; b. Secure QUIC-based HTTP/3 protocol stack: HTTP/2 (slimmed) over QUIC over UDP over IP — TLS is absorbed into QUIC, and together QUIC + HTTP/2-slimmed make up HTTP/3)_
 
 ---
