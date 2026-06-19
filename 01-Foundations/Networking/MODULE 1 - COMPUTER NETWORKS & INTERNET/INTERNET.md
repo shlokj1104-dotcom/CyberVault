@@ -132,7 +132,7 @@ Two most prominent types of packet switches:
 
 > The sequence of communication links and packet switches that a packet traverses from source to destination is called a **route** or **path** through the network.
 
-![[ChatGPT Image May 12, 2026, 04_52_52 PM.png]]
+![[Pasted image 20260619123700.png]]
 
 ---
 
@@ -163,7 +163,7 @@ ISPs are organized in a tiered hierarchy:
 
 Datacenters and large content providers fit into this hierarchy too, but not as ordinary edge customers — they connect directly into the upper-tier ISP layer, alongside national and global ISPs (see the topology table above). This matters because so much of today's traffic — video streaming, cloud services, social media — originates from a relatively small number of massive content and datacenter operators rather than flowing peer-to-peer between ordinary residential connections.
 
-![[ChatGPT Image May 12, 2026, 11_04_02 AM.png]]
+![[Pasted image 20260619123711.png]]
 
 ---
 
@@ -242,7 +242,7 @@ End systems attached to the Internet provide a **socket interface** (sometimes c
 
 The Internet provides **multiple services** to applications, just as the postal service offers express delivery alongside ordinary mail. When building an Internet application, the developer chooses which Internet service fits the need — covered in full in Chapter 2.
 
-![[Pasted image 20260512170834.png]]
+![[Pasted image 20260619123722.png]]
 
 ---
 
@@ -278,7 +278,7 @@ A network protocol is the same idea, except the communicating entities are **har
 
 **Example — Requesting a Web Page:**
 
-![[Pasted image 20260512171528.png]]
+![[Pasted image 20260619123732.png]]
 
 When a browser fetches a Web page, the computer first sends a connection request message to the Web server and waits for a reply; the server returns a connection reply message; once the connection is confirmed, the computer sends a `GET` message naming the specific page it wants — for example, `GET http://www.pearsonhighered.com/cs-resources/`; finally, the server returns the requested file. Every step — the format of each message, the order they happen in, the actions taken on sending or receiving — is defined by the protocol, here HTTP running on top of a TCP connection.
 
