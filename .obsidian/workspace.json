@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/INTERNET.md",
+                "file": "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/THE NETWORK EDGE.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "INTERNET"
+              "title": "THE NETWORK EDGE"
             }
           }
         ]
@@ -251,6 +251,10 @@
   },
   "active": "957f1a7ff8e9ae06",
   "lastOpenFiles": [
+    "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/INTERNET.md",
+    "Images/Pasted image 20260619122429.png",
+    "Pasted image 20260619121935.png",
+    "Pasted image 20260619120827.png",
     "Pasted image 20260619120016.png",
     "01-Foundations/Networking/BOOK 1 - TOP DOWN APPROACH.pdf",
     "01-Foundations/Networking/MODULE 2 - APPLICATION LAYER/P2P.md",
@@ -261,15 +265,11 @@
     "Images/Pasted image 20260618153018.png",
     "Images/Pasted image 20260618152938.png",
     "Images/Pasted image 20260618152903.png",
-    "Images/Pasted image 20260618152831.png",
-    "Images/Pasted image 20260618152734.png",
     "01-Foundations/Networking/MODULE 2 - APPLICATION LAYER/DNS.md",
-    "Images/Pasted image 20260617223046.png",
     "01-Foundations/Networking/BOOK 1 - KUROSE ROSS.pdf",
     "10-Daily-Logs/2026-06-17.md",
     "10-Daily-Logs/2.6 - Peer-to-Peer Applications.md",
     "10-Daily-Logs/2026-05-26.md",
-    "Images/Pasted image 20260617222226.png",
     "01-Foundations/Networking/MODULE 2 - APPLICATION LAYER/ELECTRONIC MAIL.md",
     "01-Foundations/Networking/MODULE 2 - APPLICATION LAYER/FILE TRANSFER - FTP.md",
     "01-Foundations/Networking/MODULE 2 - APPLICATION LAYER/THE WEB & HTTP.md",
