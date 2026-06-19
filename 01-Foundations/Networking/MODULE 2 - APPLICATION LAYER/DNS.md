@@ -8,7 +8,7 @@ tags:
 links: []
 status: learning
 ---
-# 2.5 DNS — The Internet's Directory Service
+# 2.4 DNS — The Internet's Directory Service
 
 > **One-Line Summary:** DNS is a **distributed, hierarchical database** plus an application-layer protocol that translates human-friendly **hostnames** into machine-friendly **IP addresses** — and it does this through a delegated tree of root, TLD, and authoritative servers, made fast and scalable by aggressive **caching**.
 
@@ -24,20 +24,24 @@ Internet hosts have exactly the same dual-identity problem:
 
 |Identifier|Optimized for|Example|
 |---|---|---|
-|**Hostname**|Humans — mnemonic, memorable|`cnn.com`, `www.yahoo.com`, `gaia.cs.umass.edu`|
+|**Hostname**|Humans — mnemonic, memorable|`www.facebook.com`, `www.google.com`, `gaia.cs.umass.edu`|
 |**IP address**|Routers — fixed-length, hierarchical, easy to process|`121.7.106.83`|
 
-> An IP address consists of **four bytes** and has a **rigid hierarchical structure** — as you scan it left to right, you get progressively more specific information about where the host is located in the network of networks. This is similar to scanning a postal address from bottom to top: city tells you less than street address, which tells you less than apartment number.
+> Hostnames are mnemonic but provide little, if any, information about where a host actually sits within the Internet. A hostname such as `www.eurecom.fr`, which ends with the country code `.fr`, tells us the host is probably in France — but doesn't say much more than that. Furthermore, because hostnames can consist of variable-length alphanumeric characters, they would be difficult for routers to process efficiently. This is exactly why hosts are also identified by **IP addresses**.
+
+> An IP address consists of **four bytes** and has a **rigid hierarchical structure** — it looks like `121.7.106.83`, where each period separates one of the bytes expressed in decimal notation from 0 to 255. As you scan it left to right, you get progressively more specific information about where the host is located in the network of networks. This is similar to scanning a postal address from bottom to top: city tells you less than street address, which tells you less than apartment number. (IP addresses are covered in more depth in Chapter 4.)
 
 **DNS exists to bridge these two worlds** — it is the directory service that translates the hostname you type into the IP address your computer actually needs to open a TCP connection.
 
 ---
 
-# 2.5.1 Services Provided by DNS
+# 2.4.1 Services Provided by DNS
 
 > DNS is **(1)** a distributed database implemented in a hierarchy of **DNS servers**, and **(2)** an application-layer protocol that allows hosts to query that distributed database.
 
 DNS servers commonly run **BIND** (Berkeley Internet Name Domain) software on UNIX machines. **DNS runs over UDP and uses port 53** — notably, this is one of the few major application-layer protocols that does _not_ run over TCP, because DNS queries are typically small and a single lost packet can simply be retried rather than requiring a full reliable connection.
+
+> **Principles in Practice — DNS: Critical Network Functions Via the Client-Server Paradigm** Like HTTP and SMTP, the DNS protocol is an application-layer protocol since it (1) runs between communicating end systems using the client-server paradigm and (2) relies on an underlying end-to-end transport protocol to transfer DNS messages between communicating end systems. In another sense, however, the role of DNS is quite different from Web, file transfer, and e-mail applications. Unlike those applications, **DNS is not an application a user directly interacts with**. Instead, DNS provides a core Internet _function_ — translating hostnames to their underlying IP addresses — for user applications and other software across the Internet. Much of the complexity in the Internet's architecture sits at the "edges" of the network, and DNS, which implements name-to-address translation using clients and servers located at the edge, is yet another example of that design philosophy.
 
 ---
 
@@ -46,16 +50,18 @@ DNS servers commonly run **BIND** (Berkeley Internet Name Domain) software on UN
 DNS is invisibly invoked every single time you use HTTP, SMTP, or FTP with a hostname instead of a raw IP address. Here's exactly what happens when your browser requests `www.someschool.edu/index.html`:
 
 ```
-Step 1 → The browser extracts the hostname, www.someschool.edu, from the URL
-          and passes it to the client side of the DNS application
+Step 1 → The same user machine runs the client side of the DNS application
 
-Step 2 → The DNS client sends a query containing the hostname
+Step 2 → The browser extracts the hostname, www.someschool.edu, from the URL
+          and passes the hostname to the client side of the DNS application
+
+Step 3 → The DNS client sends a query containing the hostname
           to a DNS server
 
-Step 3 → The DNS client eventually receives a reply,
+Step 4 → The DNS client eventually receives a reply,
           which includes the IP address for the hostname
 
-Step 4 → Once the browser receives the IP address from DNS,
+Step 5 → Once the browser receives the IP address from DNS,
           it can initiate a TCP connection to the HTTP server
           process located at port 80 at that IP address
 ```
@@ -83,11 +89,11 @@ For example, `relay1.west-coast.enterprise.com` is hard to remember and exposes 
 
 > For obvious reasons, it is highly desirable that e-mail addresses be mnemonic.
 
-If Bob has a Hotmail account, his e-mail address should be the simple `bob@hotmail.com` — not something exposing Hotmail's actual internal server name, which might be `relay1.west-coast.hotmail.com`.
+If Bob has an account with **Yahoo Mail**, his e-mail address should be the simple `bob@yahoo.com` — not something exposing Yahoo's actual internal server name, which might be `relay1.west-coast.yahoo.com`.
 
 DNS solves this the same way it solves host aliasing: a mail application can invoke DNS to get the canonical hostname for a supplied alias.
 
-> **A neat consequence:** the **MX record** (covered in 2.5.3) permits a company's **mail server** and **Web server** to have **identical aliased hostnames**. Both could be called `enterprise.com` even though, under the hood, they are two completely different physical machines with different canonical names. A client asking "where do I send mail for enterprise.com?" gets a different answer (via an MX lookup) than a client asking "where do I send a Web request for enterprise.com?" (via an A-record lookup) — same alias, two different underlying machines.
+> **A neat consequence:** the **MX record** (covered in 2.4.3) permits a company's **mail server** and **Web server** to have **identical aliased hostnames**. Both could be called `enterprise.com` even though, under the hood, they are two completely different physical machines with different canonical names. A client asking "where do I send mail for enterprise.com?" gets a different answer (via an MX lookup) than a client asking "where do I send a Web request for enterprise.com?" (via an A-record lookup) — same alias, two different underlying machines. To obtain the canonical name for the mail server, a DNS client queries for an **MX record**; to obtain the canonical name for the other server (e.g. the Web server), the client queries for a **CNAME record**.
 
 ---
 
@@ -116,13 +122,13 @@ Client B queries cnn.com a moment later
 
 > **Analogy:** Picture a popular restaurant with five identical branches across town. Instead of a single hostess directing everyone to Branch 1 every time, the hostess randomly shuffles which branch she recommends first to each new customer. Over thousands of customers, the load naturally spreads evenly across all five branches.
 
-DNS rotation is also used for **e-mail**, so multiple mail servers can share the same alias name. Content distribution companies like **Akamai** use DNS in even more sophisticated ways to direct users to nearby content servers (covered in Chapter 7).
+DNS rotation is also used for **e-mail**, so multiple mail servers can share the same alias name. Content distribution companies like **Akamai** use DNS in even more sophisticated ways to direct users to nearby content servers (covered in Section 2.5.3, on video streaming and content distribution networks).
 
-> DNS is specified in **RFC 1034** and **RFC 1035**, and updated in several additional RFCs since.
+> DNS is specified in **RFC 1034** and **RFC 1035**, and updated in several additional RFCs since. It's a genuinely complex system — for deeper reading, the standard reference is Albitz & Liu's _DNS and BIND_, and Paul Mockapetris (DNS's original designer) has written retrospectives describing the "what and why" behind the system's design.
 
 ---
 
-# 2.5.2 Overview of How DNS Works
+# 2.4.2 Overview of How DNS Works
 
 ## DNS as a Black Box
 
@@ -168,28 +174,29 @@ To deal with scale, DNS uses a **large number of servers**, organized hierarchic
 
 > There are, to a first approximation, **three classes of DNS servers**: **root DNS servers**, **top-level domain (TLD) DNS servers**, and **authoritative DNS servers**.
 
-![[Pasted image 20260617221520.png]] _(Figure 2.19 — Portion of the hierarchy of DNS servers: Root DNS servers at the top, branching into TLD servers for .com, .org, .edu, which in turn branch into authoritative servers for specific domains like yahoo.com, amazon.com, pbs.org, poly.edu, umass.edu)_
+![[Pasted image 20260619223707.png]] _(Figure 2.15 — Portion of the hierarchy of DNS servers: Root DNS servers at the top, branching into TLD servers for .com, .org, .edu, which in turn branch into authoritative servers for specific domains like facebook.com, amazon.com, pbs.org, nyu.edu, umass.edu)_
 
 > **Analogy for the three-tier hierarchy:** Think of it like asking for directions in an unfamiliar country. You first ask a **national tourist information desk** ("Which region handles addresses ending in this postal code zone?") — that's the **root server**. The tourist desk doesn't know your exact address, but it points you to the right **regional office** — that's the **TLD server**, e.g. the office that handles all `.com` addresses. The regional office, in turn, doesn't know your exact house either, but it knows exactly which **local post office** is authoritative for your specific street — that's the **authoritative server**, which finally hands over the precise address (IP).
+
+To see how the three classes interact: suppose a DNS client wants the IP address for `www.amazon.com`. To a first approximation, the client first contacts one of the root servers, which returns IP addresses for TLD servers responsible for `com`. The client then contacts one of these TLD servers, which returns the IP address of an authoritative server for `amazon.com`. Finally, the client contacts that authoritative server, which returns the IP address for `www.amazon.com`.
 
 ---
 
 ### Root DNS Servers
 
-> There are **13 root DNS servers** (labeled A through M) in the Internet, most located in North America.
+> There are nearly **2,000 root server instances** scattered all over the world, serving **tens of billions of DNS queries per day**. These instances are copies of **13 different (logical) root servers**, managed by **12 different organizations**, and coordinated through the **Internet Assigned Numbers Authority (IANA)**.
 
-![[Pasted image 20260617221839.png]] _(Figure 2.20 — DNS root servers in 2026)_
+![[Pasted image 20260619223922.png]] _(Figure 2.16 — Number of root servers and locations (2024): a world map showing the count of physical root server instances by region, e.g. ~376 in the contiguous US, ~306 in Europe, ~204 around the Mediterranean/Middle East, ~144 in South/Southeast Asia, and smaller clusters across the rest of the globe)_
 
-> Although we refer to each of the 13 root DNS servers as if it were a single server, each "server" is actually a **network of replicated servers**, for both security and reliability purposes. All together, there were **247 root servers as of fall 2011**.
-
-> **Why replicate?** A single physical machine, however well-protected, is a single point of failure and a juicy DDoS target. By replicating each of the 13 logical root servers across dozens of physical machines worldwide (using a technique called anycast), an attack or outage at one location doesn't take down the whole system.
+> **Why replicate?** A single physical machine, however well-protected, is a single point of failure and a juicy DDoS target. By replicating each of the 13 logical root servers across nearly 2,000 physical machines worldwide (using a technique called **anycast**), an attack or outage at one location doesn't take down the whole system. Root name servers provide the IP addresses of the TLD servers.
 
 ### Top-Level Domain (TLD) Servers
 
-> TLD servers are responsible for top-level domains such as `com`, `org`, `net`, `edu`, and `gov`, as well as country-level top-level domains such as `uk`, `fr`, `ca`, and `jp`.
+> TLD servers are responsible for top-level domains such as `com`, `org`, `net`, `edu`, and `gov`, as well as country-level top-level domains such as `uk`, `fr`, `ca`, and `jp`. TLD servers provide the IP addresses for authoritative DNS servers.
 
 - The company **Verisign Global Registry Services** maintains the TLD servers for the `.com` top-level domain
 - The company **Educause** maintains the TLD servers for the `.edu` top-level domain
+- The network infrastructure supporting a single TLD (like Verisign's `.com` network) can itself be large and complex, comparable in scale to a major ISP's backbone
 
 ### Authoritative DNS Servers
 
@@ -210,6 +217,8 @@ Most universities and large companies implement and maintain their **own primary
 
 Each ISP — a university, an academic department, a company, or a residential ISP — has a local DNS server (also called a **default name server**). When a host connects to an ISP, the ISP provides the host with the IP addresses of one or more of its local DNS servers (typically via DHCP).
 
+> Rather than using your ISP's or institution's local DNS server, you can also configure your device to receive its local DNS service from a commercial provider such as **Google** (at IP address `8.8.8.8`). You can easily determine the IP address of your own local DNS server by checking the network status windows in Windows or UNIX.
+
 > A host's local DNS server is typically "**close**" to the host. For an institutional ISP, the local DNS server may be on the same LAN as the host; for a residential ISP, it is typically separated by no more than a few routers.
 
 When a host makes a DNS query, the query is sent to the **local DNS server**, which acts as a **proxy**, forwarding the query into the server hierarchy on the client's behalf.
@@ -220,34 +229,34 @@ When a host makes a DNS query, the query is sent to the **local DNS server**, wh
 
 ## Worked Example — Resolving gaia.cs.umass.edu
 
-Suppose host `cis.poly.edu` desires the IP address of `gaia.cs.umass.edu`. Suppose Poly's local DNS server is called `dns.poly.edu`, and the authoritative DNS server for `gaia.cs.umass.edu` is `dns.umass.edu`.
+Suppose host `cse.nyu.edu` desires the IP address of `gaia.cs.umass.edu`. Suppose NYU's local DNS server is called `dns.nyu.edu`, and the authoritative DNS server for `gaia.cs.umass.edu` is `dns.umass.edu`.
 
-![[Pasted image 20260617222055.png]] _(Figure 2.21 — Interaction of the various DNS servers: requesting host cis.poly.edu queries its local DNS server dns.poly.edu ①⑧, which queries the root server ②③, then the TLD server ④⑤, then the authoritative server dns.umass.edu ⑥⑦, before returning the answer to the requesting host)_
+![[Pasted image 20260619224112.png]] _(Figure 2.17 — Interaction of the various DNS servers: requesting host cse.nyu.edu queries its local DNS server dns.nyu.edu ①⑧, which queries the root server ②③, then the TLD server ④⑤, then the authoritative server dns.umass.edu ⑥⑦, before returning the answer to the requesting host)_
 
 ```
-① cis.poly.edu sends a DNS query to its local DNS server, dns.poly.edu
+① cse.nyu.edu sends a DNS query to its local DNS server, dns.nyu.edu
    (the query asks for: gaia.cs.umass.edu)
 
-② dns.poly.edu forwards the query to a root DNS server
+② dns.nyu.edu forwards the query to a root DNS server
 
 ③ The root DNS server notes the .edu suffix and returns a list of
    IP addresses for TLD servers responsible for edu
 
-④ dns.poly.edu resends the query to one of these edu TLD servers
+④ dns.nyu.edu resends the query to one of these edu TLD servers
 
 ⑤ The TLD server notes the umass.edu suffix and responds with the
    IP address of the authoritative server for umass.edu — i.e. dns.umass.edu
 
-⑥ dns.poly.edu resends the query directly to dns.umass.edu
+⑥ dns.nyu.edu resends the query directly to dns.umass.edu
 
 ⑦ dns.umass.edu responds with the IP address of gaia.cs.umass.edu
 
-⑧ dns.poly.edu finally returns the answer to the requesting host, cis.poly.edu
+⑧ dns.nyu.edu finally returns the answer to the requesting host, cse.nyu.edu
 ```
 
 > **Total: 8 DNS messages** were sent just to resolve one hostname! (Four queries out, four replies back.)
 
-**But it can get even deeper.** Suppose that the University of Massachusetts has its own DNS server for the university (`dns.umass.edu`), and each _department_ additionally has its own departmental DNS server, authoritative for hosts in that department. In this case, when the intermediate server `dns.umass.edu` receives a query for a host ending in `cs.umass.edu`, it doesn't have the final answer either — it returns the address of `dns.cs.umass.edu` (the department's own authoritative server) to `dns.poly.edu`, which must then query _that_ server too.
+**But it can get even deeper.** Suppose that the University of Massachusetts has its own DNS server for the university (`dns.umass.edu`), and each _department_ additionally has its own departmental DNS server, authoritative for hosts in that department. In this case, when the intermediate server `dns.umass.edu` receives a query for a host ending in `cs.umass.edu`, it doesn't have the final answer either — it returns the address of `dns.cs.umass.edu` (the department's own authoritative server) to `dns.nyu.edu`, which must then query _that_ server too.
 
 > In this deeper scenario, a total of **10 DNS messages** are sent — DNS resolution can chain through as many layers of delegation as an organization chooses to set up.
 
@@ -262,9 +271,9 @@ The example above uses **both** kinds of queries simultaneously:
 |**Recursive query**|The querying server asks another server to **obtain the mapping on its behalf** and report back the final answer|The _queried_ server takes on the burden of chasing down the chain|
 |**Iterative query**|The reply is sent **directly back** to the original requester, who must then make the next query itself|The _original querier_ does all the chasing|
 
-In the worked example: the query sent from `cis.poly.edu` to `dns.poly.edu` is **recursive** (poly.edu asked the local server to "go get me the full answer, whatever it takes"). All three subsequent queries — local server to root, local server to TLD, local server to authoritative — are **iterative**, because each server replies directly back to `dns.poly.edu` rather than chasing the next hop itself.
+In the worked example: the query sent from `cse.nyu.edu` to `dns.nyu.edu` is **recursive** (NYU's host asked the local server to "go get me the full answer, whatever it takes"). All three subsequent queries — local server to root, local server to TLD, local server to authoritative — are **iterative**, because each server replies directly back to `dns.nyu.edu` rather than chasing the next hop itself.
 
-![[Pasted image 20260617222226.png]] _(Figure 2.22 — Recursive queries in DNS: an alternative query chain where every single query in the chain — including the root server's and TLD server's onward requests — is recursive rather than iterative)_
+![[Pasted image 20260619224322.png]] _(Figure 2.18 — Recursive queries in DNS: an alternative query chain where every single query in the chain — including the root server's and TLD server's onward requests — is recursive rather than iterative)_
 
 > **In theory**, any DNS query can be either iterative or recursive. **In practice**, queries typically follow the pattern shown earlier: the query from the requesting host to its local DNS server is **recursive**, while the remaining queries (local server onward into the hierarchy) are **iterative**.
 
@@ -281,16 +290,16 @@ In the worked example: the query sent from `cis.poly.edu` to `dns.poly.edu` is *
 **The idea is simple:** In a query chain, when a DNS server receives a DNS reply (containing, say, a mapping from hostname to IP address), it can **cache** that mapping in its local memory.
 
 ```
-apricot.poly.edu queries dns.poly.edu for the IP address of cnn.com
-  → dns.poly.edu doesn't have it cached → goes through the full chain
+apricot.nyu.edu queries dns.nyu.edu for the IP address of cnn.com
+  → dns.nyu.edu doesn't have it cached → goes through the full chain
   → gets the answer → CACHES the mapping locally → returns it
 
-A few hours later, kiwi.poly.fr also queries dns.poly.edu for cnn.com
-  → dns.poly.edu finds the cached mapping IMMEDIATELY
+A few hours later, kiwi.nyu.edu also queries dns.nyu.edu for cnn.com
+  → dns.nyu.edu finds the cached mapping IMMEDIATELY
   → returns it WITHOUT contacting any other DNS server at all
 ```
 
-> A local DNS server can even cache the IP addresses of **TLD servers**, allowing it to bypass the **root servers** entirely in a query chain — this happens often in practice, and is a big reason root servers aren't overwhelmed despite handling billions of devices' worth of traffic.
+> A local DNS server can even cache the IP addresses of **TLD servers**, allowing it to bypass the **root servers** entirely in a query chain — this happens often in practice, and is a big reason root servers handle "only" tens of billions (rather than far more) of queries per day despite underpinning nearly every device on the Internet. In fact, because of caching, root servers are bypassed for all but a very small fraction of DNS queries.
 
 **The catch — staleness:** Because hosts and hostname/IP mappings are **by no means permanent** (a server might change IP address, or shut down), DNS servers **discard cached information after a period of time** — often set to **two days**. This time-to-live behaviour is governed by the **TTL** field, covered next.
 
@@ -298,7 +307,7 @@ A few hours later, kiwi.poly.fr also queries dns.poly.edu for cnn.com
 
 ---
 
-# 2.5.3 DNS Records and Messages
+# 2.4.3 DNS Records and Messages
 
 ## Resource Records (RRs)
 
@@ -344,7 +353,7 @@ The meaning of `Name` and `Value` **depends entirely on `Type`**:
 
 There are exactly two kinds of DNS messages — **query** and **reply** — and both share the **same format**.
 
-![[Pasted image 20260617223046.png]] _(Figure 2.23 — DNS message format: a 12-byte header section (identification, flags, and four count fields) followed by four variable-length sections — questions, answers, authority, and additional information)_
+![[Pasted image 20260619224746.png]] _(Figure 2.19 — DNS message format: a 12-byte header section (identification, flags, and four count fields) followed by four variable-length sections — questions, answers, authority, and additional information)_
 
 ### The Header Section (First 12 Bytes)
 
@@ -373,7 +382,11 @@ There are exactly two kinds of DNS messages — **query** and **reply** — and 
 nslookup
 ```
 
-You can also use one of many websites that let you remotely run `nslookup` if you don't want to use your own terminal.
+From a Windows host, this can be invoked directly from the Command Prompt by simply typing `nslookup`. After receiving the reply message from the DNS server, `nslookup` displays the records included in the reply in human-readable format.
+
+You can also use one of many websites that let you remotely run `nslookup` if you don't want to use your own terminal — just typing "nslookup" into a search engine will surface one of these sites.
+
+> **Hands-on tip:** A dedicated DNS Wireshark lab exercise exists for exploring DNS traffic in much greater packet-level detail than what's covered here — well worth doing alongside this section.
 
 ---
 
@@ -383,7 +396,9 @@ How do records get into the DNS database in the first place? Suppose you've star
 
 > A **registrar** is a commercial entity that verifies the uniqueness of the domain name, enters the domain name into the DNS database, and collects a small fee from you for its services.
 
-Prior to 1999, a single registrar (Network Solutions) had a monopoly on `.com`, `.net`, and `.org` domain registration. Today, many registrars compete for customers, and **ICANN** (Internet Corporation for Assigned Names and Numbers) accredits them all.
+Prior to 1999, a single registrar (Network Solutions) had a monopoly on `.com`, `.net`, and `.org` domain registration. Today, many registrars compete for customers, and **ICANN** (Internet Corporation for Assigned Names and Numbers) accredits them all. A complete list of accredited registrars is available at `http://www.internic.net`.
+
+> **Scale check:** as of 2024, measurements indicate that approximately **75,000 new domain names are registered every single day** — a useful sense of just how much churn the registrar ecosystem handles continuously.
 
 **What you must provide the registrar:**
 
@@ -436,16 +451,20 @@ Once registration is complete, people can visit `www.networkutopia.com` and send
 
 # Why It Matters for Security
 
+DNS is a critical, indispensable piece of Internet infrastructure — the Web and e-mail are simply incapable of functioning without it. That makes it an attractive target.
+
 |Concept|Attacker's Perspective|Defender's Perspective|
 |---|---|---|
-|**DNS cache poisoning**|An attacker injects a **forged** resource record into a DNS server's cache (e.g. tricking it into caching `bank.com → attacker's IP`). Every subsequent query for that hostname from that server's clients gets redirected to the attacker|**DNSSEC** (DNS Security Extensions) cryptographically signs resource records, allowing resolvers to verify authenticity and reject forged responses|
-|**DNS spoofing / Man-in-the-middle on UDP**|Because DNS runs over **UDP** (connectionless, unauthenticated), an attacker who can intercept or race a DNS query can send a forged reply before the real one arrives, redirecting the victim to a malicious IP|Source port randomization, query ID randomization (raising the bar for blind-guessing the 16-bit Identification field), and DNSSEC for cryptographic verification|
-|**DDoS attacks on root/TLD servers**|The 13 root server "addresses" are a tempting target — if attackers could overwhelm all 247 physical root server instances simultaneously, hostname resolution worldwide would degrade|**Anycast** replication (hundreds of physical machines sharing the same logical address) and aggressive **caching** at lower levels mean even sustained attacks on roots rarely cause global outages — most queries never even reach a root server thanks to caching|
+|**DDoS bandwidth-flooding against root servers**|An attacker floods DNS root servers with a deluge of packets so that legitimate queries never get answered. A real large-scale example: on **October 21, 2002**, attackers used a botnet to send truckloads of ICMP ping messages to each of the 13 DNS root IP addresses|This 2002 attack caused **minimal real-world damage** — many root servers were protected by packet filters configured to always block ICMP pings directed at them, and most local DNS servers cache TLD server addresses, letting the query process bypass root servers entirely|
+|**DDoS against TLD servers**|A _more_ effective DDoS target than the roots, since TLD-directed queries are harder to filter and TLD servers can't be bypassed as easily as root servers. A real example: the **October 21, 2016** attack on TLD service provider **Dyn**, carried out via roughly **100,000 IoT devices** (printers, IP cameras, residential gateways, baby monitors) infected with **Mirai malware**|For almost a full day, major sites including **Amazon, Twitter, Netflix, GitHub, and Spotify** were disrupted — a stark demonstration of how exposed unsecured IoT devices can be weaponized against core infrastructure|
+|**Man-in-the-middle attack**|The attacker intercepts DNS queries from hosts in transit and returns bogus replies directly to the victim|Encrypted/authenticated query channels (e.g. DNS over TLS/HTTPS) and DNSSEC validation help detect tampered responses|
+|**DNS cache poisoning**|The attacker sends bogus replies _to a DNS server itself_ (rather than to the end host), tricking that server into accepting forged records into its cache. Every subsequent query for that hostname from the server's clients gets redirected|**DNSSEC** (DNS Security Extensions) cryptographically signs resource records, allowing resolvers to verify authenticity and reject forged responses — DNSSEC addresses many of these exploits and continues gaining adoption across the Internet|
+|**DNS spoofing on UDP**|Because DNS runs over **UDP** (connectionless, unauthenticated), an attacker who can intercept or race a DNS query can send a forged reply before the real one arrives, redirecting the victim to a malicious IP|Source port randomization and query ID randomization raise the bar for blind-guessing the 16-bit Identification field; DNSSEC adds cryptographic verification on top|
 |**Typosquatting / lookalike domains**|Attackers register domains that are one character off from a legitimate one (`gooogle.com`, `paypa1.com`) and rely on users mistyping or misreading|Browser warnings, trademark-based registrar takedown policies, user vigilance|
 |**DNS tunneling**|Because DNS queries are rarely blocked by firewalls (everything needs DNS to function), attackers encode **stealth command-and-control traffic or exfiltrated data** inside DNS query/response fields, bypassing network monitoring focused on HTTP/FTP|Deep packet inspection of DNS traffic for abnormal query patterns, query length, and entropy; restricting outbound DNS to approved resolvers only|
 |**Open DNS resolvers — amplification attacks**|A DNS server configured to answer recursive queries from **anyone** on the Internet (not just its own clients) can be abused: an attacker sends a small spoofed query (with the victim's IP as the source) requesting a large record type, and the resolver blasts a much larger reply at the victim — a classic **DNS amplification DDoS**|Configure resolvers to only accept recursive queries from trusted/internal IP ranges; rate-limit responses|
 |**Registrar account hijacking**|If an attacker compromises your domain registrar account, they can change your authoritative NS records to point anywhere — effectively hijacking your entire domain (mail, web, everything) without ever touching your actual servers|Strong registrar account security: 2FA, registry locks, monitoring for unauthorized DNS record changes|
-|**MX record manipulation**|If an attacker can alter a domain's MX record (via DNS poisoning or registrar compromise), all incoming e-mail for that domain silently routes to the attacker's mail server instead|DNSSEC validation of MX lookups; monitoring DNS records for unexpected changes; SPF/DKIM/DMARC (from Section 2.4) provide additional layers even if MX is compromised|
+|**MX record manipulation**|If an attacker can alter a domain's MX record (via DNS poisoning or registrar compromise), all incoming e-mail for that domain silently routes to the attacker's mail server instead|DNSSEC validation of MX lookups; monitoring DNS records for unexpected changes; SPF/DKIM/DMARC provide additional layers even if MX is compromised|
 
 ---
 
@@ -453,7 +472,7 @@ Once registration is complete, people can visit `www.networkutopia.com` and send
 
 - [ ] **DNSSEC** keeps coming up as the fix for cache poisoning and spoofing — but how exactly does it chain trust from the root zone down to an individual domain's records? Is there a "root key" that everything ultimately anchors to?
 - [ ] If DNS runs over **UDP** for speed, what happens when a reply is too large to fit in a single UDP datagram (e.g. DNSSEC-signed responses with large cryptographic signatures)? Does DNS fall back to TCP in that case?
-- [ ] How does **anycast routing** actually work to let 247 physical machines all answer to the same 13 logical root server addresses? Is this purely a BGP routing trick?
+- [ ] How does **anycast routing** actually work to let nearly 2,000 physical machines all answer to the same 13 logical root server addresses? Is this purely a BGP routing trick?
 - [ ] TTL is often set to **two days** for caching — but for load-balanced or rapidly-changing services (like CDN edge nodes), TTLs are often set to mere **seconds or minutes**. What's the tradeoff curve between freshness and DNS query volume here?
 - [ ] How does **DHCP** (mentioned briefly as the mechanism that tells a host its local DNS server's address) actually communicate that information at connection time — what's in the DHCP handshake that carries it?
 - [ ] Modern resolvers increasingly use **DNS over HTTPS (DoH)** or **DNS over TLS (DoT)** to encrypt queries — how does this interact with the local DNS server / ISP model described here? Does it bypass the ISP's local DNS server entirely?
@@ -465,15 +484,15 @@ Once registration is complete, people can visit `www.networkutopia.com` and send
 |Term|Definition|
 |---|---|
 |**DNS**|Domain Name System — a distributed database plus application-layer protocol that translates hostnames to IP addresses|
-|**Hostname**|A mnemonic, human-friendly identifier for an Internet host (e.g. `www.yahoo.com`)|
+|**Hostname**|A mnemonic, human-friendly identifier for an Internet host (e.g. `www.facebook.com`)|
 |**IP address**|A 32-bit (four-byte), hierarchically structured numeric identifier for a host (e.g. `121.7.106.83`)|
 |**Canonical hostname**|The "real," underlying hostname of a server|
 |**Alias hostname**|A mnemonic, public-facing name pointing to a canonical hostname|
 |**DNS rotation**|Returning a set of IP addresses for one hostname in rotated order across different queries, to distribute load among replicated servers|
-|**Root DNS server**|Top of the DNS hierarchy; there are 13 logical root servers (A–M), each replicated across many physical machines worldwide|
+|**Root DNS server**|Top of the DNS hierarchy; 13 logical root servers managed by 12 organizations and coordinated through IANA, replicated across nearly 2,000 physical instances worldwide|
 |**TLD (Top-Level Domain) server**|Responsible for domains like `.com`, `.org`, `.edu`, and country codes like `.uk`, `.jp`|
 |**Authoritative DNS server**|Holds the actual, definitive DNS records for an organization's publicly accessible hosts|
-|**Local DNS server**|An ISP's "default name server" that acts as a proxy, forwarding a host's queries into the DNS hierarchy; not formally part of the hierarchy itself|
+|**Local DNS server**|An ISP's "default name server" that acts as a proxy, forwarding a host's queries into the DNS hierarchy; not formally part of the hierarchy itself. Can be substituted with a public resolver such as Google's `8.8.8.8`|
 |**Recursive query**|A query where the receiving server obtains the full answer on behalf of the requester before replying|
 |**Iterative query**|A query where the receiving server replies directly with a pointer to the next server, leaving the requester to make the next query itself|
 |**DNS caching**|Storing previously resolved mappings locally to avoid repeating the full resolution chain; subject to a TTL-based expiration|
@@ -490,13 +509,12 @@ Once registration is complete, people can visit `www.networkutopia.com` and send
 |**DNSSEC**|DNS Security Extensions — cryptographically signs DNS records to prevent spoofing and cache poisoning|
 |**DNS cache poisoning**|An attack that injects forged resource records into a DNS server's cache to redirect victims|
 |**DNS amplification attack**|A DDoS technique exploiting open recursive resolvers to send oversized replies to a spoofed victim address|
+|**Anycast**|A routing technique that lets many physically distinct machines around the world answer to the same logical IP address, used to replicate and protect the 13 root DNS servers|
 
 ---
 
 ## Related Concepts
 
-- 
-
 ---
 
-→ Next: [[2.6 - Peer-to-Peer Applications]]
+→ Next: [[2.5 - Video Streaming and Content Distribution Networks]]
