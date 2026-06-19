@@ -11,10 +11,14 @@
             "id": "957f1a7ff8e9ae06",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Graph view"
+              "type": "markdown",
+              "state": {
+                "file": "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/INTERNET.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "INTERNET"
             }
           }
         ]
@@ -245,8 +249,9 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "8fcd1ab0efc64805",
+  "active": "957f1a7ff8e9ae06",
   "lastOpenFiles": [
+    "Pasted image 20260619120016.png",
     "01-Foundations/Networking/BOOK 1 - TOP DOWN APPROACH.pdf",
     "01-Foundations/Networking/MODULE 2 - APPLICATION LAYER/P2P.md",
     "01-Foundations/Networking/MODULE 2 - APPLICATION LAYER/SOCKET PROGRAMMING - UDP & TCP.md",
@@ -293,7 +298,6 @@
     "03-Programming/Python/PYTHON BASICS",
     "Images",
     "01-Foundations/Linux/THE LINUX COMMAND LINE.pdf",
-    "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET",
-    "Vault.gitignore.txt"
+    "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET"
   ]
 }
