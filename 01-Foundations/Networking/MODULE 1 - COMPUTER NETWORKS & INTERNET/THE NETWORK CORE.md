@@ -101,7 +101,7 @@ Where:
 
 Each packet switch has multiple links attached to it. For each link, the switch maintains an **output buffer** (also called **output queue**) — a storage area for packets waiting to be transmitted on that link.
 
-![[Pasted image 20260515141438.png]] _(Figure 1.12 — Packet Switching: Hosts A and B sending to Host E via a congested 1.5 Mbps link, queue forming at router. Packets are drawn as three-dimensional slabs whose width represents the number of bits in the packet.)_
+![[Pasted image 20260619131342.png]] _(Figure 1.12 — Packet Switching: Hosts A and B sending to Host E via a congested 1.5 Mbps link, queue forming at router. Packets are drawn as three-dimensional slabs whose width represents the number of bits in the packet.)_
 
 ### Why Queuing Happens
 
@@ -187,7 +187,7 @@ In circuit-switched networks, resources (buffers, link transmission rate) along 
 3. In telephony jargon this is called a **circuit**.
 4. A **constant transmission rate** is reserved in the network's links for this circuit — the sender can always transmit at the guaranteed rate.
 
-![[Pasted image 20260515141934.png]] _(Figure 1.13 — A Simple Circuit-Switched Network: 4 switches, 4 links, each link supporting 4 simultaneous circuits)_
+![[Pasted image 20260619131517.png]] _(Figure 1.13 — A Simple Circuit-Switched Network: 4 switches, 4 links, each link supporting 4 simultaneous circuits)_
 
 **Example calculation:**
 
