@@ -14,6 +14,7 @@ status: learning
 
 Having examined the Internet's edge, we now delve more deeply into the network core — the mesh of packet switches and links that interconnects the Internet's end systems.
 
+![[Pasted image 20260619130757.png]]
 _(Figure 1.10 — The network core: mobile, home, and enterprise networks connect through a local/regional ISP up to a national/global ISP, which interconnects with datacenter networks and content provider networks. The shaded mesh of routers and links between these access points is the "network core.")_
 
 ---
@@ -58,7 +59,7 @@ It cannot start retransmitting while still receiving — it must have the comple
 
 ### End-to-End Delay Calculation
 
-![[Pasted image 20260515141220.png]] _(Figure 1.11 — Store-and-Forward Packet Switching: Source → Router → Destination)_
+![[Pasted image 20260619131156.png]] _(Figure 1.11 — Store-and-Forward Packet Switching: Source → Router → Destination)_
 
 **Simple case: 1 packet, 1 router, 2 links**
 
