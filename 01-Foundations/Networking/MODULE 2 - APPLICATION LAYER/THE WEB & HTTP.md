@@ -773,4 +773,4 @@ In summary, HTTP/3 clients and servers use QUIC's features — fast connection e
 
 ---
 
-→ Next: [[ELECTRONIC MAIL]]
+→ Next: [[FTP]]
