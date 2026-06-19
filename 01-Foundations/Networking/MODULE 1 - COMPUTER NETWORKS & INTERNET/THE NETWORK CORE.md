@@ -414,7 +414,7 @@ Building on Structure 3, we add four more elements:
 
 _(Figure 1.15 — Google cloud locations and network, as of 2024 [Google Cloud 2025]: a world map showing Google's data center sites — e.g. Havfrue (US, IE, DK), Grace Hopper (US, UK, ES) 2022, Dunant (US, FR), Equiano (PT, NG, ZA) 2021, Curie (CL, US, PA), Junior, Monet, Tannat, Raman (SA, JO, DJ, OM, IN) 2024, Indigo-West/Central (SG, AU), JGA-S (GU, AU), Echo (US, SG, ID) 2023, Unity/FASTER/PLCN (US, JP, TW) — connected by both current network links and submarine cable investments spanning the Americas, Europe, Africa, and Asia-Pacific.)_
 
-![[Pasted image 20260515144646.png]] _(Figure 1.16 — Interconnection of ISPs and a content provider: Tier-1 ISPs, a content provider such as Google, and regional/access ISPs all interconnecting both directly and via IXPs)_
+![[Pasted image 20260619132633.png]] _(Figure 1.16 — Interconnection of ISPs and a content provider: Tier-1 ISPs, a content provider such as Google, and regional/access ISPs all interconnecting both directly and via IXPs)_
 
 **Why content providers build their own networks:**
 
