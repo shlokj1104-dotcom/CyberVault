@@ -10,19 +10,35 @@ status: learning
 ---
 # 2.2 The Web and HTTP
 
-> **One-Line Summary:** HTTP is the Web's application-layer protocol — it runs over TCP, is stateless by design, and comes in persistent and non-persistent variants; state is layered back on top using cookies, and performance is improved using Web caches (proxy servers) and the conditional GET mechanism.
+> **One-Line Summary:** HTTP is the Web's application-layer protocol. It has historically run over TCP — non-persistent in HTTP/1.0, persistent (with pipelining) in HTTP/1.1, and multiplexed over a single connection via framing in HTTP/2 — but HTTP/3 breaks from this lineage and runs over **QUIC**, a UDP-based protocol that absorbs TLS into its handshake and gives each HTTP message its own independently-reliable stream. HTTP itself remains stateless by design; state is layered back on top using cookies, and performance is improved using browser caching and the conditional GET mechanism.
 
 ---
 
 ## Core Idea
 
-The **World Wide Web** is an application that operates **on demand** — unlike broadcast TV or radio, the user pulls exactly what they want, exactly when they want it. It has arguably become the defining application of the modern Internet.
+Until the early 1990s, the Internet was used primarily by researchers, academics, and university students to log in to remote hosts, transfer files, exchange news, and send electronic mail. These applications were (and remain) extremely useful, but the Internet itself was essentially unknown outside the academic and research communities.
+
+Then, in the early 1990s, a major new application arrived on the scene — the **World Wide Web** [Berners-Lee 1994]. The Web was the first Internet application to catch the general public's eye. It dramatically changed how people interact both inside and outside their work environments, elevating the Internet from being just one of many data networks to essentially **the** one and only data network.
+
+Perhaps what appeals most to users is that the Web operates **on demand**. Users receive what they want, when they want it — unlike traditional broadcast radio and television, which force users to tune in whenever the content provider happens to make the content available.
+
+**Why people love the Web:**
+
+- It is enormously easy for any individual to make information available over the Web — everyone can become a publisher at extremely low cost
+- Hyperlinks and search engines help users navigate through an ocean of information
+- Photos and videos stimulate the senses
+- Forms, JavaScript, video, and many other devices enable interaction with pages and sites
+- The Web and its protocols serve as a **platform** for generative AI, YouTube, Web-based e-mail (such as Gmail), and most mobile Internet applications, including Instagram and Google Maps
 
 The Web's application-layer protocol is **HTTP (HyperText Transfer Protocol)**. HTTP is what your browser speaks to every web server on the planet. Understanding HTTP is foundational for both web development and cybersecurity — every web attack ultimately operates at this layer.
 
 ---
 
 # 2.2.1 Overview of HTTP
+
+**HyperText Transfer Protocol (HTTP)** is defined across several RFCs: [RFC 1945], [RFC 7230], [RFC 7540], and [RFC 9114]. Today the vast majority of applications run over HTTP — Web browsing, video streaming, social media, and even email between clients and mail servers. Smartphone apps also typically communicate with their servers over HTTP.
+
+HTTP is implemented in **two programs**: a client program and a server program, executing on different end systems, talking to each other by exchanging HTTP messages. HTTP defines the structure of these messages and how the client and server exchange them.
 
 ## Web Pages and Objects
 
@@ -47,7 +63,7 @@ Web Page
 └── object 4 (JS)
 ```
 
-**Concrete example:** A Web page that has an HTML file and five JPEG images = **6 objects total**. The base HTML file contains the URLs pointing to each image. When your browser fetches the page, it first downloads the HTML, then parses it to discover all the referenced objects, then fetches those too.
+**Concrete example:** A Web page that has an HTML file and five JPEG images = **6 objects total**. The base HTML file references the other objects with the objects' URLs. When your browser fetches the page, it first downloads the HTML, then parses it to discover all the referenced objects, then fetches those too.
 
 **URL Structure:**
 
@@ -66,10 +82,10 @@ http://www.someSchool.edu/someDepartment/picture.gif
 
 |Role|What it does|Examples|
 |---|---|---|
-|**Web browser**|Implements the **client side** of HTTP — sends requests, renders responses|Firefox, Chrome, Internet Explorer, Safari|
-|**Web server**|Implements the **server side** of HTTP — stores objects, listens for requests, sends responses|Apache, Microsoft IIS, Nginx|
+|**Web browser**|Implements the **client side** of HTTP — sends requests, renders responses|Chrome, Edge|
+|**Web server**|Implements the **server side** of HTTP — houses objects, listens for requests, sends responses|Apache, Nginx, Microsoft Internet Information Server (IIS)|
 
-> In the context of HTTP, the terms _browser_ and _client_ are used interchangeably. Same for _web server_ and _server_.
+> Because Web browsers implement the client side of HTTP, in the context of the Web the terms _browser_ and _client_ are used interchangeably. The same goes for _Web server_ and _server_.
 
 ---
 
@@ -79,32 +95,34 @@ http://www.someSchool.edu/someDepartment/picture.gif
 
 The fundamental interaction is **request → response**:
 
-1. User clicks a link (or types a URL)
-2. Browser sends an **HTTP request message** to the server asking for an object
-3. Server receives the request, finds the object, wraps it in an **HTTP response message**, and sends it back
-4. Browser renders the received object
+1. User requests a Web page (for example, clicks a hyperlink)
+2. Browser sends **HTTP request messages** for the objects in the page to the server
+3. Server receives the requests and responds with **HTTP response messages** that contain the objects
 
-![[Pasted image 20260526213043.png]] _(Figure 2.6 — HTTP request-response behavior: a PC running Internet Explorer and a Linux machine running Firefox both talk to an Apache web server via HTTP request and response messages)_
+![[Pasted image 20260619213308.png]] _(Figure 2.6 — HTTP request-response behavior: a server running Apache exchanges HTTP request and response messages with a PC running Microsoft Edge and an Android smartphone running Google Chrome)_
 
 This is why HTTP is called a **request-response protocol** — every interaction is a client asking for something and a server answering.
 
 ---
 
-## HTTP Runs Over TCP
+## HTTP Runs Over TCP — or Over QUIC/UDP in HTTP/3
 
-> HTTP uses **TCP** as its underlying transport protocol — not UDP.
+> Depending on the HTTP version, HTTP can use either **TCP** or **UDP** as its underlying transport protocol. Using UDP is a relatively recent development — covered in §2.2.7. For now we discuss HTTP assuming **TCP** is the underlying transport protocol, which is the case for HTTP/1.0, HTTP/1.1, and HTTP/2.
 
-**The sequence:**
+**The sequence (TCP case):**
 
 1. HTTP client initiates a **TCP connection** with the server (default port **80** for HTTP, **443** for HTTPS)
-2. Once the TCP connection is established, both sides access it through their **socket interfaces** — the socket is the door between the application process and the TCP connection
-3. The client pushes an HTTP request through its socket into the TCP connection
-4. The server reads the HTTP request from its socket, processes it, and pushes the HTTP response back through its socket
-5. The response travels through TCP and arrives at the client's socket
+2. Once the connection is established, the browser and server processes access TCP through their **socket interfaces** — on the client side the socket interface is the door between the client process and the TCP connection; on the server side it is the door between the server process and the TCP connection
+3. The client sends HTTP request messages into its socket interface and receives HTTP response messages from its socket interface
+4. The server receives request messages from its socket interface and sends response messages into its socket interface
 
-**Why TCP and not UDP?**
+> Once the client sends a message into its socket interface, the message is out of the client's hands and "in the hands" of TCP. Recall that TCP provides a **reliable data transfer service** to HTTP — each HTTP request message sent by a client eventually arrives intact at the server, and each HTTP response message sent by the server eventually arrives intact at the client.
 
-HTTP needs **every single byte** of every object to arrive correctly. If even one byte of an HTML file or image is lost, the page is broken. TCP's **reliable data transfer** guarantees correct, in-order delivery. UDP offers no such guarantee and would be completely inappropriate here — you cannot render a partially received image.
+**Why TCP and not UDP for HTTP/1.x and HTTP/2?**
+
+HTTP needs **every single byte** of every object to arrive correctly. If even one byte of an HTML file or image is lost, the page is broken. TCP's reliable data transfer guarantees correct, in-order delivery — you cannot render a partially received image.
+
+> Here we see one of the great advantages of a layered architecture — HTTP need not worry about lost data or the details of how TCP recovers from loss or reordering of data within the network. That is the job of TCP and the protocols in the lower layers of the protocol stack.
 
 ---
 
@@ -112,9 +130,10 @@ HTTP needs **every single byte** of every object to arrive correctly. If even on
 
 > HTTP is a **stateless protocol** — the server maintains **no information whatsoever** about the clients between requests.
 
+It is important to note that the server sends requested files to clients **without storing any state information about the client**. If a particular client asks for the same object twice within a few seconds, the server does not respond by saying it just served that object — instead, the server resends the object, as it has completely forgotten what it did earlier.
+
 What this means in practice:
 
-- If the same client requests the same object twice in 5 seconds, the server treats both as completely fresh, independent requests
 - The server has no memory of the first request when processing the second
 - No session tables, no client history, nothing stored between requests
 
@@ -126,39 +145,61 @@ Stateful protocols are complex and fragile:
 - If a server crashes, those tables are lost — clients and server are now out of sync
 - State is expensive to maintain at scale (millions of concurrent users)
 
-Statelessness makes servers **simpler, faster, and easier to scale**.
+> Statelessness simplifies server design and has permitted engineers to develop high-performance Web servers that can handle thousands of simultaneous TCP connections.
 
-> The tradeoff: statelessness makes HTTP simple but means you cannot do things like "shopping carts" or "login sessions" natively. The solution is **cookies** (Section 2.2.4) — state layered on top of a stateless protocol.
+We also note that the Web uses the **client-server application architecture** described in §2.1 — a Web server is always on, with a fixed IP address, and services requests from potentially millions of different browsers.
+
+> The tradeoff: statelessness makes HTTP simple but means you cannot do things like "shopping carts" or "login sessions" natively. The solution is **cookies** (§2.2.4) — state layered on top of a stateless protocol.
+
+---
+
+## HTTP Versions
+
+HTTP has gone through many versions:
+
+|Version|RFC|Era|Transport|
+|---|---|---|---|
+|**HTTP/1.0**|RFC 1945|Early 1990s|TCP|
+|**HTTP/1.1**|RFC 7230|1997|TCP|
+|**HTTP/2**|RFC 7540|2015|TCP|
+|**HTTP/3**|RFC 9114|2022|UDP (via QUIC)|
+
+HTTP/1.0, HTTP/1.1, and HTTP/2 all run on top of TCP. More recently, **HTTP/3** has been standardized and is gaining traction — it runs over UDP, discussed in §2.2.7.
 
 ---
 
 # 2.2.2 Non-Persistent and Persistent Connections
 
-A fundamental design question when building an application-layer protocol: should each request/response pair be sent over its own **separate TCP connection**, or should all requests and responses flow over the **same TCP connection**?
+In many Internet applications, the client and server communicate over an extended period, with the client making a series of requests and the server responding to each. When this interaction takes place over TCP, the application developer needs to make an important decision — should each request/response pair be sent over a **separate** TCP connection, or should all requests and responses be sent over the **same** TCP connection?
 
 |Type|Description|
 |---|---|
 |**Non-persistent connections**|Separate TCP connection for **each** request/response pair — open, use once, close|
 |**Persistent connections**|**Same** TCP connection reused for multiple request/response pairs|
 
-> **HTTP/1.0** → non-persistent (default) **HTTP/1.1** → persistent (default)
+> **HTTP/1.0** → non-persistent (default) **HTTP/1.1 and HTTP/2** → persistent (default)
 
 ---
 
 ## Non-Persistent HTTP — How It Works
 
-Imagine requesting a web page that has **1 base HTML file + 10 JPEG images** (11 objects total). With non-persistent HTTP:
+Imagine requesting a web page that has **1 base HTML file + 10 JPEG images** (11 objects total), all residing on the same server, with the base HTML file's URL being `http://www.someSchool.edu/someDepartment/home.index`. With non-persistent HTTP:
 
 ```
 For the base HTML file:
-  Step 1 → Client initiates TCP connection to server on port 80
-  Step 2 → Client sends HTTP GET request for the HTML file
-  Step 3 → Server receives request, finds the HTML file,
-            wraps it in HTTP response, sends it back
-  Step 4 → Server signals TCP to close the connection
-            (TCP waits until client has fully received the data)
-  Step 5 → Client receives the response. TCP connection terminates.
-            Client parses the HTML, discovers 10 JPEG references.
+  Step 1 → Client initiates TCP connection to www.someSchool.edu on port 80
+            (a socket is created at the client and at the server)
+  Step 2 → Client sends HTTP GET request via its socket, naming the
+            path /someDepartment/home.index
+  Step 3 → Server receives the request via its socket, retrieves the
+            object from storage (RAM or disk), encapsulates it in an
+            HTTP response message, and sends it to the client via its socket
+  Step 4 → Server tells TCP to close the connection
+            (TCP doesn't actually terminate until it knows the client
+            has received the response message intact)
+  Step 5 → Client receives the response; the TCP connection terminates.
+            The client extracts the HTML file, examines it, and finds
+            references to the 10 JPEG objects.
 
 For each of the 10 JPEGs:
   Repeat Steps 1–4 for each image (10 separate TCP connections)
@@ -166,13 +207,13 @@ For each of the 10 JPEGs:
 Total TCP connections opened = 11 (one per object)
 ```
 
-> Each TCP connection transports exactly **one request message and one response message** — that is what "non-persistent" means.
+> Each non-persistent TCP connection transports exactly **one request message and one response message**. Two different browsers may interpret (display) a received Web page differently — HTTP has nothing to do with how a page is rendered; the HTTP specs ([RFC 1945] and [RFC 7540]) define only the communication protocol between the client and server HTTP programs.
 
 **Problems:**
 
-1. **Overhead per object** — A brand-new TCP connection must be set up for each object. This means buffers allocated, TCP variables initialized, and the three-way handshake performed — at both client and server — for every single object. A web server handling thousands of clients simultaneously feels this pain acutely.
+1. **Overhead per object** — A brand-new TCP connection must be established and maintained for **each requested object**. For each connection, TCP buffers must be allocated and TCP variables kept in both client and server — a significant burden on a server handling hundreds of clients simultaneously.
     
-2. **2 RTTs per object** — Each object costs at minimum two full round trips before delivery begins (one RTT for TCP setup, one RTT for the HTTP request+response). On a high-latency connection, this is brutal.
+2. **2 RTTs per object** — Each object suffers a delivery delay of two RTTs: one RTT to establish the TCP connection, and one RTT to request and receive the object.
     
 
 ---
@@ -181,13 +222,15 @@ Total TCP connections opened = 11 (one per object)
 
 > The **round-trip time (RTT)** is the time it takes for a small packet to travel from client to server and then **back** to the client.
 
-RTT captures all the delays in between:
+RTT includes:
 
-- **Propagation delay** — speed of light over the physical medium
-- **Queuing delay** — waiting in router buffers along the path
-- **Processing delay** — time routers take to examine packet headers
+- **Packet-propagation delays**
+- **Packet-queuing delays** in intermediate routers and switches
+- **Packet-processing delays**
 
-![[Pasted image 20260526213247.png]] _(Figure 2.7 — Timeline showing 2 RTTs needed to fetch a single file with non-persistent HTTP: RTT 1 for TCP handshake, RTT 2 for the HTTP request and first bytes of response, plus the file transmission time at the end)_
+When a user clicks a hyperlink, the browser initiates a TCP connection involving a **three-way handshake**: the client sends a small TCP segment, the server acknowledges and responds with a small TCP segment, and finally the client acknowledges back to the server.
+
+![[Pasted image 20260619213546.png]] _(Figure 2.7 — Back-of-the-envelope calculation for the time needed to request and receive an HTML file: RTT 1 for the TCP three-way handshake, RTT 2 for the HTTP request and the start of the response, plus the file transmission time at the end)_
 
 **Response time formula for non-persistent HTTP (one object):**
 
@@ -195,57 +238,75 @@ RTT captures all the delays in between:
 Response time = 2 × RTT + file transmission time
 
 Where:
-  RTT 1 → TCP 3-way handshake (SYN from client → SYN-ACK from server)
-           The ACK + HTTP request are combined in the third message
-  RTT 2 → HTTP request travels to server, response begins arriving
+  RTT 1 → The first two parts of the three-way handshake
+  RTT 2 → The client sends the HTTP request combined with the third
+           part of the handshake (the ACK); the server's HTML file
+           transmission begins once the request arrives
   + file transmission time → time to push all bytes of the file
 ```
 
-**For a full page with N objects (serial):**
-
-```
-Total time = (2 RTT + HTML transmission time)
-           + N × (2 RTT + object transmission time)
-```
-
-For a page with 10 images, that's **22 RTTs** worth of handshake overhead alone, before counting any actual file transmission. Browsers partially mitigate this by opening **multiple parallel TCP connections** (typically 5–10), but non-persistent HTTP is still fundamentally inefficient.
+Thus, roughly, the total response time for one object is **two RTTs plus the transmission time at the server**.
 
 ---
 
-## Persistent HTTP (HTTP/1.1 Default)
+## HTTP with Persistent Connections
 
-> With **persistent connections**, the server **leaves the TCP connection open** after sending a response. All subsequent requests and responses between the same client-server pair go over the same TCP connection.
+Non-persistent connections have shortcomings:
 
-**The key insight:** once the TCP connection is warmed up and the three-way handshake is paid for, why throw it away?
+- A brand-new connection must be established and maintained for **each requested object** — placing a significant burden on the server
+- Each object suffers a delivery delay of **two RTTs**
 
-**Two flavours of persistent HTTP:**
+> With **persistent connections**, as employed in **HTTP/1.1 and HTTP/2**, the server leaves the TCP connection open after sending a response. Subsequent requests and responses between the same client and server can be sent over the **same** connection.
+
+In particular, an entire Web page (the base HTML file and all 10 images) can be sent over a single persistent TCP connection. Moreover, multiple Web pages residing on the same server can be sent from the server to the same client over a single persistent TCP connection. These requests for objects can be made using **"pipelining"** — that is, back-to-back, without waiting for replies to pending requests.
 
 |Mode|Behaviour|Cost|
 |---|---|---|
-|**Persistent without pipelining**|Client waits for each response before sending the next request|~1 RTT per object (vs 2 for non-persistent) — still sequential|
-|**Persistent with pipelining** _(HTTP/1.1 default)_|Client sends all requests back-to-back without waiting for any response — requests are "pipelined"|~1 RTT total for all objects on same server|
+|**Persistent without pipelining**|Client waits for each response before sending the next request|~1 RTT per object — still sequential, but without repeated handshake cost|
+|**Persistent with pipelining** _(default)_|Client sends requests back-to-back without waiting for any response|~1 RTT total for all objects on the same server|
 
-**Why pipelining is a big deal:**
-
-Without pipelining, fetching 10 objects still takes 10 sequential RTTs (just without the TCP setup cost each time). With pipelining, the client fires all 10 GET requests in quick succession and the server streams back all 10 responses — the whole batch costs roughly 1 RTT regardless of N.
-
-The server closes a persistent connection when it has been idle for a configurable **timeout interval** (typically around 75 seconds for Apache). The client can also explicitly request closure with the `Connection: close` header.
+Typically, the HTTP server closes a connection when it isn't used for a certain time (a configurable **timeout interval**). When the server receives the back-to-back requests, it sends the objects back-to-back.
 
 ---
 
 # 2.2.3 HTTP Message Format
 
-There are exactly two types of HTTP messages: **request messages** (client → server) and **response messages** (server → client). Both are written in **ASCII text** — you can read them with your eyes, which makes HTTP easy to debug.
+The HTTP specifications ([RFC 1945]; [RFC 7230]; [RFC 7540]; [RFC 9114]) define the HTTP message formats. There are exactly two types of HTTP messages: **request messages** (client → server) and **response messages** (server → client).
 
 ---
 
 ## HTTP Request Message
 
-### Structure
+**A typical HTTP request message:**
 
-![[Pasted image 20260526213422.png]] _(HTTP request message general format: Request line at top, followed by Header lines, then a blank line (\r\n), then the optional Entity body used with POST)_
+```
+GET /somedir/page.html HTTP/1.1
+Host: www.someschool.edu
+Connection: close
+User-agent: Mozilla/5.0
+Accept-language: fr
+```
 
-**Every HTTP request message has this exact layout:**
+We can learn a lot from this simple message. First, it is written in ordinary **ASCII text**, so an ordinary computer-literate human can read it. Second, the message consists of five lines, each followed by a carriage return and a line feed; the last line is followed by an additional carriage return and line feed. A request message can have many more lines, or as few as one.
+
+The first line is called the **request line**; the subsequent lines are called the **header lines**.
+
+**Breaking down the request line** (`GET /somedir/page.html HTTP/1.1`):
+
+- **Method field** → `GET` — can take on several values: `GET`, `POST`, `HEAD`, `PUT`, `DELETE`. The great majority of HTTP requests use `GET`.
+- **URL field** → `/somedir/page.html` — the object being requested
+- **HTTP version field** → `HTTP/1.1`
+
+**Breaking down each header line:**
+
+|Header|Value in example|What it means|
+|---|---|---|
+|`Host:`|`www.someschool.edu`|Specifies the host on which the object resides. You might think this is unnecessary since there's already a TCP connection in place — but this information is required by **Web proxy caches** (§2.2.5)|
+|`Connection:`|`close`|Tells the server the browser doesn't want to bother with persistent connections — it wants the connection closed after the requested object is sent|
+|`User-agent:`|`Mozilla/5.0`|Specifies the user agent — the browser type making the request (here, Firefox). Useful because a server can send different versions of the same object to different user agents (each addressed by the same URL)|
+|`Accept-language:`|`fr`|Indicates the user prefers a French version of the object if one exists; otherwise the server should send its default version. One of many **content negotiation** headers available in HTTP|
+
+**General format of a request message:**
 
 ```
 Request line   →  method  SP  URL  SP  HTTP-version  CRLF
@@ -253,36 +314,18 @@ Header line 1  →  field-name: value  CRLF
 Header line 2  →  field-name: value  CRLF
 ...
 (blank line)   →  CRLF
-Entity body    →  (only present for POST; empty for GET)
+Entity body    →  (empty for GET; present for POST)
 ```
 
 `SP` = a space character, `CRLF` = carriage return + line feed (`\r\n`)
 
-**Concrete example of a real HTTP request:**
+_(Figure 2.8 — General format of an HTTP request message)_
 
-```
-GET /somedir/page.html HTTP/1.1\r\n
-Host: www.someschool.edu\r\n
-Connection: close\r\n
-User-agent: Mozilla/5.0\r\n
-Accept-language: fr\r\n
-\r\n
-```
+The general format closely follows the example above. After the header lines (and the additional CRLF) there is an **entity body**. The entity body is empty with the `GET` method but is used with `POST`. An HTTP client often uses `POST` when the user fills out a form — for example, providing search words to a search engine. With a `POST` message, the user is still requesting a Web page, but the specific contents of the page depend on what was entered into the form fields; if the method field is `POST`, the entity body contains what the user entered into the form fields.
 
-**Breaking down the request line:**
+> **GET with form data:** A request generated from a form does not necessarily have to use `POST`. HTML forms often use `GET` and include the inputted data in the requested URL. For example, if a form uses `GET`, has two fields, and the inputs to the two fields are `monkeys` and `bananas`, the URL has the structure `www.somesite.com/animalsearch?monkeys&bananas`. In day-to-day Web surfing you have probably noticed extended URLs of this sort.
 
-- `GET` → the method (what operation the client wants)
-- `/somedir/page.html` → the URL (which object)
-- `HTTP/1.1` → the protocol version
-
-**Breaking down each header line:**
-
-|Header|Value in example|What it means|
-|---|---|---|
-|`Host:`|`www.someschool.edu`|Hostname of the server. **Required by HTTP/1.1.** Used by proxy caches and servers hosting multiple sites on one IP|
-|`Connection:`|`close`|Tells server: "don't bother keeping this connection alive — close it after the response." Overrides HTTP/1.1's default persistent behaviour|
-|`User-agent:`|`Mozilla/5.0`|Which browser is making the request. Servers can use this to send browser-specific versions of a page (e.g. mobile-optimised HTML for a mobile UA)|
-|`Accept-language:`|`fr`|Client prefers a French version of the object if available; if not, send the default. This is content negotiation|
+> **POST vs GET for forms:** POST puts form data in the entity body (invisible in URL); GET puts it in the URL (visible, logged by servers and proxies). **Never use GET for sensitive data like passwords.**
 
 ---
 
@@ -292,23 +335,47 @@ Accept-language: fr\r\n
 |---|---|---|---|
 |**GET**|No|Request the object at the specified URL|Fetching any web resource (pages, images, APIs)|
 |**POST**|Yes|Submit data to the server; data is in the entity body|HTML form submissions (login forms, search, etc.)|
-|**HEAD**|No|Like GET but server only sends the headers — no object body|Debugging; checking if an object exists/was modified without downloading it|
-|**PUT**|Yes|Upload an object to a specific path on the server|REST APIs; uploading a resource|
-|**DELETE**|No|Delete the object at the specified URL|REST APIs; removing a resource|
-
-> **GET with form data:** When a browser submits a form using GET (not POST), form data is appended to the URL: `www.site.com/search?query=networking&lang=en`. The `?` separates the URL from form data; `&` separates fields. This is why search queries appear in your browser's address bar.
-
-> **POST vs GET for forms:** POST puts form data in the entity body (invisible in URL); GET puts it in the URL (visible, logged by servers and proxies). **Never use GET for sensitive data like passwords.**
+|**HEAD**|No|Similar to GET, but the server's response leaves out the requested object|Debugging — application developers often use `HEAD` for this purpose|
+|**PUT**|Yes|Upload an object to a specific path on a specific Web server|Used in conjunction with Web-publishing tools, and by applications that need to upload objects to Web servers|
+|**DELETE**|No|Delete the object at the specified URL|Allows a user, or an application, to delete an object on a Web server|
 
 ---
 
 ## HTTP Response Message
 
-### Structure
+**A typical HTTP response message** (the response to the example request above):
 
-![[Pasted image 20260526213610.png]] _(HTTP response message general format: Status line at top with version, status code, and phrase; followed by Header lines; then a blank line (\r\n); then the Entity body containing the actual requested object)_
+```
+HTTP/1.1 200 OK
+Connection: close
+Date: Mon, 21 Oct 2024 18:58:21 GMT
+Server: Apache/2.2.3 (CentOS)
+Last-Modified: Sun, 20 Oct 2024 13:20:46 GMT
+Content-Length: 6821
+Content-Type: text/html
+  (data data data data data ...)
+```
 
-**Every HTTP response message follows this layout:**
+This message has three sections: an initial **status line**, six **header lines**, and then the **entity body**. The entity body is the meat of the message — it contains the requested object itself.
+
+**Breaking down the status line:**
+
+- `HTTP/1.1` → server's protocol version
+- `200` → status code
+- `OK` → corresponding status phrase — together these indicate that the server found, and is sending, the requested object
+
+**Breaking down each header line:**
+
+|Header|Example value|What it means|
+|---|---|---|
+|`Connection:`|`close`|Server will close the TCP connection after sending the message|
+|`Date:`|`Mon, 21 Oct 2024 18:58:21 GMT`|The time and date the server **created and sent** the response — not when the object was created/last modified, but when the server retrieved the object from its file system and inserted it into the response|
+|`Server:`|`Apache/2.2.3 (CentOS)`|Indicates the message was generated by an Apache Web server — analogous to `User-agent:` in the request. A **privacy/security risk** in production (tells attackers what software/version to target)|
+|`Last-Modified:`|`Sun, 20 Oct 2024 13:20:46 GMT`|Time and date the object was created or last modified. **Critical for object caching**, both in the local browser and in network cache servers (proxy servers) — see §2.2.5|
+|`Content-Length:`|`6821`|Number of bytes in the object being sent|
+|`Content-Type:`|`text/html`|Indicates the object in the entity body is HTML text. The object type is officially indicated by `Content-Type:`, **not** the file extension|
+
+**General format of a response message:**
 
 ```
 Status line    →  HTTP-version  SP  status-code  SP  phrase  CRLF
@@ -319,42 +386,11 @@ Header line 2  →  field-name: value  CRLF
 Entity body    →  the requested object (HTML, JPEG, etc.)
 ```
 
-**Concrete example of a real HTTP response:**
-
-```
-HTTP/1.1 200 OK\r\n
-Connection: close\r\n
-Date: Tue, 09 Aug 2011 15:44:04 GMT\r\n
-Server: Apache/2.2.3 (CentOS)\r\n
-Last-Modified: Tue, 09 Aug 2011 15:11:03 GMT\r\n
-Content-Length: 6821\r\n
-Content-Type: text/html\r\n
-\r\n
-(data data data ...)
-```
-
-**Breaking down the status line:**
-
-- `HTTP/1.1` → server's protocol version
-- `200` → status code (numeric result of the request)
-- `OK` → human-readable phrase explaining the code
-
-**Breaking down each header line:**
-
-|Header|Example value|What it means|
-|---|---|---|
-|`Connection:`|`close`|Server will close TCP connection after this response|
-|`Date:`|`Tue, 09 Aug 2011 15:44:04 GMT`|The **exact time the server created and sent this response** — not when the object was created, but when this specific message was assembled|
-|`Server:`|`Apache/2.2.3 (CentOS)`|Server software version. Useful for debugging; a **privacy/security risk** in production (tells attackers what to target)|
-|`Last-Modified:`|`Tue, 09 Aug 2011 15:11:03 GMT`|When this object was last modified on the server. **Critical for caching** — used by the conditional GET mechanism|
-|`Content-Length:`|`6821`|Size of the entity body in bytes. Tells the client exactly how many bytes to expect|
-|`Content-Type:`|`text/html`|MIME type of the entity body — tells the browser what kind of object it received and how to render it|
+_(Figure 2.9 — General format of an HTTP response message)_
 
 ---
 
 ### HTTP Status Codes — Complete Reference
-
-The **three-digit status code** is the most important part of the response for programmatic processing. Grouped by category:
 
 |Range|Category|Meaning|
 |---|---|---|
@@ -364,36 +400,35 @@ The **three-digit status code** is the most important part of the response for p
 |**4xx**|Client Error|Request has bad syntax or cannot be fulfilled — **client's fault**|
 |**5xx**|Server Error|Server failed to fulfil an apparently valid request — **server's fault**|
 
-**Most important codes to know:**
+**Some common status codes and phrases:**
 
-|Code|Phrase|Meaning|When you see it|
-|---|---|---|---|
-|**200**|OK|Request succeeded. Object is in the entity body|Normal successful fetch|
-|**301**|Moved Permanently|Object has permanently moved to a new URL given in the `Location:` header. Browser automatically follows the redirect|Site has changed its URL structure|
-|**304**|Not Modified|Sent in response to conditional GET. Object unchanged — client should use its cached copy. **No entity body**|Cache validation (see 2.2.6)|
-|**400**|Bad Request|Server could not understand the request — malformed syntax|Buggy client code; malformed request|
-|**404**|Not Found|Requested object does not exist on this server|Broken links, deleted pages, typos in URL|
-|**505**|HTTP Version Not Supported|Server does not support the HTTP version in the request|Version mismatch between client and server|
+|Code|Phrase|Meaning|
+|---|---|---|
+|**200**|OK|Request succeeded and the information is returned in the response|
+|**301**|Moved Permanently|Requested object has been permanently moved; the new URL is specified in the response's `Location:` header — the client software will automatically retrieve the new URL|
+|**400**|Bad Request|Generic error code indicating the request could not be understood by the server|
+|**404**|Not Found|The requested document does not exist on this server|
+|**505**|HTTP Version Not Supported|The requested HTTP protocol version is not supported by the server|
 
-> **Practical exercise — see a real HTTP response:** Open a terminal and type:
+> `304 Not Modified` is a special status code used specifically in response to a **conditional GET** — covered in §2.2.5.
 
-```
-telnet cis.poly.edu 80
-GET /~ross/ HTTP/1.1
-Host: cis.poly.edu
-```
- 
-> Press Enter twice. You will see a live HTTP response message — status line, all headers, then the HTML body. Use `HEAD` instead of `GET` to see only headers without downloading the page body.
+> **Practical exercise — see a real HTTP request and response:** From a command-line prompt, enter:
+> 
+> ```
+> curl -v http://gaia.cs.umass.edu/kurose_ross/index.php
+> ```
+> 
+> This sends an HTTP GET request to the `gaia.cs.umass.edu` Web server to retrieve `/kurose_ross/index.php` — the authors' homepage for this textbook. The verbose option (`-v`) displays the text content of both the HTTP GET request and the response received, as text. To see the response rendered, just enter the URL into a browser instead.
+
+The HTTP specification defines many more header lines than the ones covered here — a browser generates header lines as a function of the browser type/version, the user's browser configuration, and whether the browser already has a cached (but possibly out-of-date) version of the object. Web servers behave similarly: different products, versions, and configurations all influence which header lines are included in response messages.
 
 ---
 
 # 2.2.4 User-Server Interaction — Cookies
 
-**The problem:** HTTP is stateless, but the real Web needs state. Amazon needs to know who you are to show your shopping cart. Gmail needs to know you're logged in. A news site wants to remember your reading preferences.
+We mentioned above that an HTTP server is stateless. This simplifies server design and has permitted engineers to build high-performance Web servers that handle thousands of simultaneous TCP connections. However, it is often desirable for a Web site to identify users — either because it wishes to restrict access, or because it wants to serve content as a function of user identity.
 
-**The solution:** **Cookies** — a mechanism for layering state on top of a stateless protocol.
-
-> Cookies are standardised in RFC 6265.
+**The solution:** **Cookies**, defined in [RFC 6265], allow sites to track users. Most major commercial Web sites use cookies today.
 
 ---
 
@@ -401,8 +436,8 @@ Host: cis.poly.edu
 
 1. A `Set-cookie:` header line in the **HTTP response** (server → client)
 2. A `Cookie:` header line in the **HTTP request** (client → server)
-3. A **cookie file** stored on the user's machine, managed by the browser
-4. A **back-end database** at the Web site, indexed by cookie value
+3. A **cookie file** stored on the user's end system, managed by the browser
+4. A **back-end database** at the Web site
 
 All four must be in place for the system to work.
 
@@ -410,7 +445,7 @@ All four must be in place for the system to work.
 
 ## How Cookies Work — Step by Step
 
-**Scenario:** Susan visits Amazon for the first time from her home PC.
+**Scenario:** Susan, who always accesses the Web using Google Chrome from her home PC, contacts Amazon.com for the first time. Suppose she has already visited eBay in the past.
 
 ```
 Visit 1 — No cookie yet:
@@ -418,281 +453,245 @@ Visit 1 — No cookie yet:
   (usual HTTP request, no Cookie: header)
 
   Amazon server:
-  → Notices: no cookie in request = new user
-  → Creates a unique ID for Susan: 1678
-  → Creates an entry in its database: { 1678: Susan's activity }
-  → Sends HTTP response INCLUDING:
+  → Creates a unique identification number for Susan: 1678
+  → Creates an entry in its back-end database, indexed by that number
+  → Sends an HTTP response INCLUDING:
       Set-cookie: 1678
 
   Susan's browser:
-  → Reads the Set-cookie header
-  → Appends to Susan's cookie file: amazon.com → 1678
+  → Sees the Set-cookie: header
+  → Appends a line to its cookie file: hostname + identification number
+    (the cookie file already has an entry for eBay, since Susan visited
+    that site in the past)
 ```
 
 ```
-Visit 2 (and all subsequent visits):
+Every subsequent request to Amazon:
   Susan's browser → Amazon server
-  → Browser checks cookie file, finds entry for amazon.com: 1678
-  → Automatically adds to request:
+  → Browser consults its cookie file, extracts the identification
+    number for this site, and includes:
       Cookie: 1678
 
   Amazon server:
-  → Reads Cookie: 1678
-  → Looks up 1678 in database
-  → Knows this is Susan, retrieves her history, preferences, cart
-  → Returns personalised content
+  → Reads Cookie: 1678, looks it up in its back-end database
+  → Is able to track Susan's activity at the site — though Amazon
+    doesn't necessarily know her name, it knows exactly which pages
+    user 1678 visited, in which order, and at what times
 ```
 
 ```
 One week later:
-  Same thing — browser still has the cookie, still sends Cookie: 1678
-  Amazon still has the database entry
-  Susan gets her shopping cart back
+  Susan's browser still includes Cookie: 1678 in every request
+  Amazon's database still has the matching entry
+  Amazon can recommend products based on pages Susan visited in the past
 ```
 
 ![[Pasted image 20260526213931.png]] _(Figure 2.10 — Keeping user state with cookies: the server creates the ID and sets the cookie in the response; all subsequent requests carry the Cookie header; the server's backend database maps ID to user data)_
 
-**What websites use cookies for:**
+**Registration and "one-click shopping":** If Susan also registers with Amazon — providing her full name, e-mail address, postal address, and credit card information — Amazon can associate this information with her identification number (and with every page she has ever visited at the site). This is how Amazon and other e-commerce sites provide **"one-click shopping"**: when Susan chooses to purchase an item on a subsequent visit, she doesn't need to re-enter her name, card number, or address.
 
-|Use case|How cookies enable it|
-|---|---|
-|Session authentication|Cookie value identifies a logged-in session — server knows you don't need to log in again|
-|Shopping carts|Cart contents stored in database, keyed by cookie ID|
-|Personalisation|Preferences, language, layout stored server-side, retrieved by cookie|
-|Recommendations|Purchase/browse history tracked in database against cookie ID|
-|Third-party tracking|Ad networks set their own cookies across many sites to build cross-site browsing profiles|
+**Cookies for session state:** Cookies can be used to identify a user across an entire session. The first time a user visits a site, they may provide an identification (possibly their name). During subsequent requests in that session, the browser passes the cookie header to the server, identifying the user throughout. For example, when a user logs in to a Web-based e-mail application, the browser sends cookie information to the server, permitting the server to identify the user throughout the session — this creates a **user session layer on top of stateless HTTP**.
 
 **The privacy concern:**
 
-Cookies allow websites to build detailed profiles of users across time and even across sites (via third-party cookies from ad networks). A site can combine cookie-tracked browsing behaviour with account information (name, email, address) to create an extremely detailed profile. This is the fundamental tension between personalisation and privacy — and it drives ongoing debates about cookie consent laws (GDPR, etc.).
+Although cookies often simplify the Internet shopping experience, they are controversial because they can also be considered an invasion of privacy. Using a combination of cookies and user-supplied account information, a Web site can learn a great deal about a user — and potentially sell this information to a third party.
 
 ---
 
-# 2.2.5 Web Caching
+# 2.2.5 Browser Caching
 
-> A **Web cache** — also called a **proxy server** — is a network entity that satisfies HTTP requests on behalf of an origin Web server.
+We learned earlier (Figure 2.7) that the minimum delay from when your browser first requests an object until it receives that object is **2RTT** — one RTT to establish the TCP connection, and another RTT to send the HTTP request and receive the response. (We'll see shortly that HTTP/3 has been optimized to require just **one RTT** to request a Web page in many cases.) Can this delay be cut to something even _less_ than one RTT — even to **zero**? Although this might seem to defy the laws of physics, it can indeed happen with **browser caching**, a technique implemented in all modern Web browsers and used extensively across the Web. One estimate is that **75% of Web requests** receive HTTP responses carrying explicit browser-caching instructions [Web Almanac 2021].
 
-The Web cache has its own local disk storage. When it receives a request for an object, it checks if it has a stored copy. If yes, it serves it locally. If no, it fetches it from the origin server, stores a copy, and forwards it to the client.
+With browser caching, a Web browser **locally** stores the content of recently received Web objects in its **browser cache**. When a user requests a Web object, the browser first checks whether that object is stored in its local cache. If so, it may immediately display the object — without making a new request to the Web server, and without incurring the request/response delay — since the browser already requested and received that object earlier.
 
-![[Pasted image 20260526214140.png]] _(Figure 2.11 — Clients requesting objects through a Web cache: both clients talk to the proxy server; the proxy fetches from origin servers only when its local copy is missing or stale)_
+**The challenge:** how does the browser know whether the object currently housed on the Web server has been modified since the copy was cached locally? Certain objects (images, JS, CSS) change infrequently; others (text) may change often. HTTP provides fields in both the GET and response messages to help manage browser caching [RFC 7232]:
 
----
-
-## How a Web Cache Satisfies a Request — Step by Step
-
-```
-Step 1:
-  Browser sends HTTP request to the Web cache
-  (browser is configured to route all requests through the cache)
-
-Step 2:
-  Web cache checks its local disk storage
-  → HIT: cache has a copy → sends it directly to browser in HTTP response
-          ✓ Origin server not contacted. Fast.
-  → MISS: cache does not have the object → proceed to Step 3
-
-Step 3 (cache miss only):
-  Web cache opens a TCP connection to the origin server
-  Sends an HTTP request for the object to the origin server
-  Origin server sends back an HTTP response with the object
-
-Step 4:
-  Web cache receives the object
-  → Stores a copy in local disk storage
-  → Forwards the object to the browser in an HTTP response
-    (over the existing TCP connection between browser and cache)
-```
-
-> **Important:** A Web cache is simultaneously a **server** (it responds to browsers' requests) and a **client** (it makes requests to origin servers). It plays both roles, which is why it is also called a "proxy."
-
----
-
-## Who Installs and Operates Web Caches?
-
-> Typically a Web cache is purchased and installed by an **ISP**.
-
-- A **university** installs a cache on the campus network → all campus browsers are configured to point to it. Students browsing popular content hit the campus cache instead of the Internet.
-- A **residential ISP** (like a cable company) installs caches in its regional infrastructure → reduces traffic on expensive backbone links.
-- Both cases reduce costs and improve speed for users.
-
----
-
-## Why Web Caching? — Two Quantitative Reasons
-
-### Reason 1 — Reduce Client Response Time
-
-> A cache can **substantially reduce response time**, especially when the bottleneck bandwidth between client and origin server is much lower than the bandwidth between client and cache.
-
-If a high-speed LAN connects the client to the cache, and the cache has the object, the client gets it at LAN speed (~100 Mbps or 1 Gbps) instead of waiting for it to cross a congested 15 Mbps Internet link. The difference is dramatic.
-
-### Reason 2 — Reduce Traffic on Access Links (and Cost)
-
-![[Pasted image 20260526214407.png]] _(Figure 2.12 — Bottleneck scenario: institutional network with 100 Mbps LAN connected to the public Internet via a 15 Mbps access link. Origin servers are scattered across the Internet.)_
-
-**Given parameters:**
-
-- Average object size: **1 Mbit**
-- Average browser request rate: **15 requests/second**
-- Average data rate to browsers: **15 Mbps**
-- Access link capacity: **15 Mbps**
-- Average Internet delay (router on Internet side → origin server → back): **2 seconds**
-
-**Scenario A — No cache:**
-
-```
-Traffic intensity on access link:
-  = Data rate / Link capacity
-  = 15 Mbps / 15 Mbps
-  = 1.0
-
-Traffic intensity = 1.0 → queuing delay approaches INFINITY
-→ Total response time ≈ minutes (completely unusable)
-```
-
-**Scenario B — Upgrade access link to 100 Mbps:**
-
-```
-Traffic intensity on access link:
-  = 15 Mbps / 100 Mbps
-  = 0.15
-
-→ Queuing delay ≈ milliseconds (negligible)
-→ Total delay ≈ 2 sec (Internet delay) + milliseconds
-             ≈ ~2 seconds
-
-Cost: Significant — leasing a 100 Mbps Internet connection
-      is much more expensive than a 15 Mbps one
-```
-
-**Scenario C — Install a local Web cache (hit rate = 0.4):**
-
-![[Pasted image 20260526214557.png]] _(Figure 2.13 — Web cache added to institutional network: cache sits inside the 100 Mbps LAN. 40% of requests are served locally; 60% go out over the 15 Mbps access link.)_
-
-```
-40% of requests → satisfied by cache (LAN speed)
-  Delay ≈ a few milliseconds ≈ ~0 seconds
-
-60% of requests → must fetch from origin server over access link
-  Traffic intensity on access link:
-    = (0.6 × 15 Mbps) / 15 Mbps = 0.6
-    → Queuing delay is small (0.6 << 1.0)
-    → Delay ≈ 2 sec Internet delay + small queuing ≈ ~2 seconds
-
-Average total delay:
-  = 0.4 × (0 sec) + 0.6 × (2 sec)
-  = 0 + 1.2
-  = 1.2 seconds
-
-Cost: An inexpensive PC running open-source cache software
-      (e.g. Squid) — far cheaper than upgrading the access link
-```
-
-> **Result: 1.2 seconds average response time at a fraction of the cost of the 100 Mbps link upgrade.** Web caches are one of the most cost-effective performance improvements in networking.
-
----
-
-## Content Distribution Networks (CDNs)
-
-> Through **Content Distribution Networks (CDNs)**, the concept of web caching is deployed at Internet scale.
-
-A CDN company installs many **geographically distributed caches** (sometimes hundreds of locations worldwide) throughout the Internet. When a user in Kolkata requests a YouTube video, they are served by a CDN node in India rather than a server in California — drastically reducing latency and backbone traffic.
-
-|Type|Examples|
-|---|---|
-|**Shared CDN** (serves multiple companies' content)|Akamai, Limelight, Cloudflare|
-|**Dedicated CDN** (serves one company's own content)|Google (YouTube), Microsoft (Azure CDN), Netflix (Open Connect)|
-
-CDNs are covered in much greater detail in Chapter 7.
-
----
-
-# 2.2.6 The Conditional GET
-
-**The problem:** Caching introduces a new issue. The cached copy of an object might be **stale** — the origin server might have updated the object since the cache stored it. Serving a stale copy to the user is wrong.
-
-**The solution:** The **conditional GET** — a mechanism for a cache to verify whether its stored copy is still fresh without unnecessarily re-downloading the entire object if it hasn't changed.
+- **`Cache-Control`** — A field in an HTTP **response** message that lets the server specify how the content should be cached.
+    - `Cache-Control: no-store` instructs the browser **not** to cache the content locally — the browser will always have to re-request it from the server.
+    - `Cache-Control: max-age=3600` tells the browser the content can remain cached for **3600 seconds**, after which it must be re-requested. Many other `Cache-Control` directives are defined in [RFC 7232].
+- **`If-Modified-Since`** — HTTP provides a mechanism in the client-to-server message, known as the **conditional GET message**, to facilitate caching.
 
 > An HTTP request is a **conditional GET** if: (1) it uses the `GET` method AND (2) it includes an `If-Modified-Since:` header line.
+
+With a conditional GET, the client explicitly requests an object but lets the server know it already has that object in its browser cache, and when that object was added to the cache. The server will reply with the full object only if it has changed since; otherwise it simply confirms that the cached copy is still current — without sending the object again.
 
 ---
 
 ## How the Conditional GET Works — Full Example
 
-**Step 1 — Cache fetches object for the first time (no cached copy yet):**
+Suppose a browser has previously requested an object, say `kiwi.jpg`, has that object in its cache, and has recorded the time it was added to the cache. When the user later requests this object again, the browser is uncertain whether the cached copy is still current — this can happen because the server never provided cache-control information, a previously provided `max-age` directive has expired, or the server directed the browser to always explicitly check freshness. In this case, the browser sends a conditional GET:
 
 ```
-Cache → Origin server:
-  GET /fruit/kiwi.gif HTTP/1.1
+Browser → Server:
+  GET /fruit/kiwi.jpg HTTP/1.1
   Host: www.exotiquecuisine.com
-
-Origin server → Cache:
-  HTTP/1.1 200 OK
-  Date: Sat, 08 Oct 2011 15:39:29 GMT
-  Last-Modified: Wed, 05 Oct 2011 09:23:24 GMT
-  Content-Type: image/gif
-  (object body — the actual image bytes)
-
-Cache stores:
-  → A copy of kiwi.gif in local storage
-  → The Last-Modified date: Wed, 05 Oct 2011 09:23:24 GMT
+  If-modified-since: Fri, 13 Sep 2024 09:23:24
 ```
 
-**Step 2 — One week later, a browser requests the same object:**
+The `If-modified-since:` value indicates the cached object was received on 13 Sep 2024 at 9:23:24 — this conditional GET is telling the server to send the object **only if** it has been modified since that date.
 
-The cache has a copy, but is it still fresh? It asks the origin server using a conditional GET:
-
-```
-Cache → Origin server:
-  GET /fruit/kiwi.gif HTTP/1.1
-  Host: www.exotiquecuisine.com
-  If-Modified-Since: Wed, 05 Oct 2011 09:23:24 GMT
-                     ↑ this is the date the cache received it
-```
-
-**Step 3a — Object has NOT been modified since that date:**
+**Case A — Object has NOT been modified since that date:**
 
 ```
-Origin server → Cache:
+Server → Browser:
   HTTP/1.1 304 Not Modified
-  Date: Sat, 15 Oct 2011 15:39:29 GMT
-  (empty entity body — no object bytes transmitted)
-
-Cache → Browser:
-  Forwards its locally stored copy of kiwi.gif
+  Date: Fri, 8 Nov 2024 12:07:29
+  Server: Apache/2.4.62 (Unix)
+  (empty entity body)
 ```
 
-**Step 3b — Object HAS been modified since that date:**
+The Web server still sends a response message but does **not** include the requested object. The `304 Not Modified` status line tells the browser its cached copy is current and can be used. Including the object here would only waste bandwidth and increase user-perceived response time — particularly for large objects.
+
+**Case B — Object HAS been modified since that date:**
 
 ```
-Origin server → Cache:
+Server → Browser:
   HTTP/1.1 200 OK
-  Date: Sat, 15 Oct 2011 15:39:29 GMT
-  Last-Modified: Mon, 10 Oct 2011 14:22:00 GMT
   (new object body — updated image bytes)
-
-Cache:
-  → Replaces old copy with the new one
-  → Updates the stored Last-Modified date
-  → Forwards the new object to the browser
 ```
 
-> **Key insight:** The `304 Not Modified` response has an **empty body** — no object bytes are transmitted. The cache already has the object; the server is just confirming "yours is still good." This saves bandwidth while ensuring correctness.
+The browser replaces its old cached copy with the new object and updates its locally-recorded modification time.
 
-**Summary of conditional GET:**
+> **Key insight:** The `304 Not Modified` response has an **empty body** — no object bytes are transmitted. The browser already has the object; the server is just confirming "yours is still good." This saves bandwidth while ensuring correctness.
+
+---
+
+# 2.2.6 HTTP/2
+
+**HTTP/2** [RFC 7540], standardized in 2015, was the first new version of HTTP since HTTP/1.1 (standardized in 1997). About **35% of the top 10 million websites** supported HTTP/2 in 2024 [W3Techs], and most browsers — including Chrome, Edge, Safari, Opera, and Firefox — support it. Usage has declined somewhat in recent years due to the emergence of HTTP/3 (§2.2.7).
+
+**Primary goals of HTTP/2:**
+
+- Reduce perceived latency by enabling request and response **multiplexing** over a **single** TCP connection
+- Provide **request prioritization** and **server push**
+- Provide efficient **compression** of HTTP header fields
+
+> HTTP/2 does **not** change HTTP methods, status codes, URLs, or header fields. Instead, it changes **how data is formatted and transported** between client and server.
+
+---
+
+## The Motivation — Head of Line (HOL) Blocking
+
+Recall that HTTP/1.1 uses persistent TCP connections, allowing a Web page to be sent from server to client over a **single** TCP connection. Having only one TCP connection per page reduces the number of sockets at the server and ensures each transported page gets a fair share of network bandwidth.
+
+But Web browser developers quickly discovered that sending all of a page's objects over a single TCP connection causes a **Head of Line (HOL) blocking** problem.
+
+> Consider a Web page that includes an HTML base page, a large video clip near the top of the page, and many small objects below the video. Suppose there is a low-to-medium-speed bottleneck link (e.g. a low-speed wireless link) between server and client. With a single TCP connection, the video clip will take a long time to cross the bottleneck link, while the small objects are delayed waiting behind it — the video at the head of the line **blocks** the small objects behind it.
+
+HTTP/1.1 browsers typically work around this by opening **multiple parallel TCP connections**, so objects on the same page are sent in parallel — small objects can then arrive and render much faster.
+
+**A second, sneakier reason browsers do this:** TCP congestion control (Chapter 3) aims to give each TCP connection sharing a bottleneck link an equal share of available bandwidth — roughly 1/n for _n_ connections. By opening multiple parallel connections for a single page, a browser can "cheat" and grab a larger portion of the link's bandwidth. Many HTTP/1.1 browsers open **up to six parallel TCP connections**, both to circumvent HOL blocking and to obtain more bandwidth.
+
+> One of the primary goals of HTTP/2 is to get rid of (or reduce) parallel TCP connections for transporting a single Web page — reducing the number of sockets that need to be open and maintained at servers, and letting TCP congestion control operate as intended. But with only **one** TCP connection per page, HTTP/2 requires carefully designed mechanisms to avoid HOL blocking.
+
+---
+
+## HTTP/2 Framing
+
+HTTP/2's solution to HOL blocking is to break each message into small **frames**, and **interleave** the request and response messages on the same TCP connection.
+
+**Example:** A Web page consisting of one large video clip and 8 smaller objects. The server receives 9 concurrent requests and needs to send 9 competing HTTP response messages over the same TCP connection. Suppose all frames are of fixed length, the video clip consists of **1000 frames**, and each small object consists of **2 frames**.
 
 ```
-Last-Modified (from 200 OK)
-  → Cache stores this date alongside the object
+WITHOUT interleaving (frames sent in order, object by object):
+  Video clip's 1000 frames sent first → small objects must wait
+  → Small objects fully delivered only after 1016 frames sent total
 
-If-Modified-Since (in conditional GET)
-  → Cache sends this date back to server on next check
-
-304 Not Modified (response with empty body)
-  → Object unchanged → use cached copy → no bandwidth wasted
-
-200 OK (response with full body)
-  → Object changed → receive new copy → update cache
+WITH HTTP/2 frame interleaving:
+  Frame 1 of video  → Frame 1 of each of the 8 small objects sent
+  Frame 2 of video  → Frame 2 (last) of each of the 8 small objects sent
+  → ALL small objects fully delivered after just 18 frames sent total
 ```
+
+> The HTTP/2 framing mechanism can significantly decrease user-perceived delay. The ability to break an HTTP message into independent frames, interleave them, and reassemble them on the other end is the single most important enhancement of HTTP/2.
+
+**How framing works mechanically:**
+
+- Framing is done by the **framing sub-layer** of the HTTP/2 protocol
+- When a server sends an HTTP response, it is processed by the framing sub-layer, where it is broken into frames: the header field becomes one frame, and the body is broken into one or more additional frames
+- The frames of the response are interleaved by the framing sub-layer with the frames of other responses, and sent over the single persistent TCP connection
+- As frames arrive at the client, they are first reassembled into the original response messages at the framing sub-layer, then processed by the browser as usual
+- A client's HTTP requests are similarly broken into frames and interleaved
+- The framing sub-layer also **binary-encodes** the frames — binary protocols are more efficient to parse, lead to slightly smaller frames, and are less error-prone
+
+---
+
+## Response Message Prioritization and Server Pushing
+
+**Message prioritization** allows developers to customize the relative priority of requests to better optimize application performance. The framing sub-layer organizes messages into parallel streams of data destined to the same requestor. When a client sends concurrent requests to a server, it can assign a **weight between 1 and 256** to each message — the higher the number, the higher the priority — so the server can send the frames for the highest-priority responses first. The client can also state each message's **dependency** on other messages, by specifying the ID of the message it depends on.
+
+**Server push:** Another feature of HTTP/2 is the ability for a server to send **multiple responses** for a single client request. In addition to responding to the original request, the server can **push** additional objects to the client — without the client having to request each one. This is possible because the HTML base page indicates which objects will be needed to fully render the page. Instead of waiting for explicit HTTP requests for these objects, the server can analyze the HTML page, identify the needed objects, and send them to the client **before** receiving explicit requests for them. Server push eliminates the extra latency caused by waiting for those requests.
+
+---
+
+# 2.2.7 HTTP/3 and QUIC
+
+HTTP/1.0, HTTP/1.1, and HTTP/2 all share one important common characteristic — they all run over **TCP**. But that doesn't mean HTTP will always run over TCP! **HTTP/3**, standardized in 2022 [RFC 9114], has hit the Internet community by storm — it is rapidly gaining market share for email, video/audio streaming, and social media, and has become the default HTTP version for many popular Web browsers and smartphone applications. Remarkably, **HTTP/3 does not run over TCP — it runs over UDP.**
+
+---
+
+## The QUIC Transport Protocol
+
+HTTP/3 runs over the **Quick UDP Internet Connections (QUIC)** transport protocol, standardized in 2021 [RFC 9000].
+
+You may now be thinking: "Hold on — haven't we been told the Internet has exactly two transport protocols, UDP and TCP? Is there now a third one called QUIC?"
+
+> Strictly speaking, the Internet continues to have only **two** transport protocols, TCP and UDP. QUIC is **not** actually a transport-layer protocol — it is a **sub-layer in the application layer** that uses UDP to send and receive packets over the Internet. Hence the "UDP" in the name, Quick **UDP** Internet Connections.
+
+However, even though QUIC is not, strictly speaking, a transport-layer protocol, **from the application developer's perspective it is one**. Network application developers can write applications by creating QUIC sockets, similar to how they create TCP and UDP sockets. When an application establishes a QUIC socket, the QUIC sublayer creates a UDP socket beneath it. The application can then send and receive messages through the QUIC socket without concerning itself with QUIC's inner workings.
+
+_(Figure 2.11 — a. Traditional secure HTTP protocol stack: HTTP/2 over TLS over TCP over IP; b. Secure QUIC-based HTTP/3 protocol stack: HTTP/2 (slimmed) over QUIC over UDP over IP — TLS is absorbed into QUIC, and together QUIC + HTTP/2-slimmed make up HTTP/3)_
+
+---
+
+## Why a New "Transport Protocol"?
+
+QUIC is a generic protocol usable by many applications, but it was primarily designed to improve **Web performance**.
+
+In the distant past (up to about 2005), most Web transactions ran directly over TCP without any encryption. Over the years, encryption and authentication became default requirements for Web surfing, Web search, and Web-based email — typically provided via **TLS** (§2.1.4, covered in more detail in Chapter 8).
+
+**The "double handshake" problem:** Today's HTTP/1.1 and HTTP/2 Web transactions typically employ TLS running on top of TCP — commonly known as **HTTPS**. This design requires **two handshake phases**: one to set up the TCP connection, and a subsequent one to share encryption keys between client and server. This introduces undesirable delays for interactive HTTP applications, including Web browsing.
+
+> One of the most important features of QUIC is that it gets rid of this double handshake by **absorbing the TLS handshake phase into the initial connection-setup handshake** — hence the word "Quick."
+
+Specifically, QUIC integrates a recent version of TLS, called **TLS 1.3**, directly into the protocol, eliminating the need for a separate TLS handshake. QUIC performs both connection setup and encryption setup in **one round trip**, reducing latency. On reconnecting, QUIC can reuse previously stored session and encryption parameters, allowing **0-RTT** data transmission without waiting for a full handshake.
+
+**QUIC also re-solves HOL blocking — better than HTTP/2 did.** Recall that HTTP/2 breaks messages into small frames and multiplexes frames from different HTTP messages over a **single TCP connection**. But this doesn't fully resolve HOL blocking: in HTTP/2, if a packet is lost, **TCP requires the lost packet to be retransmitted and processed before any other packets can be delivered** — even packets from messages that don't depend on the lost one. This is a different form of HOL blocking, especially severe in wireless environments where packet loss is common.
+
+> QUIC solves this by using UDP instead of TCP, and applying **reliable data transfer to each message separately** within the same QUIC connection. QUIC uses the term **"streams"** for the different data streams (different HTTP messages, in an HTTP context) sharing a single QUIC connection. Each stream is managed independently — if a packet from one stream is lost, only that stream is affected; other streams continue sending and receiving data without waiting for the lost packet to be retransmitted, eliminating the HOL blocking problem that plagues single-connection TCP.
+
+> The inner workings of QUIC are discussed in greater detail in Section 3.7.
+
+---
+
+## QUIC Services
+
+When developing a new networking application, should you run it over UDP, TCP, or QUIC? From the application developer's perspective, **QUIC services are more similar to TCP than to UDP:**
+
+- **Connection-oriented**, like TCP — a QUIC connection is created between client and server before data is sent, established on top of the bare-bones connectionless UDP
+- **Reliable data transfer**, like TCP — the application knows every message sent will eventually arrive at the other side
+- **Congestion and flow control**, like TCP
+
+**But QUIC offers additional services that go well beyond TCP:**
+
+|Service|What it provides|
+|---|---|
+|**Built-in Encryption**|Integrates TLS 1.3 directly, providing encrypted communication by default — eliminates the need for separate TLS-over-TCP handshakes, making secure connections faster and more efficient|
+|**Independent Data Streams**|Allows multiple streams (e.g., multiple HTTP messages) to be sent simultaneously over a single QUIC connection. Streams are independent, so packet loss in one stream doesn't affect others — unlike TCP. Each stream can also be managed/prioritized individually (video, text, control messages)|
+|**0-RTT Handshakes**|For returning clients, allows data to be sent immediately without waiting for a full connection handshake — speeds up reconnecting, benefiting latency-sensitive applications like Web surfing and gaming|
+|**Connection Migration**|Allows connections to remain active even if the client's IP address changes (e.g., switching from Wi-Fi to cellular) — improves reliability for mobile users|
+
+---
+
+## HTTP/3: Running the Web Over QUIC
+
+HTTP/3, the latest version of HTTP, is designed to address several limitations of previous versions — particularly performance, security, and reliability over modern networks. Unlike previous versions, HTTP/3 operates over the QUIC protocol, gaining all the QUIC services described above.
+
+Major browsers — Chrome, Firefox, Edge, and Safari — now support HTTP/3 and have adopted it as their default protocol when connecting to HTTP/3-compatible servers. Leading Internet companies such as Google have implemented HTTP/3 to improve user experience across search, video distribution, and video conferencing.
+
+> HTTP/3 does **not** change the message formats of earlier HTTP versions. Its only major change compared with HTTP/2 is that, instead of using a persistent **TCP** connection between client and server, it uses a persistent **QUIC** connection.
+
+In summary, HTTP/3 clients and servers use QUIC's features — fast connection establishment, encryption, multiplexing of independent streams, prioritization, and connection migration — to efficiently and securely deliver multiple objects of a Web page in parallel, while reducing latency and ensuring smooth, uninterrupted transmission.
 
 ---
 
@@ -700,25 +699,27 @@ If-Modified-Since (in conditional GET)
 
 |Concept|Attacker's Perspective|Defender's Perspective|
 |---|---|---|
-|**HTTP is cleartext**|All data — including passwords, cookies, and session tokens — is visible to anyone on the same network (e.g. public WiFi). Passive sniffing with tools like Wireshark trivially captures it|Always use **HTTPS** (HTTP over TLS). The `Secure` flag on cookies ensures they are never sent over HTTP|
-|**Cookies — Session Hijacking**|If an attacker steals a user's `Cookie: 1678` header (via sniffing, XSS, etc.), they can replay it and impersonate that user entirely|`HttpOnly` flag (JavaScript cannot access the cookie), `Secure` flag (only sent over HTTPS), `SameSite=Strict` (not sent in cross-origin requests)|
+|**HTTP is cleartext**|All data — including passwords, cookies, and session tokens — is visible to anyone on the same network (e.g. public WiFi). Passive sniffing with tools like Wireshark trivially captures it|Always use **HTTPS** (HTTP over TLS, or natively encrypted via QUIC in HTTP/3). The `Secure` flag on cookies ensures they are never sent over plain HTTP|
+|**Cookies — Session Hijacking**|If an attacker steals a user's `Cookie:` header (via sniffing, XSS, etc.), they can replay it and impersonate that user entirely|`HttpOnly` flag (JavaScript cannot access the cookie), `Secure` flag (only sent over HTTPS), `SameSite=Strict` (not sent in cross-origin requests)|
 |**Cookies — CSRF**|A malicious website can trick a logged-in user's browser into sending a forged request to another site — the browser automatically includes the cookie|CSRF tokens (random secret embedded in forms), `SameSite` cookie attribute|
 |**HTTP Methods (PUT / DELETE)**|If a server exposes PUT or DELETE without proper authentication, an attacker can overwrite or delete server-side content|All non-GET/HEAD methods must require authentication and authorisation. REST APIs must validate permissions on every request|
-|**Proxy / Cache Poisoning**|A malicious proxy can serve modified or malicious objects to all clients routed through it. Cache poisoning attacks inject crafted HTTP responses into shared caches, where they get served to many victims|HTTPS end-to-end encryption prevents a proxy from reading or modifying content. HTTPS with certificate validation prevents MITM via rogue proxies|
-|**Information Leakage via Headers**|The `Server:` header reveals software and version (e.g. `Apache/2.2.3 (CentOS)`) — attackers target known CVEs for that version. `Last-Modified` can leak when internal files were changed|Strip or spoof the `Server:` header in production. Return generic error pages for 404/400/505 (don't expose directory structure)|
-|**GET with Sensitive Form Data**|Passwords or tokens in GET URLs are stored in browser history, server access logs, proxy logs, and leaked in `Referer` headers to third-party resources on the target page|Use POST for any sensitive form data. HTTPS encrypts URLs in transit but they still appear in server-side logs — never put secrets in URLs|
-|**CDN Supply Chain Attack**|Compromise of a CDN (or a shared CDN's customer) can serve malicious JavaScript to millions of users globally|**Subresource Integrity (SRI)** — browsers verify a cryptographic hash of fetched scripts. HTTPS everywhere. Certificate pinning for critical resources|
+|**Cache-Control Manipulation**|A malicious intermediary or compromised server response can set aggressive caching directives to force browsers to serve stale or poisoned content long-term|Use conservative `max-age` values for sensitive content; use `no-store` for anything containing personal data or tokens|
+|**HTTP/2 Server Push Abuse**|A malicious or compromised server could push unrequested, oversized, or malicious resources to the client before they're asked for|Browsers validate and can reject pushed resources that violate same-origin policy; servers should only push resources genuinely needed for the page|
+|**Information Leakage via Headers**|The `Server:` header reveals software and version (e.g. `Apache/2.2.3`) — attackers target known CVEs for that version|Strip or spoof the `Server:` header in production. Return generic error pages for 404/400/505 (don't expose directory structure)|
+|**GET with Sensitive Form Data**|Passwords or tokens in GET URLs are stored in browser history, server access logs, proxy logs, and leaked via `Referer` headers to third-party resources|Use POST for any sensitive form data. HTTPS encrypts URLs in transit, but they still appear in server-side logs — never put secrets in URLs|
+|**QUIC/UDP Amplification & Reflection**|Because HTTP/3 runs over UDP, it inherits UDP's susceptibility to spoofed-source amplification/reflection attacks against servers|QUIC requires source-address validation tokens before committing significant server resources, mitigating naive UDP reflection|
+|**QUIC 0-RTT Replay Attacks**|0-RTT data sent on reconnection doesn't have the same forward-secrecy guarantees as a full handshake — an attacker who captures a 0-RTT request can potentially replay it|Servers should never apply 0-RTT data to non-idempotent operations (e.g., financial transactions) without additional safeguards|
 
 ---
 
 ## Questions I Still Have
 
 - [ ] HTTP/1.1 persistent connections — if the server's timeout fires while the client is mid-think-time, does the client get an error on its next request, or does it silently reconnect?
-- [ ] Pipelining sounds great, but HTTP/1.1 still has **head-of-line blocking** (a slow response blocks later responses in the queue). How does **HTTP/2 multiplexing** solve this at the framing layer?
-- [ ] Does HTTPS break web caching entirely? If traffic is encrypted end-to-end, the proxy can't read or cache the content — how do CDNs work with HTTPS?
+- [ ] Does HTTPS (TLS-over-TCP) prevent browser caching from working with intermediary proxies, since the content is encrypted end-to-end? Does QUIC's built-in TLS 1.3 change this picture at all?
 - [ ] What exactly is the `Referer` [sic] header — when is it sent, what does it contain, and why is it a privacy risk for users browsing sensitive pages?
-- [ ] CDNs route users to the nearest cache — is this done via **Anycast DNS** (same IP, multiple locations) or something else entirely?
-- [ ] HTTP/2 and HTTP/3 (QUIC over UDP) — how do they change the persistent/non-persistent connection model? Does RTT analysis still apply the same way?
+- [ ] Section 3.7 promises a deeper look at QUIC's inner workings — specifically, how does per-stream reliable delivery actually get implemented over a fundamentally unreliable UDP substrate?
+- [ ] How exactly does QUIC's **connection migration** keep a connection alive when the client's IP changes mid-stream — what identifies the same logical connection across two different IP addresses?
+- [ ] CDNs are mentioned as being covered later (Section 2.5/2.6, in the context of video streaming) — how do they interact with HTTP/3 and QUIC's connection model, especially with Anycast-style routing to the nearest edge node?
 
 ---
 
@@ -730,40 +731,42 @@ If-Modified-Since (in conditional GET)
 |**Web page**|A document consisting of a base HTML file and referenced objects|
 |**Object**|Any file addressable by a single URL (HTML, JPEG, CSS, JS, video, etc.)|
 |**URL**|Uniform Resource Locator — hostname + path name, together identifying one object|
-|**Web browser**|Client-side implementation of HTTP (Firefox, Chrome, Safari, IE)|
+|**Web browser**|Client-side implementation of HTTP (Chrome, Edge, etc.)|
 |**Web server**|Server-side implementation of HTTP — stores objects, responds to requests|
 |**Stateless protocol**|Protocol that maintains zero information about past client interactions|
 |**Non-persistent HTTP**|Each request/response pair uses its own TCP connection — open, use once, close|
-|**Persistent HTTP**|Multiple requests/responses share the same TCP connection — HTTP/1.1 default|
+|**Persistent HTTP**|Multiple requests/responses share the same TCP connection — default in HTTP/1.1 and HTTP/2|
 |**RTT (Round-Trip Time)**|Time for a small packet to travel from client to server and back|
 |**Pipelining**|Sending multiple HTTP requests back-to-back without waiting for prior responses|
 |**Request line**|First line of HTTP request — method, URL, HTTP version|
 |**Status line**|First line of HTTP response — HTTP version, status code, phrase|
 |**Entity body**|The payload of an HTTP message (POST request data; response object bytes)|
-|**GET**|HTTP method to retrieve an object|
-|**POST**|HTTP method to submit data to the server (data in entity body)|
-|**HEAD**|HTTP method that retrieves only response headers, not the object body|
-|**PUT**|HTTP method to upload an object to a specific URL on the server|
+|**GET / POST / HEAD / PUT / DELETE**|The five HTTP methods covered in this section|
 |**200 OK**|Request succeeded; object is in the entity body|
 |**301 Moved Permanently**|Object has a new permanent URL; browser should follow the `Location:` header|
 |**304 Not Modified**|Conditional GET result — cached copy is still valid; no body transmitted|
 |**404 Not Found**|Requested object does not exist on this server|
 |**Cookie**|A small piece of state stored by the browser, sent in every request to the issuing site|
 |**Set-cookie**|Response header instructing the browser to store a cookie value|
-|**Web cache / Proxy server**|Network entity that stores recently requested objects and serves them locally|
-|**Hit rate**|Fraction of all requests satisfied by a Web cache from its local storage|
-|**CDN**|Content Distribution Network — geographically distributed caches serving content closer to users|
-|**Conditional GET**|HTTP GET with `If-Modified-Since:` header — asks server if object has changed|
+|**Browser cache**|Local storage in the browser holding recently received Web objects|
+|**Cache-Control**|Response header letting the server specify caching behaviour (`no-store`, `max-age`, etc.)|
+|**Conditional GET**|HTTP GET with an `If-Modified-Since:` header — asks the server if the object has changed|
 |**If-Modified-Since**|Request header carrying the date of the cached copy for freshness checking|
 |**Last-Modified**|Response header indicating when the server object was last changed|
-|**304 Not Modified**|Response to conditional GET confirming cached copy is current — empty body|
+|**HTTP/2**|Version of HTTP (RFC 7540) that multiplexes messages over a single TCP connection via framing|
+|**HOL (Head of Line) blocking**|A slow or lost object/packet at the front of a connection delays unrelated objects/packets behind it|
+|**Framing sub-layer**|HTTP/2 component that breaks messages into binary frames and interleaves them|
+|**Server push**|HTTP/2 feature letting the server send objects the client hasn't explicitly requested yet|
+|**HTTP/3**|Version of HTTP (RFC 9114) that runs over QUIC instead of TCP|
+|**QUIC**|Quick UDP Internet Connections (RFC 9000) — an application-layer sub-layer over UDP that behaves like a transport protocol: connection-oriented, reliable, congestion-controlled, with built-in TLS 1.3 and independent streams|
+|**Stream**|An independent, reliably-delivered data flow (e.g., one HTTP message) within a single QUIC connection|
+|**0-RTT**|Connection-establishment mode where a returning client sends data immediately, reusing prior session parameters instead of performing a full handshake|
+|**Connection migration**|QUIC's ability to keep a connection alive across a change in the client's IP address|
 
 ---
 
 ## Related Concepts
 
--
-
 ---
 
-→ Next: [[FILE TRANSFER - FTP]]
+→ Next: [[ELECTRONIC MAIL]]
