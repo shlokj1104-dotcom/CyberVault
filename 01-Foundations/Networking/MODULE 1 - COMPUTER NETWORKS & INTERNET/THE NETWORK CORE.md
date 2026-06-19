@@ -362,7 +362,7 @@ The Internet's ISP interconnection structure evolved through five conceptual "ne
 
 > In China: access ISPs → provincial ISPs → national ISPs → tier-1 ISPs. The hierarchy can be as deep as the country's network warrants [Tian 2012].
 
-![[Pasted image 20260515143142.png]]
+![[Pasted image 20260619132230.png]]
 
 ### Network Structure 4 — PoPs, Multi-Homing, Peering, IXPs Added
 
@@ -395,7 +395,7 @@ Building on Structure 3, we add four more elements:
 - There are **over 600 IXPs** in the Internet today [PeeringDB 2025].
 - Reduces cost for all parties — traffic stays local rather than transiting expensive upstream links.
 
-![[Pasted image 20260515144248.png]]
+![[Pasted image 20260619132436.png]]
 
 ### Network Structure 5 — Content Provider Networks Added
 
@@ -410,6 +410,7 @@ Building on Structure 3, we add four more elements:
     - Peering directly with lower-tier ISPs (settlement-free) [Labovitz 2010].
     - Connecting with ISPs at IXPs.
 - However, many access ISPs are still only reachable through tier-1 networks → Google also connects to tier-1 ISPs and **pays** for that traffic.
+
 
 _(Figure 1.15 — Google cloud locations and network, as of 2024 [Google Cloud 2025]: a world map showing Google's data center sites — e.g. Havfrue (US, IE, DK), Grace Hopper (US, UK, ES) 2022, Dunant (US, FR), Equiano (PT, NG, ZA) 2021, Curie (CL, US, PA), Junior, Monet, Tannat, Raman (SA, JO, DJ, OM, IN) 2024, Indigo-West/Central (SG, AU), JGA-S (GU, AU), Echo (US, SG, ID) 2023, Unity/FASTER/PLCN (US, JP, TW) — connected by both current network links and submarine cable investments spanning the Americas, Europe, Africa, and Asia-Pacific.)_
 
