@@ -127,7 +127,7 @@ This approach makes the single DSL link appear as if there were three separate l
 
 **Cable Topology:**
 
-![[Pasted image 20260513195217.png]] _(Figure 1.6 — Hybrid Fiber-Coaxial Access Network: Fiber backbone with coaxial last-mile to homes)_
+![[Pasted image 20260619125708.png]] _(Figure 1.6 — Hybrid Fiber-Coaxial Access Network: Fiber backbone with coaxial last-mile to homes)_
 
 **Each neighborhood junction typically supports 500 to 5,000 homes.** The cable modem terminates at the **cable head end**, where a device called **CMTS** (Cable Modem Termination System) serves a similar function to the DSLAM.
 
@@ -167,7 +167,7 @@ As with DSL, the maximum achievable rate may not be realized due to lower contra
 
 **PON Architecture in Detail:**
 
-![[Pasted image 20260513195334.png]] _(Figure 1.7 — FTTH Internet Access using PON architecture)_
+![[Pasted image 20260619125852.png]] _(Figure 1.7 — FTTH Internet Access using PON architecture)_
 
 - Each home has an **ONT** (Optical Network Terminator) — connected by dedicated fiber to a neighborhood **optical splitter**.
 - The splitter combines a number of homes (typically **fewer than 100**) onto a single, shared optical fiber.
@@ -232,7 +232,7 @@ _(Full technical comparison of geostationary vs. LEO satellites — altitude, pr
 - The switch, in turn, connects to the **institutional router** (edge router), which connects to the ISP.
 - With Ethernet access, users typically have **100 Mbps to tens of Gbps** access to the Ethernet switch, whereas **servers** may have **1 Gbps to 10 Gbps** access.
 
-![[Pasted image 20260513195541.png]] _(Figure 1.8 — Ethernet Internet Access: Multiple devices to switch, switch to router, router to ISP)_
+![[Pasted image 20260619130039.png]] _(Figure 1.8 — Ethernet Internet Access: Multiple devices to switch, switch to router, router to ISP)_
 
 **Why Ethernet over twisted-pair?**
 
@@ -258,7 +258,7 @@ A wireless LAN is often called a **WLAN**. A user transmits/receives packets to/
 
 **Typical Home Network:**
 
-![[Pasted image 20260513195644.png]] _(Figure 1.9 — Typical Home Network: Devices to WiFi router, router to cable/DSL modem, modem to ISP)_
+![[Pasted image 20260619130232.png]] _(Figure 1.9 — Typical Home Network: Devices to WiFi router, router to cable/DSL modem, modem to ISP)_
 
 A home network typically consists of:
 

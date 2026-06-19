@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/THE NETWORK EDGE.md",
+                "file": "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/THE NETWORK CORE.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "THE NETWORK EDGE"
+              "title": "THE NETWORK CORE"
             }
           }
         ]
@@ -251,8 +251,12 @@
   },
   "active": "957f1a7ff8e9ae06",
   "lastOpenFiles": [
-    "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/THE NETWORK CORE.md",
     "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/THE NETWORK EDGE.md",
+    "Pasted image 20260619130232.png",
+    "Pasted image 20260619130039.png",
+    "Pasted image 20260619125852.png",
+    "Pasted image 20260619125708.png",
+    "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/THE NETWORK CORE.md",
     "Pasted image 20260619124719.png",
     "Pasted image 20260619124506.png",
     "Pasted image 20260619124259.png",
@@ -260,10 +264,6 @@
     "Pasted image 20260619123732.png",
     "Pasted image 20260619123722.png",
     "Pasted image 20260619123711.png",
-    "Pasted image 20260619123700.png",
-    "Pasted image 20260619122429.png",
-    "Pasted image 20260619121935.png",
-    "Pasted image 20260619120827.png",
     "01-Foundations/Networking/BOOK 1 - TOP DOWN APPROACH.pdf",
     "01-Foundations/Networking/MODULE 2 - APPLICATION LAYER/P2P.md",
     "01-Foundations/Networking/MODULE 2 - APPLICATION LAYER/SOCKET PROGRAMMING - UDP & TCP.md",
@@ -290,7 +290,6 @@
     "03-Programming/Python/PYTHON BASICS/FUNCTIONS.md",
     "03-Programming/Python/PYTHON BASICS/ITERATIVE STATEMENTS.md",
     "03-Programming/Python/PYTHON BASICS/LIST.md",
-    "03-Programming/Python/PYTHON BASICS/FILE HANDLING.md",
     "10-Daily-Logs/Untitled.base",
     "Untitled.canvas",
     "Canvas/Untitled.canvas",
