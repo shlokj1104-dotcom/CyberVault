@@ -443,6 +443,7 @@ No — the Internet has been hosting time-sensitive applications for many years.
 
 ## Popular Applications — Protocol Summary
 
+![[Pasted image 20260619211033.png]]
 _(From Figure 2.5)_
 
 |Application|Application-Layer Protocol|Underlying Transport Protocol|
