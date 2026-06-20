@@ -1,5 +1,5 @@
 ---
-title: SOCKET PROGRAMMING - UDP & TCP
+title: VIDEO STREAMING & CDN
 date: 2026-06-18
 phase: phase-1
 tags:
@@ -8,7 +8,7 @@ tags:
 links: []
 status: learning
 ---
-# 2.7 Socket Programming — Creating Network Applications
+# 2.6 Socket Programming — Creating Network Applications
 
 > **One-Line Summary:** A socket is the programming interface between an application and the network — every networked program you have ever written or used ultimately reads from and writes to a socket. This section shows how to actually build both ends of a client-server application, first in UDP and then in TCP, using Python.
 
