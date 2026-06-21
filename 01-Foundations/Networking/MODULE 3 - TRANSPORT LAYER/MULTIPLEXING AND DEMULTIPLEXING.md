@@ -382,4 +382,4 @@ With multiplexing and demultiplexing now fully explained, the next section turns
 
 ---
 
-→ Next: [[UDP — USER DATAGRAM PROTOCOL]]
+→ Next: [[UDP]]

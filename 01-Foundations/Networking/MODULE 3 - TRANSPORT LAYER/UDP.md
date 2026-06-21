@@ -160,7 +160,7 @@ The UDP segment structure, shown in Figure 3.7, is defined in RFC 768.
 
 ### Figure 3.7 — UDP Segment Structure
 
-
+![[Pasted image 20260621215525.png]]
 _(Figure 3.7 — A 32-bit-wide header diagram. The top row holds two 16-bit fields side by side: "Source port #" and "Dest. port #." The next row holds two more 16-bit fields side by side: "Length" and "Checksum." Below both rows sits the "Application data (message)" field.)_
 
 ```
