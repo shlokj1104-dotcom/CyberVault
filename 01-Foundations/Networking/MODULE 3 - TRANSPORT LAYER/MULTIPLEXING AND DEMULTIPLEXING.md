@@ -304,6 +304,7 @@ In both cases, a host running nmap returns a list of ports reported as open, clo
 
 ## Figure 3.5 and the Web-Server Case
 
+![[Pasted image 20260621174140.png]]
 _(Figure 3.5 — Two separate web client hosts, C and A, both initiate HTTP connections to the same web server, Host B. Host C opens two simultaneous HTTP sessions to B, using two different source ports, 7532 and 26145. Host A opens one HTTP session to B, independently choosing source port 26145 — coincidentally the same number Host C used for one of its connections. All three connections share the identical destination port, 80, and the identical destination IP, B. On the server side, B is shown spawning a separate per-connection HTTP process for each incoming connection, with the server's transport layer performing the demultiplexing that sorts each arriving segment to its correct process.)_
 
 This scenario illustrates exactly why the four-tuple matters: Host C assigns its two source port numbers (26145 and 7532) independently of Host A — meaning Host A could easily, by coincidence, pick a source port (26145) that Host C is _also_ using. **This is not a problem.** Server B can still correctly demultiplex both connections that happen to share the same source port number, because they arrive from **different source IP addresses** — and the four-tuple (which includes source IP) is what actually distinguishes them, not the source port in isolation.
