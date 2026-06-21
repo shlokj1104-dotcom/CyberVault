@@ -10,26 +10,26 @@ status: learning
 ---
 # 3.3 Connectionless Transport: UDP
 
-> **One-Line Summary:** UDP is the Internet's deliberately minimal transport protocol — it does only the two things a transport protocol absolutely cannot avoid doing (multiplexing/demultiplexing, plus a small amount of error checking), adds no connection setup, no connection state, and no congestion control, and in exchange gives applications nearly direct, low-overhead access to IP's raw best-effort delivery service.
+> **One-Line Summary:** UDP is the Internet's deliberately minimal transport protocol — it does only the two things a transport protocol can't skip (multiplexing/demultiplexing, plus light error checking), adds no connection setup, no connection state, and no congestion control, and in exchange gives applications nearly direct, low-overhead access to IP's raw best-effort delivery.
 
 ---
 
 ## Core Idea: Designing the Bare-Minimum Transport Protocol
 
-Here's a useful thought experiment for understanding _why_ UDP looks the way it does. Suppose you were asked to design a no-frills, bare-bones transport protocol from scratch. Your first instinct might be to build a **vacuous transport protocol** — one that does almost nothing at all: on the sending side, just take the message straight from the application process and hand it directly to the network layer; on the receiving side, just take whatever arrives from the network layer and hand it straight to the application process.
+Imagine designing a no-frills transport protocol from scratch. The simplest possible version — a **vacuous transport protocol** — would just hand application messages straight to the network layer on the way out, and hand whatever arrives straight to the application on the way in.
 
-But as you already know from Section 3.2, this can't quite work as stated. At an absolute minimum, the transport layer _has_ to provide a multiplexing/demultiplexing service — without it, there's no way to get data to the correct process on a host running more than one network application at once.
+That can't quite work, though: a host runs many processes at once, and at minimum the transport layer has to multiplex/demultiplex (Section 3.2), or there's no way to know which process a segment belongs to.
 
-**UDP is essentially that vacuous protocol, plus the unavoidable minimum.** Defined in RFC 768, UDP does just about as little as a transport protocol possibly can. Beyond the multiplexing/demultiplexing function and a small amount of error checking, **it adds nothing to IP.** In fact, if an application developer chooses UDP instead of TCP, the application is, for most practical purposes, talking almost directly to IP itself.
+**UDP is essentially that vacuous protocol, plus the unavoidable minimum.** Defined in RFC 768, it adds nothing to IP beyond multiplexing/demultiplexing and a small amount of error checking. Choosing UDP over TCP means the application is, for practical purposes, talking almost directly to IP.
 
 ### What UDP Actually Does, Step by Step
 
 1. UDP takes a message from the application process.
-2. It attaches **source port** and **destination port** fields, which exist purely to support the multiplexing/demultiplexing service (Section 3.2).
-3. It adds two other small fields (covered shortly, in 3.3.1).
-4. It passes the resulting segment down to the network layer.
-5. The network layer encapsulates the segment inside an IP datagram and makes a **best-effort** attempt to deliver it to the receiving host (recall: IP gives no guarantees at all — Section 3.1.2).
-6. If the segment arrives, UDP uses the destination port number to deliver the segment's data to the correct application process.
+2. It attaches **source port** and **destination port** fields (for multiplexing/demultiplexing).
+3. It adds two other small fields, covered in 3.3.1.
+4. It passes the resulting segment to the network layer.
+5. The network layer encapsulates it in an IP datagram and makes a **best-effort** delivery attempt (IP gives no guarantees — Section 3.1.2).
+6. On arrival, UDP uses the destination port to deliver the data to the correct process.
 
 ```
 Sending Side                              Receiving Side
@@ -52,63 +52,44 @@ Network layer → IP datagram → best-effort delivery ──►  Network layer 
 
 ### Why UDP Is Called "Connectionless"
 
-Note one crucial detail in that sequence: **there is no handshaking between the sending and receiving transport-layer entities before a segment gets sent.** UDP doesn't check in with the other side, doesn't negotiate anything, doesn't confirm the receiver is even ready. It simply builds a segment and sends it. For exactly this reason, UDP is described as **connectionless**.
+There's no handshaking between sender and receiver before a segment goes out — UDP doesn't confirm the other side is ready, it just sends. This is why UDP is called **connectionless**.
 
-> **Analogy — Dropping a Letter in a Mailbox vs. Placing a Phone Call:** TCP, as you'll see later, is like making a phone call — you dial, wait for the other person to pick up, confirm you're both ready, and only then start talking. UDP is like dropping a letter in a mailbox: you write it, seal it, and send it, with zero confirmation that anyone is even home to receive it.
+> **Analogy:** TCP is a phone call — dial, wait, confirm, then talk. UDP is a letter dropped in a mailbox: written, sealed, sent, with zero confirmation anyone's home to receive it.
 
-### A Worked Example: DNS Over UDP
+### DNS Over UDP, Briefly
 
-DNS is a textbook example of an application-layer protocol that typically runs over UDP. Here's the full flow:
-
-1. The DNS application on a host wants to make a query.
-2. It constructs a DNS query message.
-3. It passes that message to UDP.
-4. **No handshaking happens with the UDP entity on the destination end system** — UDP just adds its header fields to the message and passes the resulting segment to the network layer.
-5. The network layer encapsulates the UDP segment into a datagram and sends it toward a name server.
-6. The querying host's DNS application then **waits** for a reply.
-7. If no reply arrives (possibly because the underlying network lost the query, or lost the reply), the application might retry by resending the query, try a different name server, or simply give up and inform whatever invoked it that it couldn't get a reply.
-
-Notice that _none_ of that retry logic lives inside UDP itself — UDP doesn't know or care whether a reply ever comes back. Any resilience has to be built by the application sitting on top of it.
+DNS is the classic example: the application builds a query, hands it to UDP, which adds its header and ships it off with no handshake. If no reply comes back, it's entirely up to the _application_ to retry, try another server, or give up — UDP itself has no opinion on lost replies.
 
 ---
 
 ## Why Would a Developer Ever Choose UDP Over TCP?
 
-It's natural to wonder why anyone would deliberately pick UDP, given that TCP offers a reliable data transfer service and UDP does not. The answer is that **it's genuinely not always preferable** — some applications are better served by UDP, for four concrete reasons.
+TCP isn't strictly "better" — some applications are genuinely better served by UDP, for four reasons.
 
-### Reason 1 — Finer Application-Level Control Over What Data Is Sent, and When
+### Reason 1 — Finer Application-Level Control
 
-Under UDP, the moment an application process hands data to UDP, UDP packages it into a segment and immediately passes it to the network layer. TCP, by contrast, has a **congestion-control mechanism** that actively throttles the sender whenever one or more links between source and destination become excessively congested. TCP will also keep re-sending a segment until its receipt is acknowledged by the destination — no matter how long reliable delivery actually takes.
-
-Real-time applications (think Internet telephony or live video) often need a **minimum sending rate**, are willing to tolerate **some data loss**, and simply can't accept arbitrarily long delays waiting for guaranteed delivery. TCP's service model is a poor match for these needs. By using UDP instead, these applications stay free to implement, at the application layer, only whatever additional functionality they actually need beyond UDP's bare-bones, no-frills segment delivery.
+UDP packages and sends data the instant the application hands it over. TCP, by contrast, throttles the sender via congestion control and keeps retransmitting until a segment is acknowledged, no matter how long that takes. Real-time apps (Internet telephony, live video) often need a minimum sending rate and can tolerate some loss — TCP's model fights that. UDP lets them implement, at the application layer, only whatever extra functionality they actually need.
 
 ### Reason 2 — No Connection Establishment
 
-TCP uses a **three-way handshake** before it transfers any data (covered later, in Section 3.5). UDP just blasts data out without any formal preliminaries — meaning UDP introduces **no additional setup delay** to establish a connection.
-
-This is the principal reason DNS typically runs over UDP rather than TCP: DNS would be noticeably slower if it had to run over TCP. Recall from Section 2.2 that HTTP/1 and HTTP/2 use TCP rather than UDP, since reliability is critical for web pages containing text. But that same TCP connection-establishment delay is itself a real contributor to the delays users experience downloading web documents.
-
-This is precisely why **HTTP/3** instead uses the **QUIC protocol** (Quick UDP Internet Connection, RFC 9000 and RFC 9002) — QUIC uses UDP as its underlying transport protocol, and implements reliability _itself_, in the application layer, sitting on top of UDP. (A closer look at QUIC follows later, in Section 3.8.)
+TCP's three-way handshake (Section 3.5) costs a setup delay; UDP has none. This is why DNS typically runs over UDP — over TCP it'd be noticeably slower. It's also why **HTTP/3** uses **QUIC** (RFC 9000/9002) instead of TCP: QUIC rides on UDP but implements reliability itself, at the application layer, avoiding TCP's handshake delay entirely (more in Section 3.8).
 
 ### Reason 3 — No Connection State
 
-TCP maintains **connection state** inside the end systems for every connection it manages. This state includes receive and send buffers, congestion-control parameters, and sequence/acknowledgment number parameters (you'll see in Section 3.5 exactly why this state is needed — it's what makes TCP's reliable data transfer service and its congestion control possible in the first place).
+TCP maintains per-connection state — buffers, congestion-control parameters, sequence/ack numbers (why this matters is covered in Section 3.5). UDP tracks none of it. Practical effect: a server can support far more active clients over UDP than over TCP, since there's no per-client bookkeeping to scale.
 
-**UDP does not maintain any connection state at all**, and doesn't track any of those parameters. A direct consequence: a server devoted to a particular application can typically support **many more active clients** when that application runs over UDP instead of TCP, simply because the server isn't burning memory and bookkeeping on per-client connection state.
-
-### Reason 4 — Small Packet Header Overhead
+### Reason 4 — Small Header Overhead
 
 |Protocol|Header Overhead Per Segment|
 |---|---|
-|**TCP**|20 bytes, in _every_ segment|
-|**UDP**|Only 8 bytes|
+|**TCP**|20 bytes, every segment|
+|**UDP**|8 bytes|
 
-For applications sending many small packets, that overhead difference compounds quickly.
+This adds up fast for apps sending many small packets.
 
 ### Figure 3.6 — Popular Internet Applications and Their Transport Protocols
 
-![[Pasted image 20260621214755.png]]
-_(Figure 3.6 — A two-column table pairing common applications with their application-layer protocol and underlying transport protocol.)_
+![[Pasted image 20260621214755.png]] _(Figure 3.6 — A two-column table pairing common applications with their application-layer protocol and underlying transport protocol.)_
 
 |Application|Application-Layer Protocol|Underlying Transport Protocol|
 |---|---|---|
@@ -123,45 +104,36 @@ _(Figure 3.6 — A two-column table pairing common applications with their appli
 |Network management|SNMP|Typically UDP|
 |Name translation|DNS|Typically UDP|
 
-A few patterns are worth internalizing from this table:
+Patterns worth noting:
 
-- **E-mail, remote terminal access, and file transfer all run over TCP** — every one of these applications fundamentally needs TCP's reliable data transfer service; losing or garbling a byte of a file transfer or an email is unacceptable.
-- **Early versions of HTTP ran over TCP**, but more recent versions run over UDP instead, providing their _own_ error control and congestion control (among other services) up at the application layer — this is the QUIC story from Reason 2 above.
-- **UDP is preferred for network management (SNMP)** specifically _because_ network-management traffic often needs to run precisely when the network is already in a stressed state — which is exactly when reliable, congestion-controlled data transfer (TCP's specialty) is hardest to achieve.
-- **DNS usually runs over UDP**, avoiding TCP's connection-establishment delay — though DNS _can_ run over TCP when needed.
-- **Multimedia applications** — Internet phone, real-time video conferencing, streaming of stored audio and video — sometimes use UDP and sometimes use TCP. All of these can tolerate a small amount of packet loss, so reliable data transfer isn't absolutely critical to their success. Real-time applications in particular react very poorly to TCP's congestion control, which is why developers often choose UDP for them instead — though when packet loss rates are low, and as more organizations block UDP traffic for security reasons (see Chapter 8), TCP has become an increasingly attractive option for streaming media transport too.
+- **Email, remote terminal access, file transfer → TCP.** Losing or garbling a byte is unacceptable.
+- **HTTP/3 → UDP (via QUIC),** providing its own error/congestion control at the application layer instead of relying on TCP.
+- **SNMP → UDP**, since network management traffic often has to run precisely when the network is already stressed — exactly when TCP's reliable, congestion-controlled transfer is hardest to achieve.
+- **DNS → usually UDP**, to dodge TCP's connection-establishment delay (though it can run over TCP too).
+- **Multimedia → UDP or TCP.** These apps tolerate small packet loss and react poorly to TCP's congestion control, favoring UDP — but as packet loss drops and more networks block UDP for security reasons (Chapter 8), TCP is becoming more attractive for streaming media too.
 
 ---
 
 ## Multimedia Over UDP: A Double-Edged Sword
 
-Although running multimedia applications over UDP is common today, **it needs to be done with care.** As already noted, UDP has no congestion control — but congestion control exists for an important reason: to prevent the network from entering a congested state in which very little useful work gets done at all.
+Running multimedia over UDP is common, but needs care — UDP has no congestion control, and congestion control exists to stop the network from reaching a state where almost no useful work gets done. If everyone streamed high-bitrate video with zero congestion control, routers would overflow and few packets would survive — and the resulting loss would force well-behaved **TCP** senders (which _do_ back off under congestion) to throttle dramatically. **Lack of congestion control in UDP can produce high loss rates and crowd out TCP sessions sharing the same links.** Researchers have proposed mechanisms to force adaptive congestion control onto UDP sources too (Mahdavi 1997; Floyd 2000; Kohler 2006/RFC 4340).
 
-If everyone started streaming high-bit-rate video without any congestion control whatsoever, routers along the source-to-destination path would overflow, and very few UDP packets would actually survive the trip successfully. Worse, the high loss rates induced by these uncontrolled UDP senders would cause **TCP senders** (which, as you'll see, _do_ decrease their sending rates in the face of congestion) to dramatically throttle back their own rates. The net effect: **a lack of congestion control in UDP can result in high loss rates between a UDP sender and receiver, and can crowd out well-behaved TCP sessions sharing the same congested links.**
+### Reliable Transfer Over UDP Is Still Possible
 
-This is a real enough problem that researchers have proposed new mechanisms to force _all_ sources — including UDP sources — to perform some form of adaptive congestion control (see, for example, Mahdavi 1997; Floyd 2000; Kohler 2006 / RFC 4340).
-
-### Having Your Cake and Eating It Too: Reliable Transfer Over UDP
-
-Before moving on, it's worth flagging something that might seem contradictory at first: **it is entirely possible for an application to have reliable data transfer while still using UDP.** This works if reliability is built directly into the _application itself_ — for example, by the application adding its own acknowledgment and retransmission mechanisms (the same principles you'll study in the next section, applied at the application layer instead of inside the transport layer).
-
-QUIC is the prime real-world example: it implements reliability directly in the application layer, on top of UDP. By doing this, application processes get to communicate reliably **without** being subjected to the transmission-rate constraints that TCP's congestion-control mechanism would otherwise impose on them — they get reliability _and_ freedom from TCP's rate throttling, simultaneously.
+It's possible to have reliable data transfer while still using UDP — by building reliability (acknowledgments, retransmission) directly into the application itself, the same principles studied later for TCP. QUIC does exactly this, implementing reliability at the application layer on top of UDP — giving applications reliability _without_ being bound by TCP's rate-throttling congestion control. "Have your cake and eat it too."
 
 ---
 
 ## 3.3.1 UDP Segment Structure
 
-The UDP segment structure, shown in Figure 3.7, is defined in RFC 768.
+Defined in RFC 768 and shown in Figure 3.7:
 
-### What's Inside a UDP Segment
-
-- **The application data occupies the data field** of the UDP segment. For DNS, that data field holds either a query message or a response message. For a streaming-audio application, it's filled with audio samples instead.
-- **The UDP header has only four fields**, each consisting of just two bytes (16 bits).
+- **Application data** fills the data field — a query/response message for DNS, audio samples for streaming audio.
+- **The header has only four fields**, 2 bytes each.
 
 ### Figure 3.7 — UDP Segment Structure
 
-![[Pasted image 20260621215525.png]]
-_(Figure 3.7 — A 32-bit-wide header diagram. The top row holds two 16-bit fields side by side: "Source port #" and "Dest. port #." The next row holds two more 16-bit fields side by side: "Length" and "Checksum." Below both rows sits the "Application data (message)" field.)_
+![[Pasted image 20260621215525.png]] _(Figure 3.7 — A 32-bit-wide header diagram. Top row: "Source port #" and "Dest. port #," each 16 bits. Next row: "Length" and "Checksum." Below both: the "Application data (message)" field.)_
 
 ```
             32 bits
@@ -174,34 +146,26 @@ _(Figure 3.7 — A 32-bit-wide header diagram. The top row holds two 16-bit fiel
  └─────────────────────────────────────────┘
 ```
 
-### What Each Field Is For
-
 |Field|Purpose|
 |---|---|
-|**Source port #**|Identifies the sending socket — primarily useful as a "return address" (Section 3.2.1)|
-|**Dest. port #**|Lets the destination host pass the application data to the correct process running on the destination end system — i.e., this is the field that actually performs the demultiplexing function|
-|**Length**|Specifies the number of bytes in the entire UDP segment (header **plus** data)|
-|**Checksum**|Used by the receiving host to check whether errors have been introduced into the segment|
+|**Source port #**|Sending socket's "return address" (Section 3.2.1)|
+|**Dest. port #**|Performs demultiplexing — gets data to the correct process|
+|**Length**|Total UDP segment size in bytes (header + data); needed since data size varies segment to segment|
+|**Checksum**|Lets the receiver check for errors|
 
-**Why does UDP even need an explicit length field?** Because the size of the data field can differ from one UDP segment to the next — there's no fixed payload size, so an explicit length value is necessary so the receiver knows exactly where the segment ends.
-
-> **A subtle technical note:** the checksum is, in truth, also calculated over a few fields drawn from the IP header, in addition to the UDP segment itself — but that detail is set aside here so the bigger picture isn't lost in technicalities. (The basic principles behind error detection generally are covered separately, in Section 6.2.)
+> **Note:** the checksum is actually also calculated over a few IP-header fields, not just the UDP segment — a detail set aside here for clarity (error detection basics are covered separately in Section 6.2).
 
 ---
 
 ## 3.3.2 UDP Checksum
 
-### What the Checksum Is For
+**Purpose:** error detection — determining whether bits in a UDP segment were altered in transit (link noise, or corruption while sitting in a router's memory).
 
-**The UDP checksum provides error detection.** That is, the checksum exists to determine whether bits within a UDP segment have been altered in transit — for example, due to noise on a link, or corruption while the segment sat in a router's memory — as it moved from source to destination.
+**How the sender computes it:** take the **1's complement of the sum of all 16-bit words** in the segment, wrapping any overflow, and place the result in the checksum field.
 
-### How the Sender Computes It
+### Worked Example
 
-UDP, on the sending side, performs the **1's complement of the sum of all the 16-bit words** in the segment, wrapping around any overflow encountered during that sum. The resulting value is placed into the checksum field of the UDP segment.
-
-### A Worked Example
-
-Suppose a segment contains the following three 16-bit words:
+Three 16-bit words:
 
 ```
 0110011001100000
@@ -209,58 +173,42 @@ Suppose a segment contains the following three 16-bit words:
 1000111100001100
 ```
 
-**Step 1 — Add the first two words:**
+Sum of first two:
 
 ```
   0110011001100000
 + 0101010101010101
-  ─────────────────
   1011101110110101
 ```
 
-**Step 2 — Add the third word to that running sum:**
+Add the third (note the overflow, wrapped around):
 
 ```
   1011101110110101
 + 1000111100001100
-  ─────────────────
-  0100101011000010   (with the overflow bit wrapped around)
+  0100101011000010
 ```
 
-Notice that this last addition produced an overflow, which got wrapped around as part of the standard procedure.
+1's complement (flip every bit) → **`1011010100111101`** — this is the checksum.
 
-**Step 3 — Take the 1's complement of the final sum.** The 1's complement is obtained simply by flipping every 0 to a 1 and every 1 to a 0. Applying that to the sum `0100101011000010` gives:
-
-```
-1011010100111101   ← this becomes the checksum
-```
-
-**At the receiver:** all four 16-bit words are added together — including the checksum value itself this time. If no errors were introduced anywhere along the path, that sum comes out to all 1's: `1111111111111111`. If even a single bit in that result is a 0, the receiver knows errors were introduced somewhere into the segment.
+**At the receiver:** all four words (including the checksum) are added. All-1s (`1111...1`) → no detected errors. Any 0 in the result → corruption detected.
 
 ### Why Bother, When Link Layers Already Check for Errors?
 
-A fair question: many link-layer protocols — including the popular Ethernet protocol — already perform their own error checking. So why does UDP duplicate that effort at the transport layer?
+Two gaps a link-layer check (like Ethernet's) can't close:
 
-Two reasons:
-
-1. **There's no guarantee every link along the path performs error checking.** One of the links between source and destination might use a link-layer protocol that simply doesn't check for errors at all.
-2. **Even if every link does check correctly, bit errors can still be introduced while a segment sits in a router's memory** — a problem no link-layer check can catch, since it isn't a transmission error at all.
+1. **Not every link is guaranteed to check for errors** — some may use a link-layer protocol that doesn't.
+2. **Bit errors can be introduced while a segment sits in a router's memory**, which isn't a transmission error a link check would ever catch.
 
 ### The End-to-End Principle
 
-Given that **neither** link-by-link reliability **nor** in-memory error detection is guaranteed anywhere along the path, UDP has to provide error detection itself, at the transport layer, **on an end-to-end basis** — if the end-to-end data transfer service is going to provide error detection at all, someone has to do it from one true endpoint to the other.
+Since neither link-by-link reliability nor in-memory error detection is guaranteed, UDP must provide error detection itself, **end-to-end**. This is a textbook case of the **end-to-end principle** (Saltzer 1984): functionality that must ultimately be guaranteed end-to-end may make a partial lower-layer version of it redundant or low-value. Because IP is meant to run over virtually any link-layer technology, UDP's checksum acts as a safety net that holds even when the layer underneath doesn't.
 
-This is a textbook example of the celebrated **end-to-end principle** in system design (Saltzer 1984), which states that since certain functionality — error detection, in this case — must ultimately be implemented on an end-to-end basis anyway, the same functionality placed at lower layers may end up being redundant, or of comparatively little value, when weighed against the cost of providing it there too.
+> **Analogy:** A courier promises to inspect every package along the route — but you can't verify every handler did it properly. The only way to be sure is to check it yourself, once, at the very end.
 
-> **Analogy — Checking Your Own Package, Even After the Courier Inspected It:** Imagine a courier company that promises to inspect every package for damage along its route — but you have no way of verifying that _every single_ courier on _every single_ leg of the journey, including warehouse handlers between trucks, actually did that inspection properly. The only way to be truly sure your package arrived intact is to check it yourself, once, at the very end. That's the end-to-end principle: don't fully trust intermediate checks you can't verify — do the check yourself at the endpoints, where it actually matters.
+**Detection ≠ correction.** UDP does nothing to recover from a detected error — some implementations discard the damaged segment, others pass it to the application with a warning.
 
-Because IP is meant to be able to run over just about any layer-2 protocol, it's genuinely useful for the transport layer to provide error checking as a **safety net** — a backstop that holds even when whatever's underneath doesn't.
-
-### What UDP Does (and Doesn't Do) After Detecting an Error
-
-Although UDP provides error checking, **it does nothing to actually recover from an error it detects.** Some implementations of UDP simply **discard** the damaged segment outright; others **pass the damaged segment up to the application anyway, along with a warning.**
-
-That wraps up the core discussion of UDP. As you'll see next, **TCP offers reliable data transfer to its applications, along with other services UDP simply doesn't provide** — and naturally, TCP is also considerably more complex than UDP as a result. Before diving into TCP itself, it's worth stepping back first to study the underlying _principles_ of reliable data transfer in their own right — independent of any one specific protocol.
+That's UDP. Next: TCP offers reliable data transfer and more — and is correspondingly more complex. Before TCP itself, it's worth studying the underlying _principles_ of reliable data transfer on their own terms.
 
 ---
 
@@ -268,40 +216,35 @@ That wraps up the core discussion of UDP. As you'll see next, **TCP offers relia
 
 |Concept|Attacker's Perspective|Defender's Perspective|
 |---|---|---|
-|**UDP is connectionless — no handshake to verify identity**|Since UDP never confirms the receiver is ready or who the sender claims to be before data flows, an attacker can trivially forge ("spoof") the source IP address on a UDP segment, since there's no handshake step that would expose the forgery|Never treat the presence of UDP traffic from a given source as proof of that source's identity; pair UDP-based applications with application-layer authentication where identity actually matters|
-|**No connection state means no built-in resource exhaustion check**|Because UDP tracks zero per-client state, an attacker can blast huge volumes of UDP traffic at a target with very little cost to themselves, since the protocol itself places no inherent ceiling on how many "connections" can be attempted — this is the core mechanic behind UDP flood attacks|Rate-limit and filter UDP traffic at the network edge; since UDP itself won't self-regulate or track abuse, that job has to be done by firewalls, load balancers, or upstream infrastructure|
-|**No congestion control is a standing amplification risk**|Combined with spoofed source addresses, an attacker can send a small UDP request to a service with a much larger reply (DNS, NTP, and others have historically been abused this way), forging the source address so the large reply floods a victim instead of the attacker — a UDP amplification attack|Disable or rate-limit open UDP services that produce large replies to small requests; validate source addresses at the network boundary (BCP 38 / RFC 2827) so spoofed packets don't leave the network in the first place|
-|**UDP checksum detects corruption, not malice**|The checksum only verifies _accidental_ bit errors; it provides no cryptographic guarantee, so an attacker who modifies a segment in transit can simply recompute a valid checksum for their tampered version — the checksum offers zero protection against deliberate tampering|Use cryptographic integrity protection (e.g., TLS/DTLS or application-layer MACs) wherever tamper-resistance actually matters; never rely on the UDP checksum as a security control|
-|**Organizations increasingly block UDP for security reasons**|Attackers who rely on UDP-based exploits (amplification, flooding, or evasion of stateful inspection) find their traffic increasingly filtered as more networks restrict UDP at the perimeter|This trend is exactly why TCP is becoming a more attractive transport even for streaming media — it's easier to apply stateful security controls to a protocol that already maintains connection state|
+|**No handshake → no identity check**|Source IP spoofing is trivial; no handshake step would expose the forgery|Never treat UDP source info as proof of identity; pair with application-layer authentication|
+|**No connection state**|Attacker can flood huge UDP volumes cheaply — no per-connection cost on their end (UDP flood)|Rate-limit/filter at the network edge, since UDP won't self-regulate|
+|**No congestion control + spoofable source**|Small spoofed request → large reply directed at a forged victim address (amplification attacks, e.g. DNS/NTP)|Rate-limit open UDP services with large replies; validate source addresses (BCP 38/RFC 2827)|
+|**Checksum ≠ authentication**|Tamper with payload, recompute a valid checksum — no protection against deliberate tampering|Use TLS/DTLS or app-layer MACs where tamper-resistance matters|
+|**Orgs increasingly block UDP**|UDP-based exploits (amplification, flooding) face more filtering at network perimeters|Easier to apply stateful security controls to a protocol (TCP) that already tracks state|
 
 ---
 
 ## Questions I Still Have
 
-- [ ] If reliability can be built entirely at the application layer on top of UDP (as QUIC does), is there any real scenario where TCP's _built-in_ reliability is still strictly necessary rather than just convenient?
-- [ ] The chapter says some UDP implementations discard a damaged segment while others pass it up with a warning — who actually decides this behavior: the OS, the UDP implementation itself, or the application? Is this configurable?
-- [ ] If UDP amplification attacks rely on a small request producing a large reply, are there design guidelines for new UDP-based protocols to avoid being usable this way, or is this purely something defenders have to patch after the fact?
-- [ ] The end-to-end principle argues lower-layer error checking may be "redundant or of little value" — does that mean link-layer error checking (like Ethernet's) is actually pointless given UDP's end-to-end checksum, or does it still add value in some other way (e.g., catching errors before they waste further bandwidth)?
-- [ ] QUIC implements reliability and (presumably) something like congestion control at the application layer over UDP — does that mean QUIC traffic effectively behaves like a "third" transport option in practice, even though it's technically still riding on UDP underneath?
+- [ ] If reliability can be fully built at the application layer over UDP (QUIC), is there any case where TCP's _built-in_ reliability is strictly necessary rather than just convenient?
+- [ ] Who decides whether a damaged UDP segment gets discarded vs. passed up with a warning — OS, UDP implementation, or application? Configurable?
+- [ ] Does the end-to-end principle imply link-layer error checking (Ethernet's) is pointless given UDP's end-to-end checksum, or does it still add value (e.g., catching errors before wasting further bandwidth)?
 
 ---
 
 ## Key Terms — Quick Reference
 
-|Term|Definition|
-|---|---|
-|**UDP (User Datagram Protocol)**|RFC 768; the Internet's minimal, connectionless transport protocol — provides only multiplexing/demultiplexing and light error checking, nothing more|
-|**Connectionless**|A property of a protocol where no handshaking occurs between sender and receiver before data is sent — UDP sends without ever confirming the other side is ready|
-|**Three-way handshake**|The connection-setup procedure TCP uses before transferring data (covered fully in Section 3.5); UDP has no equivalent, which is exactly why it introduces no setup delay|
-|**Connection state**|Per-connection bookkeeping (buffers, congestion-control parameters, sequence/ack numbers) that TCP maintains in the end systems; UDP maintains none of this|
-|**QUIC**|"Quick UDP Internet Connection" (RFC 9000, RFC 9002); the transport protocol underlying HTTP/3, which runs over UDP but implements its own reliability at the application layer|
-|**End-to-end principle**|A system-design principle (Saltzer 1984) stating that functionality which must ultimately be guaranteed end-to-end may be redundant or low-value if also implemented at lower layers|
-|**UDP segment structure**|Four 16-bit fields — source port, destination port, length, checksum — followed by the application data|
-|**Length field (UDP)**|Specifies the total size, in bytes, of the UDP segment (header plus data); needed because data field size varies segment to segment|
-|**Checksum (UDP)**|A 16-bit field computed via 1's-complement addition of the segment's 16-bit words, used by the receiver to detect (not correct) bit errors introduced in transit|
-|**1's complement**|The error-detection technique UDP's checksum is built on: sum all 16-bit words (wrapping overflow), then flip every bit of the result to produce the checksum|
-|**UDP amplification attack**|An attack exploiting UDP's lack of handshaking and source-address verification: a small spoofed request triggers a large reply directed at a forged (victim) address|
-|**Adaptive congestion control (for UDP sources)**|Proposed mechanisms (Mahdavi 1997; Floyd 2000; Kohler 2006/RFC 4340) to force UDP-based applications to behave more cooperatively with network congestion, despite UDP itself having none built in|
+| Term                                      | Definition                                                                                                                          |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| **UDP**                                   | RFC 768; minimal, connectionless transport — only multiplexing/demultiplexing and light error checking                              |
+| **Connectionless**                        | No handshaking before data is sent                                                                                                  |
+| **Connection state**                      | Per-connection bookkeeping (buffers, congestion params, seq/ack numbers); TCP has it, UDP doesn't                                   |
+| **QUIC**                                  | Reliable transport built at the application layer over UDP; underlies HTTP/3 (RFC 9000/9002)                                        |
+| **End-to-end principle**                  | Functionality that must hold end-to-end may make a partial lower-layer version redundant (Saltzer 1984)                             |
+| **UDP segment structure**                 | Four 16-bit fields — source port, dest port, length, checksum — plus application data                                               |
+| **Checksum (UDP)**                        | 1's-complement sum of 16-bit words; detects but never corrects errors                                                               |
+| **UDP amplification attack**              | Spoofed small request → large reply → flood directed at a forged (victim) address                                                   |
+| **Adaptive congestion control (for UDP)** | Proposed mechanisms (Mahdavi 1997; Floyd 2000; Kohler 2006/RFC 4340) to make UDP sources behave more cooperatively under congestion |
 
 ---
 
