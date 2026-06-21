@@ -517,4 +517,4 @@ DNS is a critical, indispensable piece of Internet infrastructure — the Web an
 
 ---
 
-→ Next: [[2.5 - Video Streaming and Content Distribution Networks]]
+→ Next: [[VIDEO STREAMING & CDN]]
