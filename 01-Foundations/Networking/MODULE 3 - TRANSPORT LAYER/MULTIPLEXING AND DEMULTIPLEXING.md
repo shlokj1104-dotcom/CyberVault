@@ -196,6 +196,7 @@ This has a direct, important consequence: **if two UDP segments have different s
 
 ### Figure 3.4 — UDP Multiplexing/Demultiplexing Example
 
+![[Pasted image 20260621173440.png]]
 _(Figure 3.4 — Host A on the left runs a client process attached to a socket; Server B on the right is shown as a separate machine. An A-to-B segment is drawn carrying source port 19157 and destination port 46428. A return, B-to-A segment is drawn below it carrying source port 46428 and destination port 19157 — i.e., the source and destination port values have swapped roles for the return trip.)_
 
 ### Then What's the Source Port _For_, If Demux Only Uses the Destination?
@@ -231,21 +232,22 @@ Reconsider the TCP client-server programming example from Section 2.6.2, step by
 
 1. **The server has a "welcoming socket"** that sits and waits for connection-establishment requests from TCP clients, on a specific port — say, port 12000.
 2. **The client creates a socket and sends a connection-establishment request:**
-    
-    ```python
-    clientSocket = socket(AF_INET, SOCK_STREAM)clientSocket.connect((serverName, 12000))
-    ```
-    
+
+```python
+clientSocket = socket(AF_INET, SOCK_STREAM)
+clientSocket.connect((serverName, 12000))
+```
+
 3. **A connection-establishment request is, mechanically, nothing more than a TCP segment** with destination port number 12000 and a special connection-establishment bit set in the TCP header (the details of this bit are covered later, in Section 3.5). The segment also carries whatever source port number the client's transport layer chose.
 4. **When the server's operating system receives this incoming connection-request segment**, it locates the server process that's waiting to accept connections on port 12000. That server process then creates a **brand-new socket**:
-    
-    ```python
-    connectionSocket, addr = serverSocket.accept()
-    ```
-    
-5. **At the moment this new socket is created**, the transport layer at the server records four specific values from the connection-request segment: (1) the source port number in the segment, (2) the IP address of the source host, (3) the destination port number in the segment, and (4) its own (the server's) IP address.
-6. **This newly created connection socket is now identified by exactly those four values.** Every subsequently arriving segment whose source port, source IP address, destination port, and destination IP address all match these four recorded values will be demultiplexed straight to this socket.
-7. With the connection now established, the client and server can freely exchange data with each other through their respective sockets.
+
+```python
+connectionSocket, addr = serverSocket.accept()
+```
+
+3. **At the moment this new socket is created**, the transport layer at the server records four specific values from the connection-request segment: (1) the source port number in the segment, (2) the IP address of the source host, (3) the destination port number in the segment, and (4) its own (the server's) IP address.
+4. **This newly created connection socket is now identified by exactly those four values.** Every subsequently arriving segment whose source port, source IP address, destination port, and destination IP address all match these four recorded values will be demultiplexed straight to this socket.
+5. With the connection now established, the client and server can freely exchange data with each other through their respective sockets.
 
 ```
   CLIENT                                         SERVER
