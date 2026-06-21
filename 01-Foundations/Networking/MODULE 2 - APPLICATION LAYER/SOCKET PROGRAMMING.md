@@ -380,4 +380,4 @@ The HTTP/3 server can also tell the QUIC API to **prioritize** streams based on 
 
 ---
 
-→ Next: [[3.1 - Introduction and Transport-Layer Services]]
+→ Next: [[INTRODUCTION & SERVICES]]
