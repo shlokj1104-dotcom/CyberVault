@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/INTRODUCTION & SERVICES.md",
+                "file": "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/UDP.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "INTRODUCTION & SERVICES"
+              "title": "UDP"
             }
           }
         ]
@@ -250,14 +250,17 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "2f001bc9f3951aa9",
+  "active": "957f1a7ff8e9ae06",
   "lastOpenFiles": [
+    "Pasted image 20260621214755.png",
+    "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/INTERNET.md",
+    "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/INTRODUCTION & SERVICES.md",
+    "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/UDP.md",
     "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/MULTIPLEXING AND DEMULTIPLEXING.md",
     "Images/Pasted image 20260621174140.png",
     "Images/Pasted image 20260621173440.png",
     "Images/Pasted image 20260621172642.png",
     "Images/Pasted image 20260621172438.png",
-    "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/INTRODUCTION & SERVICES.md",
     "01-Foundations/Networking/BOOK 1 - TOP DOWN APPROACH.pdf",
     "01-Foundations/Networking/MODULE 2 - APPLICATION LAYER/SOCKET PROGRAMMING.md",
     "Images/Pasted image 20260621160509.png",
@@ -279,7 +282,6 @@
     "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/PROTOCOL LAYERS AND THEIR SERVICE MODELS.md",
     "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/DELAY, LOSS, AND THROUGHPUT IN PACKET-SWITCHED NETWORKS.md",
     "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/THE NETWORK CORE.md",
-    "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/INTERNET.md",
     "01-Foundations/Networking/MODULE 2 - APPLICATION LAYER/P2P.md",
     "01-Foundations/Networking/BOOK 1 - KUROSE ROSS.pdf",
     "10-Daily-Logs/2026-06-17.md",
@@ -289,7 +291,6 @@
     "03-Programming/Python/PYTHON BASICS/WEB SERVICES.md",
     "03-Programming/Python/PYTHON BASICS/NETWORKED PROGRAMS.md",
     "10-Daily-Logs/2.3 - File Transfer FTP.md",
-    "03-Programming/Python/PYTHON BASICS/REGEX.md",
     "03-Programming/Python/PYTHON CRASH COURSE.pdf",
     "01-Foundations/Networking/MODULE 2 - APPLICATION LAYER",
     "10-Daily-Logs/Untitled.base",
