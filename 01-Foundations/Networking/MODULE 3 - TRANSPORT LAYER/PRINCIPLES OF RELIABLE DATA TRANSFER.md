@@ -109,24 +109,7 @@ Any reliable transfer protocol built around this retransmit-on-negative-feedback
 2. **Receiver feedback** — since sender and receiver may be thousands of miles apart, the _only_ way the sender learns anything about what the receiver saw is if the receiver explicitly tells it. ACK/NAK packets are that feedback channel. (In principle each only needs to be a single bit: 0 = NAK, 1 = ACK.)
 3. **Retransmission** — if a packet is reported as damaged, the sender resends it.
 
-```
-SENDER (2 states)                                   RECEIVER (1 state)
-┌─────────────────────┐                          ┌────────────────────────┐
-│  Wait for call        │                          │  Wait for call          │
-│  from above            │                          │  from below              │
-└──────────┬────────────┘                          └──────────┬─────────────┘
-           │ rdt_send(data):                                   │ rdt_rcv(rcvpkt) && corrupt(rcvpkt):
-           │  sndpkt = make_pkt(data, checksum)                 │  sndpkt = make_pkt(NAK)
-           │  udt_send(sndpkt)                                  │  udt_send(sndpkt)
-           ▼                                                    │
-┌─────────────────────┐                                        │ rdt_rcv(rcvpkt) && notcorrupt(rcvpkt):
-│  Wait for ACK          │── rdt_rcv && isNAK ──► resend sndpkt │  extract(rcvpkt, data); deliver_data(data)
-│  or NAK                 │   (self-loop)                       │  sndpkt = make_pkt(ACK)
-└──────────┬────────────┘                                        │  udt_send(sndpkt)
-           │ rdt_rcv(rcvpkt) && isACK(rcvpkt)                    │  (self-loop back to same state)
-           ▼
-   back to "Wait for call from above"
-```
+![[Pasted image 20260622211513.png]]
 
 This is called a **stop-and-wait** protocol — and _that name matters a lot later_. While the sender is in the "Wait for ACK or NAK" state, it **cannot accept new data from the application at all** — `rdt_send()` simply doesn't fire again until the sender has confirmation about the current packet. The sender refuses to get ahead of itself.
 
@@ -150,34 +133,15 @@ The actual solution: **give every data packet a sequence number.** The receiver 
 
 `rdt2.1` is `rdt2.0` plus 1-bit sequence numbers on data packets. Because the sender now alternates between expecting to send sequence number 0 and sequence number 1, **both the sender and receiver FSMs double in size** — to four states and two states respectively — purely to track "which sequence number am I currently dealing with?"
 
-```
-                    SENDER (rdt2.1) — 4 states, alternating 0 ⇄ 1
-   ┌───────────────────┐  rdt_send(data): make pkt0, send  ┌────────────────────┐
-   │ Wait for call 0      │ ─────────────────────────────────▶│ Wait for ACK/NAK 0   │
-   │  from above           │◄─────────────────────────────────│                        │
-   └───────────┬────────┘  good ACK0 received                 └──────────┬──────────┘
-               │                                                          │ corrupt or NAK
-               │                                                          │ → resend pkt0 (self-loop)
-   ┌───────────▼────────┐                                     ┌──────────▼──────────┐
-   │ Wait for call 1      │ ─────────────────────────────────▶│ Wait for ACK/NAK 1   │
-   │  from above           │◄─────────────────────────────────│                        │
-   └────────────────────┘  good ACK1 received                 └────────────────────┘
-                                                                    │ corrupt or NAK
-                                                                    └──► resend pkt1 (self-loop)
-
-                    RECEIVER (rdt2.1) — 2 states
-   ┌────────────────────┐  got good pkt0 → deliver, send ACK   ┌────────────────────┐
-   │ Wait for 0            │ ─────────────────────────────────▶│ Wait for 1            │
-   │  from below            │◄─────────────────────────────────│  from below            │
-   └────────────────────┘  got good pkt1 → deliver, send ACK   └────────────────────┘
-   (got pkt1 again / corrupt → resend last ACK, self-loop)    (got pkt0 again / corrupt → resend last ACK, self-loop)
-```
+![[Pasted image 20260622211927.png]]
 
 Note that `rdt2.1` still uses **both ACKs and NAKs** — and since the channel can't lose packets yet (just corrupt them), ACK/NAK packets themselves don't even need their own sequence number: the sender always knows any ACK/NAK it receives is responding to whichever packet it _most recently_ sent.
 
 ---
 
 ### `rdt2.2` — A NAK-Free Protocol
+
+![[Pasted image 20260622212321.png]]
 
 This step is a small but elegant simplification: **NAKs are redundant**, because the same information can be communicated using only ACKs.
 
@@ -207,20 +171,11 @@ How long should the timeout be? Ideally, at least one full round-trip time (RTT)
 
 > **Analogy:** This is like sending someone a text message and deciding "if I don't get a reply within 10 minutes, I'll assume it didn't go through and resend it" — even though it's entirely possible they're just slow to reply, not that the message actually failed.
 
-```
-                    SENDER (rdt3.0) — same 4-state ring as rdt2.1, plus a timer
-   ┌───────────────────┐  rdt_send(data): make pkt0,        ┌────────────────────┐
-   │ Wait for call 0      │  send, START TIMER                │ Wait for ACK 0       │
-   │  from above           │ ─────────────────────────────────▶│                        │
-   └───────────┬────────┘                                     └──────────┬──────────┘
-               ▲ good ACK0 received → STOP TIMER                          │ corrupt/NAK'd ACK → resend (self-loop)
-               │                                                          │ TIMEOUT → resend pkt0, RESTART TIMER
-               │                                                          │
-   (mirror image for sequence number 1: Wait for call 1 → Wait for ACK 1, same timer logic)
-```
+![[Pasted image 20260622212605.png]]
 
 Because the packet's sequence number flips back and forth between 0 and 1 with every successful round, `rdt3.0` is also nicknamed the **alternating-bit protocol**.
 
+![[Pasted image 20260622213046.png]]
 #### `rdt3.0` Under Four Different Scenarios
 
 |Scenario|What happens|
@@ -269,17 +224,7 @@ In other words, the sender is **busy roughly 0.027% of the time.** Despite renti
 
 The fix is conceptually simple: **stop making the sender wait.** Allow it to send several packets back-to-back, without pausing for an acknowledgment after each one. Because many packets are now "in flight" between sender and receiver simultaneously — filling up the transmission path the way water fills a pipe — this technique is called **pipelining**.
 
-```
-   STOP-AND-WAIT                         PIPELINED
-   (one packet "in flight" at a time)    (multiple packets in flight at once)
-
-   Sender         Receiver               Sender         Receiver
-     │                │                    │░░░░░░░░░░░░░░░│
-     │──── pkt ───────▶│                    │░░░ pkt,pkt ░░░▶│   (several packets
-     │                │                    │░░░░░░░░░░░░░░░│    traveling together)
-     │◄──── ACK ───────│                    │◄── ACK,ACK ───│
-     │  (then repeat)  │                    │  (then repeat with more in flight) │
-```
+![[Pasted image 20260622213433.png]]
 
 Going back to the same coast-to-coast example: if the sender is allowed to transmit **three packets before waiting** for any acknowledgments, sender utilization roughly **triples** — for essentially zero added hardware cost, just a change in protocol logic.
 
