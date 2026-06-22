@@ -242,10 +242,10 @@ Pipelining isn't free, though — it forces three structural consequences onto a
 
 GBN's central idea: cap the number of unacknowledged, "in-flight" packets at some maximum value **N**, called the **window size**.
 
-![[Pasted image - Fig 3.19 GBN sender sequence-number view]] _(Figure 3.19 — A horizontal strip of sequence numbers, divided into four zones: already-ACK'd, sent-but-not-yet-ACK'd, usable-not-yet-sent, and not-usable, with a bracket of width N labeled "Window size" spanning the middle two zones.)_
+![[Pasted image 20260622215011.png]] _(Figure 3.19 — A horizontal strip of sequence numbers, divided into four zones: already-ACK'd, sent-but-not-yet-ACK'd, usable-not-yet-sent, and not-usable, with a bracket of width N labeled "Window size" spanning the middle two zones.)_
 
 ```
-   [ 0 ... base-1 ]   [ base ... nextseqnum-1 ]   [ nextseqnum ... base+N-1 ]   [ base+N ... ]
+   [ 0 ... base-1 ]   [ base ... nextseqnum-1 ]  [ nextseqnum ... base+N-1 ]   [ base+N ... ]
     already ACK'd       sent, not yet ACK'd          usable, not yet sent        not usable yet
                         |←──────────────── window of size N ─────────────────→|
 ```
@@ -256,6 +256,8 @@ GBN's central idea: cap the number of unacknowledged, "in-flight" packets at som
 
 Sequence numbers in practice live in a _fixed-width_ header field (k bits → range [0, 2^k − 1]), so all arithmetic on them wraps around modulo 2^k, like a circular dial. (`rdt3.0`'s single bit was the smallest possible such field — a "dial" with only two positions, 0 and 1.)
 
+
+![[Pasted image 20260622215332.png]]
 ### GBN Sender — Three Events to Handle
 
 1. **Invocation from above (`rdt_send`)** — if the window isn't full (fewer than N unacknowledged packets outstanding), package and send the new data immediately, advancing `nextseqnum`. If the window _is_ full, the sender simply can't accept the data right now — in a real implementation this means buffering it or blocking the upper layer until room opens up.
@@ -286,6 +288,8 @@ resend pkt2, pkt3, pkt4, pkt5 ▶ rcv pkt2 → deliver pkt2,3,4,5 → send ACK2,
 
 Notice the cost: losing **just one packet (pkt2)** forces the sender to retransmit **four packets** (2, 3, 4, and 5) — even though 3, 4, and 5 had already arrived safely the first time and were simply discarded by the receiver for being "out of order." The bigger the window (and the longer the bandwidth-delay product), the worse this gets: a single error can force re-sending dozens or hundreds of perfectly good packets.
 
+![[Pasted image 20260622215610.png]]
+
 **Analogy:** Imagine dictating 1,000 words at a time as a single "window," and if even one word in the middle gets garbled, the _entire_ 1,000-word block must be re-dictated from that word onward — even the words the listener already heard correctly. That's an enormous, unnecessary cost for one small mistake.
 
 ---
@@ -301,11 +305,7 @@ To make this possible, SR requires two structural changes from GBN:
 1. **Individual acknowledgments**, not cumulative ones — every correctly received packet is ACK'd on its own, regardless of order, so the sender knows precisely _which_ packets made it and which didn't.
 2. **Individual, per-packet timers** — since any one specific packet might need to be retransmitted on its own, each outstanding packet needs its own logical timeout clock (in practice, often simulated using a single hardware timer pretending to be many).
 
-```
-   SR sender's view of sequence numbers (Figure 3.23)
-   [ already ACK'd ] [ sent, not yet ACK'd ] [ usable, not yet sent ] [ not usable ]
-                      |←──────── window size N ─────────→|
-```
+![[Pasted image 20260622215912.png]]
 
 Unlike GBN, **the sender will already have individually-confirmed ACKs for _some_ packets inside its window** even while others in that same window remain unacknowledged — there's no requirement that everything be confirmed strictly in order.
 
@@ -341,6 +341,8 @@ resend ONLY pkt2 ─────────────▶ rcv pkt2 → deliver
 ```
 
 Only **one** packet (pkt2) ever needs to be resent — pkt3, pkt4, and pkt5 were correctly buffered the first time around and are simply released to the application once the missing piece (pkt2) finally shows up.
+
+![[Pasted image 20260622220206.png]]
 
 **Analogy:** This is like ordering five grocery items for delivery and only one item is out of stock. SR's approach: the store ships the four available items right away, holds them in your fridge (figuratively), and re-ships only the missing item once it's back in stock — then hands you everything together. GBN's approach, by contrast, would have canceled and re-shipped _all five_ items just because one was unavailable.
 
@@ -389,31 +391,29 @@ GBN and SR together account for almost every reliable-data-transfer technique th
 
 ## Key Terms — Quick Reference
 
-|Term|Definition|
-|---|---|
-|**Reliable data transfer protocol**|Builds a "no loss, no corruption, in-order" service abstraction on top of a genuinely unreliable lower-layer channel|
-|**ARQ (Automatic Repeat reQuest)**|Family of protocols that achieve reliability via error detection, feedback (ACK/NAK), and retransmission|
-|**Stop-and-wait**|A protocol that sends exactly one unacknowledged packet at a time before pausing|
-|**Sequence number**|A field that lets the receiver tell new data apart from a retransmitted duplicate|
-|**NAK-free design (`rdt2.2`)**|Uses only ACKs; a duplicate ACK for the same sequence number functions as an implicit NAK|
-|**Alternating-bit protocol**|Nickname for `rdt3.0`, since its 1-bit sequence number flips 0↔1 with every successful round|
-|**Countdown timer**|Mechanism that triggers retransmission after a chosen interval if no ACK has arrived, used to detect packet/ACK loss|
-|**Utilization (U_sender)**|Fraction of total round-trip time the sender actually spends transmitting bits; the metric stop-and-wait performs badly on|
-|**Pipelining**|Allowing multiple packets to be in flight, unacknowledged, at the same time|
-|**Sliding window**|The range of permissible in-flight sequence numbers, which slides forward over time as ACKs arrive|
-|**Go-Back-N (GBN)**|Pipelined protocol using cumulative ACKs; on timeout/error, resends _every_ unacknowledged packet in the window|
-|**Cumulative acknowledgment**|An ACK for packet _n_ that implicitly confirms all packets up to and including _n_|
-|**Selective Repeat (SR)**|Pipelined protocol using individual ACKs and individual timers; retransmits only the specific packet(s) that were lost/corrupted|
-|**Receiver buffering (SR)**|Holding correctly-received but out-of-order packets until the missing earlier packet(s) arrive, then delivering them as a batch|
-|**Maximum packet lifetime**|Assumed upper bound (~3 minutes per RFC 7323) on how long a packet can persist in the network, used to safely justify reusing sequence numbers|
+| Term                                | Definition                                                                                                                                     |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Reliable data transfer protocol** | Builds a "no loss, no corruption, in-order" service abstraction on top of a genuinely unreliable lower-layer channel                           |
+| **ARQ (Automatic Repeat reQuest)**  | Family of protocols that achieve reliability via error detection, feedback (ACK/NAK), and retransmission                                       |
+| **Stop-and-wait**                   | A protocol that sends exactly one unacknowledged packet at a time before pausing                                                               |
+| **Sequence number**                 | A field that lets the receiver tell new data apart from a retransmitted duplicate                                                              |
+| **NAK-free design (`rdt2.2`)**      | Uses only ACKs; a duplicate ACK for the same sequence number functions as an implicit NAK                                                      |
+| **Alternating-bit protocol**        | Nickname for `rdt3.0`, since its 1-bit sequence number flips 0↔1 with every successful round                                                   |
+| **Countdown timer**                 | Mechanism that triggers retransmission after a chosen interval if no ACK has arrived, used to detect packet/ACK loss                           |
+| **Utilization (U_sender)**          | Fraction of total round-trip time the sender actually spends transmitting bits; the metric stop-and-wait performs badly on                     |
+| **Pipelining**                      | Allowing multiple packets to be in flight, unacknowledged, at the same time                                                                    |
+| **Sliding window**                  | The range of permissible in-flight sequence numbers, which slides forward over time as ACKs arrive                                             |
+| **Go-Back-N (GBN)**                 | Pipelined protocol using cumulative ACKs; on timeout/error, resends _every_ unacknowledged packet in the window                                |
+| **Cumulative acknowledgment**       | An ACK for packet _n_ that implicitly confirms all packets up to and including _n_                                                             |
+| **Selective Repeat (SR)**           | Pipelined protocol using individual ACKs and individual timers; retransmits only the specific packet(s) that were lost/corrupted               |
+| **Receiver buffering (SR)**         | Holding correctly-received but out-of-order packets until the missing earlier packet(s) arrive, then delivering them as a batch                |
+| **Maximum packet lifetime**         | Assumed upper bound (~3 minutes per RFC 7323) on how long a packet can persist in the network, used to safely justify reusing sequence numbers |
 
 ---
 
 ## Related Concepts
 
-- [[3.3 Connectionless Transport UDP]] — the checksum mechanism reused directly in `rdt2.0`'s error detection
-- [[3.2 Multiplexing and Demultiplexing]] — the layer below this one's interface assumptions
-- [[End-to-end Principle]] — the same Saltzer 1984 idea that justified UDP's checksum also explains why reliability mechanisms recur at multiple layers
+- 
 
 ---
 
