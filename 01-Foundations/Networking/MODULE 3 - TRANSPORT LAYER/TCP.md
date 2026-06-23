@@ -10,454 +10,445 @@ status: learning
 ---
 # 3.5 Connection-Oriented Transport: TCP
 
-> **One-Line Summary:** TCP is the Internet's workhorse reliable transport protocol — a connection-oriented, full-duplex, point-to-point service that stitches together every tool from Section 3.4 (sequence numbers, ACKs, timers, pipelining) and adds three new layers of sophistication on top: dynamic RTT estimation to set smart timeouts, flow control so a fast sender can't drown a slow receiver, and a handshake-based connection lifecycle that establishes shared state before any data ever moves.
+> **One-Line Summary:** TCP takes the unreliable, best-effort delivery service handed up from IP and, using nothing but sequence numbers, acknowledgments, timers, and a sliding receive window — all the principles built up in Section 3.4 — turns it into something an application can treat as a single, ordered, gap-free, congestion-and-receiver-aware stream of bytes flowing between two processes.
 
 ---
 
-## Core Idea: A Reliable Byte Stream On Top of Unreliable IP
+## Core Idea: Reliability Is Built, Not Given
 
-TCP's job is exactly the same abstraction built in [[PRINCIPLES OF RELIABLE DATA TRANSFER]] — but now implemented for real, running on IP, which makes **zero guarantees** (no ordering, no delivery, no corruption protection). TCP hides all that messiness and presents each application with a clean, ordered, error-free **byte stream**, as if the two endpoints were connected by a private, lossless pipe.
+The network layer's IP service is deliberately minimal and unreliable: it does not guarantee a datagram arrives, does not guarantee datagrams arrive in the order they were sent, and does not guarantee the bits inside a datagram are intact. Buffers overflow, routers drop packets, datagrams take different paths and arrive out of sequence, bits flip in transit. Because transport-layer segments ride inside IP datagrams, every one of these problems is inherited by TCP before it does anything else.
 
-Three properties define TCP at a glance:
+TCP's entire job in this section is to construct a **reliable data transfer service** on top of that shaky foundation — so that whatever byte stream a sending process writes into its socket is exactly the byte stream the receiving process reads out the other end: uncorrupted, gap-free, non-duplicated, and in order. It does this using the toolkit already developed in Section 3.4 (ACKs, timers, sequence numbers), but TCP is also **connection-oriented**: before any data flows, the two sides must explicitly handshake to agree on the parameters of the conversation.
 
-1. **Connection-oriented** — before a single byte of application data is exchanged, the two endpoints must _shake hands_: exchange special control segments to establish shared state (buffers, sequence numbers, window sizes) at both ends. This is not merely a convention — the connection state lives **only inside the two endpoints** (not in any router between them).
-2. **Full-duplex** — data flows in both directions on the same connection simultaneously. Host A can be sending a file to Host B at the same moment Host B is sending a response back — over the same TCP connection.
-3. **Point-to-point** — exactly **one sender, one receiver.** TCP does not support multicasting (one sender → many receivers simultaneously). If you want that, you use UDP and handle reliability yourself.
-
-**Analogy:** Setting up a TCP connection is like two people picking up landline phones at the same time. Before either says anything useful, they both say "Hello?" and confirm the other is present and listening — _then_ the conversation starts. Both can talk and listen simultaneously (full-duplex), but it's strictly a one-on-one call, not a conference.
+TCP is formally defined in RFC 793, with a long trail of amendments (RFC 1122, RFC 2018, RFC 5681, RFC 7323) that have since been folded into a single consolidated specification, RFC 9293, which now officially supersedes RFC 793.
 
 ---
 
 ## 3.5.1 The TCP Connection
 
-### How a Connection is Born: The Three-Way Handshake
+### Why "Connection-Oriented" Doesn't Mean a Physical Circuit
 
-The process of establishing a TCP connection is called the **three-way handshake** — three segment exchanges, not two, not one. Here's why each step matters:
+It's tempting to picture a TCP "connection" the way you'd picture a phone call routed through dedicated switched circuits (TDM/FDM) — a fixed path reserved end-to-end. That picture is wrong. A TCP connection is a **logical** construct: the only place any connection "state" actually lives is inside the operating systems of the two communicating end hosts. The routers and switches in between never look at TCP headers and never track connections — to them, every TCP segment is just payload inside an IP datagram, indistinguishable from any other traffic.
+
+> **Analogy — A Connection Is a Shared Understanding, Not a Wire:** Think of two pen pals who agree, "from now on, we'll number our letters and confirm receipt of each one." The postal service in between doesn't know or care about this agreement — it just moves individual letters, the same as it always has. The "connection" exists only in the two notebooks the pen pals keep at their own desks, tracking what's been sent and confirmed. TCP's connection state is exactly that: bookkeeping kept only at the two endpoints.
+
+### Two Defining Properties of a TCP Connection
+
+|Property|What It Means|
+|---|---|
+|**Full-duplex**|If Process A and Process B are connected, data can flow from A to B _and_ from B to A at the same time — the connection isn't a one-way pipe that has to be "turned around."|
+|**Point-to-point**|A TCP connection always involves exactly one sender and one receiver. Unlike multicast schemes that fan data out from one sender to many simultaneous receivers in a single send operation, TCP is strictly a two-party affair — "two hosts are company, three are a crowd."|
+
+### The Three-Way Handshake
+
+Before either side sends a single byte of real data, the process wanting to initiate contact (the **client process**) and the process waiting to be contacted (the **server process**) must first "handshake" — exchange preliminary segments to establish the parameters of the upcoming transfer and initialize the state variables each side will maintain for the life of the connection.
+
+In code, the client side simply calls:
+
+```python
+clientSocket.connect((serverName, serverPort))
+```
+
+Underneath that single line, three segments are exchanged:
+
+1. The client sends a special segment carrying no application-layer payload — just control information.
+2. The server responds with its own special, payload-free segment.
+3. The client responds a final time; this third segment _may_ carry the first chunk of actual application data.
+
+Because exactly three segments cross the wire to get the connection going, this is called the **three-way handshake**. (Section 3.5.6 covers the exact bits and state-machine mechanics; for now what matters is that the handshake exists and that it's how each side learns the other is ready and agrees on starting parameters.)
+
+```
+   CLIENT                                          SERVER
+   ──────                                          ──────
+clientSocket.connect()
+        │
+        ├──── Segment 1: connection request ─────────────►
+        │            (no payload)
+        │
+        │◄──── Segment 2: server's response ───────────────┤
+        │            (no payload)
+        │
+        ├──── Segment 3: client's ack / first data ───────►
+        │       (may carry payload)
+        │
+        ▼                                                  ▼
+   Connection established — full-duplex byte stream now open
+```
+
+### From Socket to Send Buffer to Network
+
+Once the connection exists, sending data is conceptually simple from the application's point of view, but several things happen underneath:
+
+1. The client process writes a stream of bytes through its **socket** — recall from Section 3.2 that the socket is the only door between a process and the transport layer.
+2. The moment data passes through that door, it is in TCP's hands, and TCP places it into the connection's **send buffer** — one of several buffers set aside during the three-way handshake.
+3. From time to time, TCP grabs a chunk of data out of the send buffer, wraps it in a header, and hands the resulting segment down to the network layer.
 
 ![[Pasted image 20260623221757.png]]
 
-- **Step 1 — SYN segment:** The client picks a random **initial sequence number (ISN)**, call it `x`, and sends a special TCP segment with the **SYN flag = 1** and no data. Why random? To prevent old, stale connection segments from a crashed previous session being mistaken for new ones.
-- **Step 2 — SYNACK segment:** The server acknowledges (`ACK = x+1`, meaning "send me byte `x+1` next") and announces its own random ISN `y`. It also **allocates send and receive buffers** for this connection at this point.
-- **Step 3 — ACK segment:** The client acknowledges the server's ISN (`ACK = y+1`) and may already include application data. The client **allocates its own buffers** only after receiving the SYNACK.
+The textbook's "laid-back" original wording (RFC 793) leaves the _exact_ moment TCP decides to send buffered data deliberately unspecified — TCP is free to send "at its own convenience."
 
-The three-way handshake is required — a two-way handshake would fail (explained in detail in §3.5.6).
+### How Big a Chunk? The Maximum Segment Size (MSS)
 
-### MSS and the TCP Send Buffer
+TCP can't just grab an arbitrarily large chunk of the send buffer and ship it — the chunk has to fit inside a single link-layer frame. This limit is called the **Maximum Segment Size (MSS)**.
 
-Once connected, both sides have a **send buffer** and a **receive buffer**. Application data written into the send buffer gets packetized by TCP into segments for transmission; received segments get reassembled in the receive buffer before being read by the application.
+|Term|Definition|
+|---|---|
+|**MTU**|Maximum Transmission Unit — the largest link-layer frame the local sending host can put on the wire.|
+|**MSS**|The largest chunk of _application-layer_ data TCP will put into one segment, set so that MSS plus the TCP/IP header (typically 40 bytes) still fits inside one MTU-sized frame.|
 
-**MSS (Maximum Segment Size):** The maximum amount of _application-layer data_ TCP will put in a single segment. Crucially, MSS does **not** include TCP and IP header sizes — it refers to data payload only.
+A typical Ethernet/PPP MTU of 1,500 bytes therefore yields an MSS around 1,460 bytes. (Confusingly, MSS measures the data field only — _not_ the total segment size including headers — but this terminology is too entrenched to fix now.) More sophisticated approaches exist to discover the smallest MTU along an entire source-to-destination path (RFC 1191) and size MSS accordingly.
 
-> **Typical value:** 1460 bytes on Ethernet. Why? Ethernet's **MTU (Maximum Transmission Unit)** is 1500 bytes. Subtract 20 bytes for the IP header and 20 bytes for the TCP header = **1460 bytes of application data per segment.** If a segment crossed a link with a smaller MTU, IP-level fragmentation would be needed (expensive) — so TCP tries to size segments to avoid this.
+When TCP needs to send something larger than one MSS-worth of data — a large file, for instance — it simply breaks the data into a sequence of MSS-sized **TCP segments** (with the final leftover chunk typically smaller than MSS). Interactive applications like Telnet and SSH often send segments far smaller than MSS, sometimes carrying just a single byte of payload.
 
 ---
 
 ## 3.5.2 TCP Segment Structure
 
-Every TCP segment has a fixed 20-byte header (sometimes more if the Options field is used) followed by the data payload. The header fields are:
+A TCP segment is built from a **header** followed by a **data field**, where the data field holds a chunk of application bytes (up to MSS in size).
+
+### Anatomy of the TCP Header
 
 ![[Pasted image 20260623222005.png]]
 
-### Field-by-Field Breakdown
-
-|Field|Size|Purpose|
-|---|---|---|
-|**Source Port / Dest Port**|16 bits each|Multiplexing/demultiplexing — identifies the sending/receiving socket (see §3.2)|
-|**Sequence Number**|32 bits|Byte-stream position of the _first byte of data_ in this segment|
-|**Acknowledgment Number**|32 bits|The sequence number of the _next byte the sender expects to receive_ — confirms receipt of everything before this number|
-|**Header Length**|4 bits|TCP header length in 32-bit words (needed because Options field is variable-length)|
-|**Flag bits (6 total)**|1 bit each|Control bits — see table below|
-|**Receive Window**|16 bits|Number of bytes the _sender of this segment_ is willing to accept — the core of flow control (§3.5.5)|
-|**Checksum**|16 bits|Error detection, computed over header + data (same mechanism as UDP)|
-|**Urgent Data Pointer**|16 bits|Used only when URG flag is set; points to where urgent data ends|
-|**Options**|Variable|Most common: MSS option (negotiated during handshake), timestamp option (used for RTT measurement per RFC 7323)|
+|Field|Size / Purpose|
+|---|---|
+|**Source / Dest port #**|The same two fields explained in Section 3.2 — used for multiplexing/demultiplexing to the right socket.|
+|**Sequence number**|32-bit; identifies where in the byte stream this segment's data begins. Used in providing reliable data transfer.|
+|**Acknowledgment number**|32-bit; identifies the next byte the _sender of this segment_ is expecting from the other side. Also central to reliable data transfer.|
+|**Header length**|4-bit field, giving the header's length in 32-bit words — needed because the options field makes the header variable-length (typical header is 20 bytes, meaning options is usually empty).|
+|**Flags (6 bits)**|ACK, RST, SYN, FIN, CWR, ECE — see table below.|
+|**Receive window**|16-bit; used for **flow control** (Section 3.5.5) — tells the other side how many more bytes the receiver is currently willing to accept.|
+|**Internet checksum**|Same role as in UDP — error detection over the segment.|
+|**Urgent data pointer**|Marks the end of "urgent" data flagged by the URG bit (rarely used in practice; kept mostly for completeness).|
+|**Options**|Variable-length; used to negotiate MSS, or to carry a window-scaling factor for high-speed networks, among other things (RFC 854, RFC 1323).|
 
 ### The Six Flag Bits
 
 |Flag|Meaning|
 |---|---|
-|**URG**|Urgent data present — the Urgent Data Pointer field is valid. Rarely used in practice.|
-|**ACK**|The Acknowledgment Number field is valid. Set in almost every segment after the initial SYN.|
-|**PSH**|Push — receiver should deliver data to the application immediately, don't buffer.|
-|**RST**|Reset — connection must be torn down immediately (used for error conditions).|
-|**SYN**|Synchronize — used only during the three-way handshake to initiate a connection.|
-|**FIN**|Finish — the sender has no more data to send; initiates connection teardown.|
+|**ACK**|Set when the acknowledgment number field actually contains a valid acknowledgment.|
+|**RST, SYN, FIN**|Used for connection setup and teardown (covered fully at the end of this section / in 3.5.6).|
+|**CWR, ECE**|Used for explicit congestion notification (Section 3.7.2).|
+|**PSH**|(Rarely used in practice) signals the receiver should pass data up to the application immediately rather than buffering it.|
+|**URG**|(Rarely used in practice) signals the sender has marked some data as "urgent"; the urgent data pointer field marks where that urgent data ends.|
+
+> **Why so many fields feel "unused" in practice:** TCP was designed to be general enough for use cases beyond ordinary file/web transfer. PSH and URG exist for applications that want fine control over buffering timing, but almost no modern software actually relies on them — they're vestigial generality, not dead weight removed from the spec.
 
 ---
 
-## 3.5.3 Sequence Numbers and Acknowledgment Numbers
+## Sequence Numbers and Acknowledgment Numbers: TCP's Core Bookkeeping
 
-These two fields are the heart of TCP's reliability mechanism. Together they define TCP as a **byte-stream protocol** — unlike UDP, which thinks in discrete datagrams, TCP thinks of data as a continuous numbered stream of bytes.
+These two fields are arguably the most important part of the entire TCP header, since reliable data transfer is built almost entirely on top of them.
 
-### Sequence Numbers
+### TCP Sees Data as a Byte Stream, Not a Series of Segments
 
-> **Definition:** The sequence number of a TCP segment is the **byte-stream number of the first byte of data** carried in that segment.
+This is the single most important mental shift coming from UDP: **TCP numbers individual bytes**, not segments. The sequence number written into a segment's header is simply _the byte-stream number of that segment's first data byte._
 
-Example: If Host A is sending a 500,000-byte file and the MSS is 1,000 bytes, TCP will create 500 segments:
+**Worked example:** Suppose Host A wants to send a 500,000-byte file to Host B, with MSS = 1,000 bytes. TCP implicitly numbers every byte in the stream starting from some initial value (say 0 for simplicity), and breaks the stream into 500 segments:
 
-- Segment 1: sequence number = 0 (bytes 0–999)
-- Segment 2: sequence number = 1,000 (bytes 1,000–1,999)
-- Segment 3: sequence number = 2,000 (bytes 2,000–2,999)
-- …and so on.
+|Segment|Sequence Number|
+|---|---|
+|1st|0|
+|2nd|1,000|
+|3rd|2,000|
+|...|...|
 
-The initial sequence number (ISN) is **chosen randomly** at connection setup — not necessarily 0. Why random? If it always started at 0, a stale segment from a recently-closed connection could be accepted by a new connection with the same port pair if it happened to carry a "valid" sequence number.
+![[Pasted image 20260623223949.png]]
 
-### Acknowledgment Numbers
+> **Analogy — Numbering Pages, Not Chapters:** Imagine mailing a 500-page manuscript one envelope at a time, ten pages per envelope. You don't label each envelope "Envelope #1, #2, #3…" — you label it with the page number of the first sheet inside ("Pages 1–10," "Pages 11–20"). That way, if envelope #3 goes missing, the recipient knows precisely which pages are gone, not just "the third batch" — useful information regardless of how the other envelopes were split or reordered.
 
-> **Definition:** The acknowledgment number in a segment from Host B to Host A is the **sequence number of the next byte Host B is expecting to receive from Host A.** It implicitly confirms receipt of everything _before_ that byte.
+### Acknowledgment Numbers: A Little Trickier
 
-This is TCP's **cumulative acknowledgment** model — exactly like GBN's cumulative ACKs from [[PRINCIPLES OF RELIABLE DATA TRANSFER]]. A single ACK saying "I've received everything up through byte 999; send me byte 1000 next" confirms 1,000 bytes in one shot, no matter how many segments they arrived in.
+Because a TCP connection is full-duplex, Host A may simultaneously be _sending_ data to B and _receiving_ data from B as part of the same connection. The acknowledgment number A puts in _its own_ outgoing segments is **the sequence number of the next byte A is expecting from B** — i.e., it acknowledges everything received so far by naming the very next thing still wanted.
 
-**What if a segment arrives out of order?** The TCP spec doesn't dictate — it says "the implementor should do whatever is best." In practice, virtually all implementations **buffer** out-of-order segments (SR-style), though the acknowledgment number only moves forward when in-order bytes are delivered.
+**Worked example:** Suppose Host A has correctly received bytes 0 through 535 from B, and is now waiting for byte 536 onward. When A sends its next segment to B, the acknowledgment number field will contain **536** — not 535. TCP acknowledges "what I want next," not "what I last got."
 
-### The Telnet Example — Seeing Both Fields Live
+### Cumulative Acknowledgments and Out-of-Order Arrival
 
-Consider a Telnet session where the client sends a single character `'C'` to the server, and the server echoes it back (this is how classic Telnet works — every keystroke travels round-trip).
+Now suppose Host A has received two segments from B: one with bytes 0–535, and a _second_ one with bytes 900–1,000 — meaning bytes 536–899 are still missing, and the second segment arrived **out of order** (ahead of where it belongs in the stream).
+
+Because A is still waiting to fill the gap left by the missing bytes, A's next segment to B will still carry acknowledgment number **536** — the sequence number of the first byte still missing from the contiguous stream. This is exactly what it means for TCP to provide **cumulative acknowledgments**: an ACK number always names the first byte still missing, regardless of what's arrived out of order beyond that gap.
+
+### The Receiver's Dilemma: What to Do With Out-of-Order Data
+
+The TCP specification deliberately leaves this choice up to the implementer. There are two options:
+
+|Choice|Behavior|Trade-off|
+|---|---|---|
+|**Discard out-of-order segments**|Simpler receiver design|Wastes network bandwidth — the sender will have to retransmit data that already physically arrived|
+|**Buffer out-of-order bytes, wait for gaps to fill**|More efficient use of bandwidth|More complex receiver bookkeeping|
+
+In practice, every real TCP implementation takes the second approach.
+
+### Why Initial Sequence Numbers Are Randomized
+
+The worked examples above assumed sequence numbers start at 0 for simplicity, but **in reality both sides of a TCP connection pick a random initial sequence number (ISN)** during the handshake. This isn't an arbitrary design flourish — it exists specifically to minimize the chance that a stray segment, still wandering the network from an earlier, already-closed connection between the _same two hosts on the same port numbers_, gets mistaken for a valid segment belonging to the new connection.
+
+> **Security relevance:** Because the four-tuple identifying a TCP socket (Section 3.2) doesn't change just because a connection closed and a new one opened on the same ports, the sequence number space is one of the only things separating "old, dead traffic" from "new, live traffic." Predictable ISNs have historically been exploited in real attacks (sequence-number prediction, used to hijack or inject into TCP streams) — which is exactly why modern TCP stacks generate ISNs cryptographically rather than incrementally.
+
+---
+
+## Telnet: A Worked Case Study in Sequence/Ack Numbers
+
+Telnet (RFC 854) is a remote-login application protocol that runs over TCP. It's useful here specifically _because_ it's interactive rather than bulk-transfer: each character a user types is sent in its own tiny segment, and the remote host **echoes back** a copy of every character so it can be displayed locally, confirming the keystroke was received and processed at the far end.
+
+> **Why echo-back matters:** Without it, a user would have no way of knowing whether their keystroke actually reached the remote machine — they'd be typing blind. The price is that every character crosses the network _twice_: once on the way in, once echoed back on the way out, before it ever appears on the user's own screen.
+
+> **A security footnote:** Telnet sends everything — including passwords — completely unencrypted, making it trivially vulnerable to eavesdropping. This is precisely why SSH has replaced Telnet as the standard remote-login tool in practice; Telnet survives mainly as a clean _teaching example_ for sequence numbers, not as something anyone should actually deploy.
+
+### Walking the Three-Segment Exchange
+
+Suppose Host A (client) has initial sequence number 42, and Host B (server) has initial sequence number 79. The user types a single character, `'C'`, then walks away for coffee.
 
 ![[Pasted image 20260623222203.png]]
 
-Notice the **piggybacking** in step 2: the server's echo data segment and its ACK for the client's keystroke travel together in one TCP segment — no separate ACK segment needed. This is how TCP achieves efficiency: control information rides along with data wherever possible.
+|Segment|Sequence #|Ack #|Data|Purpose|
+|---|---|---|---|---|
+|**1 (A→B)**|42|79|`'C'`|First byte of client's stream (ISN=42); A hasn't received anything from B yet, so it ACKs B's _initial_ sequence number, 79|
+|**2 (B→A)**|79|43|`'C'` (echo)|First byte of server's stream (ISN=79); the ACK=43 confirms B successfully got A's byte 42 and is now waiting for byte 43. The echoed character is **piggybacked** onto this same acknowledgment segment — one segment does double duty|
+|**3 (A→B)**|43|80|_(empty)_|Pure acknowledgment — confirms receipt of the echoed `'C'` (server's byte 79), so ACK=80. Even with zero data bytes, the segment still needs _some_ sequence number, since TCP always has one|
 
-> **Analogy:** Imagine writing a letter to a pen pal, and every letter you send also includes "P.S. — got your last letter, thanks." That P.S. is the piggybacked ACK.
+> **Analogy — Piggybacking as Combining Errands:** Segment 2 is doing two jobs at once: it's confirming "got your letter" _and_ delivering its own reply, all in a single trip. This is exactly like a courier who, having driven out to deliver your package, also picks up your neighbor's outgoing mail on the same trip rather than making a separate run — TCP combines an acknowledgment with outbound data whenever it conveniently can, rather than always sending bare ACKs.
 
 ---
 
-## 3.5.4 Round-Trip Time Estimation and Timeout
+## 3.5.3 Round-Trip Time Estimation and Timeout
 
-TCP must set a retransmission timer (equivalent to `rdt3.0`'s countdown timer), but with one critical difference: unlike the abstract protocol of Section 3.4, TCP is running on the **real Internet**, where RTT can vary wildly and unpredictably — it might be 2 ms on a local network or 200 ms to a server on the other side of the world.
+TCP recovers lost segments using the same timeout/retransmit mechanism introduced generically in Section 3.4 — but turning that idea into a working real-world protocol raises subtle questions: how long should the timeout actually be? Too short, and perfectly fine segments get needlessly retransmitted; too long, and a genuinely lost segment sits unretransmitted for ages, inflating delay. The timeout has to be calibrated against the connection's actual **round-trip time (RTT)** — the time from sending a segment to receiving its acknowledgment.
 
-Setting the timeout too short → **spurious retransmissions** (wasted bandwidth, congestion amplified). Setting the timeout too long → **sluggish recovery** from actual loss (poor performance).
+### Measuring SampleRTT
 
-TCP solves this with a **running estimate of RTT that adapts in real time.**
+TCP defines **SampleRTT** as the measured time between sending a segment and receiving an acknowledgment for it. Two important restrictions on how this is actually measured:
 
-### Step 1 — Measuring SampleRTT
+1. **Only one SampleRTT measurement is in flight at a time**, even though many segments may be unacknowledged simultaneously (because of pipelining) — TCP doesn't time every single outstanding segment, just one at a time, yielding roughly one new SampleRTT value per RTT.
+2. **A retransmitted segment is never used to compute SampleRTT** (Karn's algorithm). The reasoning: if a segment had to be retransmitted, you can no longer tell whether the ACK you eventually got was answering the _original_ transmission or the _retransmission_ — using it would corrupt the RTT estimate with an ambiguous measurement.
 
-`SampleRTT` = time from when a segment is transmitted to when its ACK arrives. TCP measures this for **one outstanding segment at a time** (whichever it chooses), and **never measures SampleRTT for retransmitted segments** (since you can't tell if the ACK is for the original or the retransmitted copy — this rule is called **Karn's algorithm**).
+### From SampleRTT to a Stable Estimate: EstimatedRTT
 
-### Step 2 — Smoothing with EWMA
+Raw SampleRTT values bounce around a lot — congestion in routers and shifting load on the end systems both cause natural fluctuation. So rather than reacting to any single sample, TCP maintains a smoothed running estimate, **EstimatedRTT**, updated on every new sample using:
 
-Raw `SampleRTT` fluctuates too much to use directly as a timeout. TCP smooths it using an **Exponential Weighted Moving Average (EWMA)**:
+```
+EstimatedRTT = (1 − α) · EstimatedRTT + α · SampleRTT
+```
 
-$$\text{EstimatedRTT} = (1 - \alpha) \cdot \text{EstimatedRTT} + \alpha \cdot \text{SampleRTT}$$
+The recommended value is **α = 0.125** (i.e., 1/8), per RFC 6298, giving:
 
-Where **α = 0.125** (i.e., 1/8) by default (RFC 6298).
+```
+EstimatedRTT = 0.875 · EstimatedRTT + 0.125 · SampleRTT
+```
 
-The key insight of EWMA: the **most recent sample gets the most weight**, but old samples don't disappear instantly — they decay exponentially. Expanding the formula reveals this:
+This kind of formula is called an **exponential weighted moving average (EWMA)** in statistics — "exponential" because the influence of any individual old sample decays exponentially fast as newer samples arrive. The effect is that recent network conditions are weighted more heavily than stale ones, which makes sense: a sample from ten round trips ago says very little about _current_ congestion.
 
-$$\text{EstimatedRTT}_n = (1-\alpha)^n \cdot \text{EstimatedRTT}_0 + \alpha(1-\alpha)^{n-1} \cdot \text{SampleRTT}_1 + \ldots + \alpha \cdot \text{SampleRTT}_n$$
+### Measuring the Wobble: DevRTT
 
-Each past sample contributes, but its influence diminishes geometrically.
+Knowing the _average_ RTT isn't enough — a timeout also needs to account for how much RTT samples typically vary, so the timer isn't tripped by ordinary jitter. RFC 6298 defines **DevRTT** as an estimate of how far SampleRTT typically deviates from EstimatedRTT:
 
-**Analogy:** `EstimatedRTT` is like a car's speedometer that reacts quickly to current speed but doesn't thrash violently on every tiny bump — it's a damped reading.
+```
+DevRTT = (1 − β) · DevRTT + β · | SampleRTT − EstimatedRTT |
+```
 
-### Step 3 — Measuring Variability
+with the recommended **β = 0.25**. DevRTT is itself an EWMA — this time, of the _absolute difference_ between each new sample and the current estimate, rather than of the samples themselves.
 
-A good timeout needs to account not just for the _average_ RTT but for how much it _varies_. A network with steady 50 ms RTT is very different from one that swings between 10 ms and 90 ms, even if the average is the same.
+|If SampleRTT fluctuates...|Then DevRTT will be...|
+|---|---|
+|Very little|Small|
+|A lot|Large|
 
-TCP tracks RTT variability via `DevRTT`:
+### Setting the Actual Timeout Interval
 
-$$\text{DevRTT} = (1 - \beta) \cdot \text{DevRTT} + \beta \cdot |\text{SampleRTT} - \text{EstimatedRTT}|$$
+Putting EstimatedRTT and DevRTT together, two competing pressures shape the right value for TCP's `TimeoutInterval`:
 
-Where **β = 0.25** (i.e., 1/4) by default. This is essentially a running estimate of the mean absolute deviation of RTT.
+|Pressure|Consequence if Violated|
+|---|---|
+|Interval should be **≥ EstimatedRTT**|Otherwise the timer fires before a reply could possibly have arrived, triggering pointless, unnecessary retransmissions|
+|Interval **shouldn't be much larger than EstimatedRTT**|Otherwise a genuinely lost segment sits around far too long before TCP notices and retransmits, inflating end-to-end delay|
 
-### Step 4 — Computing TimeoutInterval
+The resolution is to set the timeout to EstimatedRTT _plus a margin_, where the margin itself should grow when SampleRTT is fluctuating a lot, and shrink when it's stable — which is exactly what DevRTT measures. TCP's actual formula:
 
-$$\text{TimeoutInterval} = \text{EstimatedRTT} + 4 \cdot \text{DevRTT}$$
+```
+TimeoutInterval = EstimatedRTT + 4 · DevRTT
+```
 
-The `4 × DevRTT` term provides a **safety margin**: on a stable network where `DevRTT ≈ 0`, the timeout is barely above `EstimatedRTT`. On a jittery network, `DevRTT` grows and the timeout widens automatically to avoid spurious retransmissions.
+An initial `TimeoutInterval` value of **1 second** is recommended (RFC 6298). Whenever a timeout actually fires, the value of `TimeoutInterval` is **doubled** before the segment is retransmitted — a safeguard against a premature second timeout on a segment that's already about to be acknowledged. As soon as any _new_ segment is received and EstimatedRTT updates, `TimeoutInterval` is immediately recomputed from the formula above, discarding the doubled value.
 
-The **initial TimeoutInterval** is set to **1 second** at connection start, before any samples are available. Once a sample arrives, the formula takes over.
+> **Analogy — Why Double the Timeout After a Miss:** If you text a friend and get no reply in the time you normally expect, you might wait a bit longer before texting again rather than immediately assuming something's wrong and re-sending — because maybe they're just a little slower than usual right now, not gone entirely. Doubling the timeout is TCP giving the network the same benefit of the doubt, just once, before reverting to its normal expectation on the next successful round trip.
 
 ![[Pasted image 20260623222401.png]]
-### Timer Doubling (Exponential Backoff)
+### Principles in Practice: How the Pieces Fit Together
 
-There's one more rule on top of the formula above: **each time a timeout fires and a retransmission is triggered, the timeout interval is doubled** — regardless of what the RTT formula would otherwise say. This is reset to the formula value as soon as a valid ACK is received.
+TCP provides reliable transfer using positive acknowledgments and timers, in the spirit of Section 3.4 — ACK what's correctly received, retransmit what's presumed lost or corrupted. Some implementations layer an _implicit NAK_ mechanism on top: as covered shortly under Fast Retransmit, three duplicate ACKs for the same segment act as an indirect signal that the _following_ segment was lost, triggering retransmission before the timer even expires.
 
-This exponential backoff behavior provides a crude but effective form of congestion control: if the network is so congested that ACKs aren't coming back, doubling the timeout backs off exponentially rather than flooding the network with retransmissions. (RFC 6298 mandates this.)
-
----
-
-## 3.5.5 Reliable Data Transfer
-
-TCP builds reliable data transfer on top of IP's unreliable service by combining everything from [[PRINCIPLES OF RELIABLE DATA TRANSFER]] — checksums, sequence numbers, ACKs, retransmission timers — into a real working protocol.
-
-**Key simplification:** TCP uses only **a single retransmission timer** for the entire connection (not one per segment like pure SR). Conceptually, this timer is associated with the _oldest unacknowledged segment_ in the sender's window, just like GBN.
-
-### The TCP Sender — Three Events
-
-The TCP sender's logic can be summarized by how it responds to three distinct events:
-
-**Event 1 — Application calls `send()`:**
-
-- Packetize data into one or more TCP segments (respecting MSS).
-- Assign sequence numbers.
-- If the timer isn't already running, start it (it tracks the oldest unACK'd byte).
-- Pass segments to IP for transmission.
-
-**Event 2 — Timer timeout:**
-
-- **Retransmit the one segment** that caused the timeout (the segment containing the oldest unACK'd byte).
-- **Restart the timer** for that retransmission.
-- **Double the TimeoutInterval** (exponential backoff — see above).
-
-**Event 3 — ACK arrives:**
-
-- If the ACK covers previously unACK'd segments (i.e., it advances `SendBase`):
-    - Update `SendBase` to the new ACK value.
-    - **If there are still unACK'd segments in flight**, restart the timer for the _new_ oldest unACK'd segment.
-    - If all outstanding data is now ACK'd, stop the timer entirely.
-
-### Retransmission Scenarios — Three Cases in Detail
-
-**Scenario (a) — Lost ACK:**
-
-```
-SENDER          RECEIVER
-send Seq=92  ──────────────▶  receives, delivers, sends ACK=100
-             ◀── (ACK=100 LOST)
-[Timer expires for Seq=92]
-resend Seq=92 ─────────────▶  receives duplicate → discards → resends ACK=100
-             ◀── ACK=100 ────
-```
-
-The receiver sees the duplicate (via sequence number), discards the data but still re-ACKs. The sender proceeds.
-
-**Scenario (b) — Premature Timeout:**
-
-```
-SENDER          RECEIVER
-send Seq=92  ──────────────▶  ACK=100 sent (slow in transit)
-send Seq=100 ──────────────▶  ACK=120 sent (faster, arrives first)
-[Seq=92's timer fires early — ACK=120 covers it!]
-resend Seq=92 ──────────────▶  receiver discards duplicate, re-ACKs with 120
-```
-
-TCP's **cumulative ACK** saves the day: `ACK=120` already confirmed `Seq=92` and `Seq=100`, so even the "spurious" retransmission of Seq=92 produces no correctness problem — just slightly wasted bandwidth.
-
-**Scenario (c) — Cumulative ACK Rescues Two Segments:**
-
-```
-SENDER                       RECEIVER
-send Seq=92  ──────────────▶  receives
-send Seq=100 ──────────────▶  receives
-             ◀── ACK=92 LOST (but ACK=120 arrives)
-             ◀──── ACK=120 ────
-```
-
-Because `ACK=120` covers _everything through byte 119_, both `Seq=92` and `Seq=100` are confirmed by a single ACK. This is cumulative acknowledgment efficiency.
-
-### Fast Retransmit — Don't Wait for the Timer
-
-The timer-based mechanism works, but can be slow: if a segment is lost, you might wait a full timeout interval (potentially hundreds of milliseconds) before retransmitting it. TCP has an optimization: **fast retransmit**.
-
-The insight: if a segment is lost but subsequent segments keep arriving, the receiver keeps sending ACKs for the most recently in-order byte it received — **duplicate ACKs**. Each out-of-order arrival generates another duplicate ACK.
-
-> **Rule:** If the sender receives **3 duplicate ACKs** for the same sequence number (meaning 4 total ACKs for that same byte), it **immediately retransmits** the missing segment — without waiting for the timer to expire.
-
-```
-SENDER                       RECEIVER
-send pkt0 ──────────────────▶  ACK0
-send pkt1 ──────────────────▶  ACK1
-send pkt2 ──X (lost)
-send pkt3 ──────────────────▶  out-of-order → duplicate ACK1
-send pkt4 ──────────────────▶  out-of-order → duplicate ACK1
-send pkt5 ──────────────────▶  out-of-order → duplicate ACK1
-[3 dup ACKs received → FAST RETRANSMIT pkt2 immediately]
-resend pkt2 ────────────────▶  ACK5 (covers pkt2 through pkt5)
-```
-
-Why 3 duplicate ACKs specifically, not 1 or 2? One or two duplicate ACKs might just be reordering (packets taking slightly different paths and arriving slightly out of order). Three is a strong enough signal to indicate a genuine loss — while still being much faster than waiting for a timer.
-
-**Analogy:** Fast retransmit is like a package tracking system that, instead of waiting for the delivery deadline to pass, alerts the sender the moment three separate "where is my package?" notifications arrive from the same customer — clearly something went wrong.
+Just as in rdt3.0, TCP itself can never be _certain_ whether a segment or its ACK was lost, corrupted, or simply delayed — the sender's response is identical regardless: retransmit. TCP also uses **pipelining**, allowing multiple transmitted-but-not-yet-acknowledged segments to be in flight simultaneously (recall from Section 3.4 how much this helps throughput when the segment-size-to-RTT ratio is small). The exact number of outstanding unacknowledged segments a sender is allowed at once is governed jointly by flow control (this section, 3.5.5) and congestion control (Section 3.7) — for now, it's enough to know pipelining is happening under the hood.
 
 ---
 
-## 3.5.6 Flow Control
+## 3.5.4 Reliable Data Transfer
 
-TCP's **flow control** mechanism prevents a fast sender from overwhelming a slow receiver — specifically, from filling the receiver's buffer and forcing it to discard data that then has to be retransmitted.
+### Why a Single Timer, Not One Per Segment
 
-This is distinct from _congestion control_ (§3.7), which throttles the sender to protect the _network_. Flow control protects the _receiver_.
+Conceptually, the cleanest design would associate a separate timer with _every_ unacknowledged segment. In practice, that's expensive — tracking and firing many concurrent timers is real overhead. The recommended approach (RFC 6298), and the one TCP actually follows, is to use just a **single retransmission timer**, even while multiple segments are simultaneously in flight unacknowledged.
 
-### The Receive Window (`rwnd`)
+### The Three Events a TCP Sender Must Handle
 
-The receiver advertises its current free buffer space in the **Receive Window** field of every TCP segment it sends. The sender must honor this: at no point should the total amount of unACK'd data the sender has in flight exceed `rwnd`.
+A highly simplified TCP sender — one not yet constrained by flow or congestion control, sending data in only one direction — reduces to reacting to exactly three kinds of events:
 
-**Key variables at the receiver:**
+|Event|Sender's Response|
+|---|---|
+|**Data arrives from the application above**|TCP wraps it into a segment carrying sequence number `NextSeqNum`, starts the timer _if it isn't already running_, passes the segment to IP, and advances `NextSeqNum` by the length of the data sent|
+|**The timer expires (timeout)**|TCP retransmits the _not-yet-acknowledged segment with the smallest sequence number_ — i.e., the oldest outstanding segment — and restarts the timer|
+|**An ACK arrives with value `y`**|If `y > SendBase`, the ACK is acknowledging at least one previously-unacknowledged segment: TCP updates `SendBase = y`, and restarts the timer if there are still any unacknowledged segments outstanding|
+
+Two state variables drive this logic:
 
 |Variable|Meaning|
 |---|---|
-|`RcvBuffer`|Total allocated receive buffer size (set at connection time, e.g., 4096 bytes to 4 MB)|
-|`LastByteRcvd`|Sequence number of the last byte that arrived from the network|
-|`LastByteRead`|Sequence number of the last byte the _application_ has actually read out of the buffer|
+|**SendBase**|The sequence number of the oldest byte that is still unacknowledged. (`SendBase − 1` is therefore the last byte known to have been received in order by the receiver.)|
+|**NextSeqNum**|The sequence number to assign to the _next_ new segment of data sent|
 
-The **amount of free space in the receive buffer** at any instant is:
+```
+loop forever:
+    on data from application:
+        segment = build(seq = NextSeqNum, data)
+        if timer not running: start timer
+        send segment to IP
+        NextSeqNum += len(data)
 
-$$\text{rwnd} = \text{RcvBuffer} - [\text{LastByteRcvd} - \text{LastByteRead}]$$
+    on timer expiry:
+        retransmit oldest unacked segment (smallest seq #)
+        restart timer
 
-The bracketed term is how much of the buffer is currently _occupied_ by data waiting for the application to read. `rwnd` is the slack — the remaining capacity.
+    on ACK received (ack field = y):
+        if y > SendBase:
+            SendBase = y
+            if any segments still unacked:
+                restart timer
+```
 
-The receiver puts this value in the Receive Window field of every ACK it sends back.
+It's worth noting explicitly: TCP starts the timer when a segment is handed to IP **only if no timer is already running** for some other unacknowledged segment — it's conceptually helpful to think of the single timer as always being associated with the _oldest_ unacknowledged segment, since that's the one whose loss would be detected first.
 
-**Key constraint on the sender:**
+Because TCP uses cumulative ACKs, an ACK value `y > SendBase` may be confirming **multiple** previously-sent segments at once, not just one — which is exactly the mechanism that lets cumulative ACKs absorb the loss of an earlier ACK without forcing a retransmission, as the next scenarios show.
 
-$$\text{LastByteSent} - \text{LastByteAcked} \leq \text{rwnd}$$
+### A Few Worked Scenarios
 
-The sender tracks both its most recent byte sent and the most recent byte acknowledged, and ensures the difference — the amount of unACK'd, in-flight data — never exceeds the receiver's advertised `rwnd`.
+**Scenario 1 — A Lost ACK Triggers an Unnecessary-Looking but Correct Retransmission**
 
-**Analogy:** `rwnd` is like a water tower level gauge that the city (receiver) broadcasts to everyone pumping water into it (sender). If the gauge reads "only 500 gallons of space left," the pumping station is obligated to slow its flow to avoid an overflow — regardless of how fast its pumps can physically run.
+Host A sends one 8-byte segment (seq=92) to Host B. B receives it fine and replies with ACK=100 — but that ACK is lost in the network. A's timer eventually fires, and A retransmits the _same_ segment (seq=92). B receives the retransmission, recognizes from the sequence number that these bytes were already received, and simply discards the duplicate data (while presumably re-ACKing).
 
-### The Zero-Window Edge Case
+![[Pasted image 20260623224355.png]]
 
-What happens when `rwnd = 0`? The receiver's buffer is completely full — the application hasn't read fast enough. The sender's constraint means it **must stop sending**. But now, if the receiver never sends any data of its own (no reason to ACK anything since nothing is being sent), the sender gets no updates that `rwnd` has grown — a **deadlock**.
+**Scenario 2 — Cumulative ACKs Absorb a Lost ACK Without a Wasted Retransmission**
 
-TCP's fix: the sender continues to send **1-byte probe segments** even when `rwnd = 0`. These tiny segments elicit ACK responses from the receiver, which carry the updated `rwnd` value. Once `rwnd > 0` again, the sender resumes normal operation.
+A sends two segments back-to-back: seq=92 (8 bytes) and seq=100 (20 bytes). Both arrive at B intact, and B sends two separate ACKs — ACK=100 for the first, ACK=120 for the second. Suppose **neither** ACK reaches A before A's timeout fires. A retransmits only the _first_ segment (seq=92) and restarts the timer. As long as the ACK for the _second_ segment (ACK=120) arrives before this new timeout expires, the second segment is **not** retransmitted — A's pipelined design only ever resends the single oldest unacknowledged segment, not everything outstanding.
+
+![[Pasted image 20260623224648.png]]
+
+**Scenario 3 — A Cumulative ACK Arriving Just Before Timeout Suppresses _Both_ Retransmissions**
+
+Same setup as Scenario 2, but this time the ACK for the _first_ segment is lost — yet, just before the timeout event fires, A receives an ACK with value **120**. Because TCP's ACKs are cumulative, ACK=120 by itself confirms that B has received _everything_ through byte 119 — both segments — even though A never separately learned that the first one made it. A therefore retransmits **neither** segment.
+
+> **The single biggest lesson across all three scenarios:** because TCP's acknowledgments are cumulative, a _later_ ACK can silently make an _earlier_, lost ACK irrelevant. The sender's state (`SendBase`) only ever cares about the highest cumulative ACK value seen, never about which individual ACK packets happened to survive the trip.
+
+### Fast Retransmit: Beating the Timeout to the Punch
+
+A genuine weakness of relying purely on timeouts is that the timeout period can be relatively long — which means a lost segment might sit unacknowledged (and unretransmitted) for a noticeably long stretch, directly inflating end-to-end delay. Fortunately, the sender can often detect loss _well before_ the timer ever fires, by watching for **duplicate ACKs**.
+
+A **duplicate ACK** is an ACK that re-acknowledges a byte the sender has already received an acknowledgment for previously. Here's why the receiver generates one in the first place: when a TCP receiver gets a segment whose sequence number is _larger_ than the next expected, in-order byte, it has detected a gap — likely a lost or reordered segment. Since TCP only ever ACKs cumulatively, the receiver's response to this gap is simply to **re-send an ACK for the last in-order byte it has** — i.e., a duplicate of the ACK it already sent previously.
+
+Because the sender pipelines multiple segments, there are typically several segments in flight at once. If just one of those in-flight segments is lost, the receiver will generate a _string_ of back-to-back duplicate ACKs — one for every subsequent (correctly-arriving, but out-of-order) segment that lands after the gap. TCP's rule of thumb: if the sender sees **three duplicate ACKs** for the same data (the original ACK, plus three more identical ones), it treats this as strong evidence that the segment immediately following the acknowledged data has been lost.
+
+> Three is a threshold deliberately tuned to filter out simple network reordering — a single duplicate ACK might just mean one segment briefly arrived out of order and self-corrected, but three in a row is a much stronger and more specific loss signal.
+
+When this **triple duplicate ACK** condition is detected, TCP performs a **fast retransmit** (RFC 5681): it retransmits the missing segment _immediately_, without waiting for that segment's timer to expire at all.
+
+![[Pasted image 20260623224842.png]]
+
+### Is TCP's Error-Recovery Mechanism GBN, or Selective Repeat?
+
+This is a genuinely interesting design question, since TCP shares real features with both protocols from Section 3.4:
+
+|Feature|Looks Like GBN|Looks Like SR|
+|---|---|---|
+|Tracks only the smallest unacked sequence number (`SendBase`) and the next sequence number to send (`NextSeqNum`)|✔||
+|Acknowledgments are cumulative; out-of-order segments are not individually ACKed|✔||
+|On a lost segment, **GBN-style behavior** would be to retransmit _that_ segment **and every subsequent segment already sent**, even ones that arrived fine|✔ (this is what GBN would do)||
+|TCP's _actual_ behavior: retransmits **at most one segment** (the lost one), and won't even retransmit it if an ACK for the segment _after_ it arrives before timeout||✔ (this is much closer to SR's selective behavior)|
+|The optional **selective acknowledgment** extension (RFC 2018) lets a receiver explicitly ACK out-of-order segments rather than just cumulatively||✔|
+
+The conclusion the textbook reaches: TCP's error-recovery mechanism is best described as a **hybrid of GBN and Selective Repeat** — structurally organized like GBN (cumulative ACKs, simple sender state), but behaviorally avoiding GBN's wasteful blanket retransmission, landing much closer to SR in practice. With the selective-acknowledgment extension enabled, it leans even further toward SR.
 
 ---
 
-## 3.5.7 TCP Connection Management
+## 3.5.5 Flow Control
 
-### Why Not a Two-Way Handshake?
+### The Problem Flow Control Solves
 
-Before understanding the three-way handshake in depth, it's worth understanding why two exchanges would fail. Imagine:
+Each side of a TCP connection sets aside a **receive buffer**. When correctly-sequenced bytes arrive, TCP places them into this buffer — but the associated application process doesn't necessarily read that data the instant it arrives; the application might be busy, slow, or simply not yet have gotten around to reading. If the sender keeps shipping data faster than the receiving application reads it, the receive buffer can overflow.
 
-1. Client sends "I want to connect, my ISN = 43."
-2. Server replies "OK, connection established."
+> **Analogy — A Sink Faster Than the Drain:** Picture water (data) pouring into a sink (the receive buffer) while the drain (the application reading from the buffer) only lets water out at its own pace. If the tap (the sender) runs faster than the drain can keep up, the sink overflows — regardless of how perfectly clean and intact the water itself is. Flow control is what makes the tap match its flow rate to the drain's, rather than to its own maximum capacity.
 
-Problem: the server has no guarantee the client's message wasn't a **delayed duplicate** from a previous, already-closed connection. If a very old SYN segment from a crashed client session was still floating around the network and arrived now, the server would allocate resources for a "connection" whose client has long since moved on. A two-way handshake cannot distinguish a new SYN from a delayed old one.
+TCP's **flow-control service** is precisely this speed-matching mechanism: it lets the sender throttle its rate to match how fast the _receiving application_ is actually reading, eliminating the possibility of overflow purely from a speed mismatch.
 
-The three-way handshake solves this: the third leg (client's ACK of the server's SYNACK) confirms the client is _actually present and responding right now_ — a ghost message from the past cannot do that.
+> **A crucial distinction worth not blurring:** Flow control and congestion control (Section 3.7) both result in the sender being throttled, and many people use the terms loosely interchangeably — but they exist for entirely different reasons. Flow control protects the **receiver's buffer** from being overwhelmed by a fast sender. Congestion control protects the **network itself** from being overwhelmed by too much aggregate traffic. The throttling looks similar from the sender's point of view; the _cause_ being defended against is completely different.
 
-### Three-Way Handshake — Full Detail
+### The Receive Window (rwnd): The Mechanism Behind Flow Control
 
-```
-CLIENT                          SERVER
-(state: CLOSED)                 (state: LISTEN)
-        │                             │
-        │─ SYN ─────────────────────▶ │  [seq=x, SYN=1, no data]
-(SYN_SENT)                            │  Server: alloc rcv/snd buffers & vars
-        │                             │
-        │ ◀── SYNACK ─────────────────│  [seq=y, ack=x+1, SYN=1, ACK=1]
-        │                        (SYN_RCVD)
-(ESTABLISHED)                         │
-Client: alloc rcv/snd buffers         │
-        │                             │
-        │─ ACK ─────────────────────▶ │  [ack=y+1, ACK=1, may carry data]
-        │                        (ESTABLISHED)
-        │                             │
-        ◀══════════ DATA ═════════════▶
-```
+TCP implements flow control by having the **sender** maintain a variable called the **receive window**, denoted `rwnd` — essentially, the sender's running estimate of how much free buffer space currently exists at the receiver.
 
-- The SYN segment costs one sequence number (even though it carries no data) — `x+1` is the next byte expected.
-- Similarly, the SYNACK costs one sequence number — `y+1` is the next byte expected from the server.
-- The third ACK does **not** consume a sequence number (unless it also carries data).
+Setting up the variables needed (in the context of Host A sending a large file to Host B over one TCP connection, where Host B allocates a receive buffer of size `RcvBuffer`):
 
-### Connection Teardown — The Four-Way Close
+|Variable|Meaning|
+|---|---|
+|**LastByteRead**|The number of the last byte in the data stream that B's application process has actually read out of the buffer|
+|**LastByteRcvd**|The number of the last byte that has arrived from the network and been placed into B's receive buffer|
 
-Either side can initiate closing. Suppose the client decides it has no more data to send:
+Because TCP can never be allowed to overflow the allocated buffer, the following invariant must always hold:
 
 ```
-CLIENT                          SERVER
-(ESTABLISHED)                   (ESTABLISHED)
-        │                             │
-        │─ FIN ─────────────────────▶ │  [FIN=1, seq=x+2]
-(FIN_WAIT_1)                          │  (server can still send data!)
-        │                        (CLOSE_WAIT)
-        │ ◀── ACK ────────────────────│  [ack=x+3] ← server ACKs the FIN
-(FIN_WAIT_2)                          │  ... server finishes sending remaining data ...
-        │                             │
-        │ ◀── FIN ────────────────────│  [FIN=1, seq=y+2]
-        │                        (LAST_ACK)
-(TIME_WAIT)                           │
-        │─ ACK ─────────────────────▶ │  [ack=y+3]
-        │                        (CLOSED)
-[wait 2 × max segment lifetime]
-        │
-(CLOSED)
+LastByteRcvd − LastByteRead ≤ RcvBuffer
 ```
 
-This is a **half-close**: after the client sends FIN, it can no longer send data but can still _receive_. The server can continue sending until it's also done, then sends its own FIN. Total: 4 segments (FIN, ACK, FIN, ACK).
-
-**Why TIME_WAIT?** The client waits ~30 seconds to 2 minutes after sending the final ACK before truly closing. This serves two purposes:
-
-1. If the final ACK was lost, the server will retransmit its FIN, and the client needs to be alive to respond.
-2. Ensures all old, in-flight segments from this connection's port pair have expired before those port numbers are reused for a new connection — preventing "ghost" segments from being mistaken for new traffic.
-
-If a connection is abruptly reset (e.g., the server sends an unexpected segment to a port with no active TCP connection), TCP responds with a **RST segment** to signal the error immediately.
-
-### TCP State Diagrams
-
-**Client-side state machine (simplified):**
+The receive window itself is simply defined as the _spare room_ currently available in that buffer:
 
 ```
-CLOSED
-  │ (active open / send SYN)
-  ▼
-SYN_SENT
-  │ (rcv SYNACK / send ACK)
-  ▼
-ESTABLISHED ◀─────────────────────────────────────────────────────────▶ (data transfer)
-  │ (close / send FIN)
-  ▼
-FIN_WAIT_1
-  │ (rcv ACK)
-  ▼
-FIN_WAIT_2
-  │ (rcv FIN / send ACK)
-  ▼
-TIME_WAIT
-  │ (timeout after 2 × max segment lifetime)
-  ▼
-CLOSED
+rwnd = RcvBuffer − [LastByteRcvd − LastByteRead]
 ```
 
-**Server-side state machine (simplified):**
+Since the gap between bytes received and bytes read changes constantly as data arrives and the application reads it, **`rwnd` is dynamic** — it shrinks as unread data piles up, and grows back as the application catches up on reading.
+
+![[Pasted image 20260623225149.png]]
+
+### How the Two Sides Use rwnd Together
+
+Host B tells Host A how much spare room it currently has by stamping the **current value of `rwnd`** into the receive-window field of _every single segment_ it sends to A — not just occasionally, but continuously, on every outgoing segment. Initially, B sets `rwnd = RcvBuffer` (the buffer starts completely empty, so it's entirely "spare").
+
+Host A, meanwhile, tracks two of its own variables:
+
+|Variable|Meaning|
+|---|---|
+|**LastByteSent**|The number of the last byte A has sent into the connection so far|
+|**LastByteAcked**|The number of the last byte A has received an acknowledgment for|
+
+The difference `LastByteSent − LastByteAcked` is exactly the amount of data A has sent but not yet had confirmed — A's currently "unacknowledged, in-flight" data. By keeping this quantity always **less than or equal to** the most recently advertised `rwnd`, A guarantees it never overflows B's receive buffer:
 
 ```
-CLOSED
-  │ (socket created / passive open)
-  ▼
-LISTEN
-  │ (rcv SYN / send SYNACK)
-  ▼
-SYN_RCVD
-  │ (rcv ACK)
-  ▼
-ESTABLISHED ◀─────────────────────────────────────────────────────────▶ (data transfer)
-  │ (rcv FIN / send ACK)
-  ▼
-CLOSE_WAIT
-  │ (close / send FIN)
-  ▼
-LAST_ACK
-  │ (rcv ACK)
-  ▼
-CLOSED
+LastByteSent − LastByteAcked ≤ rwnd
 ```
 
-These states are directly observable: on Linux, `ss -tn` or `netstat -tn` shows every TCP connection and its current state — you'll see `SYN_SENT`, `ESTABLISHED`, `TIME_WAIT` live on any active machine.
+### The Zero-Window Deadlock — and TCP's Fix
 
----
+There's one subtle trap baked into this scheme. Suppose B's receive buffer fills up completely, so `rwnd` drops to **0**, and B advertises `rwnd = 0` to A. Now suppose B also currently has nothing of its own to send to A. As B's application process gradually empties the buffer over time, B's transport layer has no _new outgoing segment_ to attach an updated, nonzero `rwnd` value to — and TCP only sends a segment to A when it has data to send or an acknowledgment to give. The result: **A is never informed that space has opened back up**, and is permanently stuck, blocked from sending anything more, even though room genuinely exists again at B.
 
-## Putting TCP Together — How All the Pieces Interlock
+> This is a real deadlock risk hiding inside an otherwise sensible design — both sides are technically behaving correctly by their own local rules, yet the connection stalls indefinitely.
 
-The five mechanisms of TCP are not independent — they form a tightly interdependent system:
+TCP's specified fix: whenever Host A is told `rwnd = 0`, it must continue sending segments carrying **just one byte of data** at a time, indefinitely, even though it's technically "blocked." B's TCP will acknowledge these tiny probing segments — and as the receive buffer empties over time, eventually one of those acknowledgments will carry a fresh, **nonzero** `rwnd` value, unsticking A and letting normal-sized transmission resume.
 
-```
-Three-way handshake ──────▶ Establishes ISNs for sequence/ack numbering
-                                        │
-Sequence + ACK numbers ───▶ Enable reliable, ordered byte-stream delivery
-                                        │
-RTT estimation (EWMA) ────▶ Sets TimeoutInterval for the retransmission timer
-                                        │
-Retransmission timer ─────▶ Detects loss; triggers retransmit
-Fast retransmit (3 dup ACKs)▶ Detects loss faster; skips the timer wait
-                                        │
-Flow control (rwnd) ──────▶ Caps sender rate at receiver's advertised capacity
-                                        │
-Connection teardown ──────▶ Gracefully closes both half-connections, then waits
-```
+> **Analogy — Knocking Periodically on a Closed Door:** If you're told "the office is full right now, don't come in," you don't necessarily find out the _moment_ a seat frees up — unless you keep knocking periodically to check. TCP's one-byte probe segments are exactly that periodic knock: small, low-cost check-ins that let A discover the instant B has room again, rather than waiting for B to proactively volunteer the news (which, as shown above, B has no built-in trigger to do).
 
-TCP is, in essence, a **GBN-style** protocol (cumulative ACKs, single timer) with **SR-style** optimizations (receiver buffering of out-of-order segments, SACK option for explicit selective ACK information) layered on top. The textbook presents a simplified view; real TCP implementations include dozens of additional refinements (SACK, FACK, ECN, TFO, BBR congestion control, and so on).
+### A Brief Contrast: UDP Has No Flow Control At All
+
+Having now fully described TCP's flow-control service, it's worth noting by contrast that **UDP provides no flow control whatsoever** — and as a direct consequence, UDP segments absolutely can be (and are) lost purely due to **receiver-side buffer overflow**, completely independent of anything happening in the network.
+
+A typical UDP implementation appends arriving segments into a finite-sized buffer that sits in front of the corresponding socket — the process reads one whole segment at a time out of that buffer. If the receiving process doesn't read fast enough, the buffer fills up, and any further arriving segments are simply dropped, with no mechanism on either side to detect or prevent it. This is the direct cost UDP applications pay for skipping all of TCP's bookkeeping overhead: speed and simplicity for the sender, but zero protection against a slow reader on the receiving end.
 
 ---
 
@@ -465,63 +456,54 @@ TCP is, in essence, a **GBN-style** protocol (cumulative ACKs, single timer) wit
 
 |Concept|Attacker's Perspective|Defender's Perspective|
 |---|---|---|
-|**Random ISNs**|Predictable ISNs enabled classic **TCP session hijacking**: forge a RST or data segment with the right sequence number and you can terminate or inject into someone else's session|Use cryptographically unpredictable ISNs (RFC 6528 mandates this); apply TLS to protect data integrity on top of TCP|
-|**SYN flood attack**|Send a flood of SYN segments from spoofed source IPs → server allocates buffers and waits for Step 3 that never comes → memory exhausted|**SYN cookies**: defer buffer allocation until the full handshake completes; the server encodes state in the SYNACK's sequence number rather than allocating it|
-|**Three-way handshake amplification**|Spoofed SYN with victim's IP as source → server sends SYNACK to victim → victim sends RST → server gets RST, no harm done. But at scale (DDoS): the server wastes resources on millions of half-open connections|SYN rate limiting, SYN cookies, firewall scrubbing|
-|**ACK spoofing and window manipulation**|Inject forged ACKs with large sequence numbers to trick sender into believing data was received; or forge zero-window ACKs to force sender to pause|TLS provides cryptographic integrity over the entire TCP payload including ACK numbers (DTLS does the same for UDP)|
-|**RST injection**|Forge a RST segment with a valid sequence number → silently terminate a TCP connection (basis of "TCP Reset attacks", used by some firewalls and censorship systems)|Use TCP Authentication Option (RFC 5925) to authenticate TCP segments; or protect with TLS|
-|**TIME_WAIT exploitation**|On systems with predictable port reuse, a packet from a "dead" connection might be accepted as valid by a new connection on the same ports|Randomize ephemeral port selection; OS-enforced TIME_WAIT duration prevents reuse|
-|**Flow control abuse**|Announce `rwnd = 0` constantly → force sender to pause indefinitely; a form of low-rate DoS|Rate-limit zero-window persist probes; detect stalled connections with keepalives|
+|**Sequence numbers identify byte position, and are randomized at connection start**|If initial sequence numbers were predictable (e.g., simply incrementing), an attacker who can guess or observe them could inject forged segments into an active connection, or replay a stray segment from an already-dead connection as if it belonged to a new one|Modern TCP stacks generate ISNs using strong randomization specifically to make this kind of injection/replay infeasible; never assume a four-tuple match alone proves segment authenticity|
+|**TCP trusts ACKs and sequence numbers, not cryptographic identity**|An attacker positioned to sniff or guess the four-tuple plus current sequence numbers of an active connection can attempt session hijacking, since TCP's own mechanism has no concept of "proving who sent this"|Run TLS on top of TCP for genuine endpoint authentication and payload confidentiality; treat raw TCP framing as providing _delivery_, never _trust_|
+|**Telnet sends everything — including credentials — in plaintext**|Anyone able to observe traffic on the path can read login credentials and session content directly out of Telnet segments|Use SSH instead of Telnet for any real remote-login use case; this is precisely why SSH displaced Telnet in practice|
+|**Single shared retransmission timer, predictable backoff (doubling)**|A well-resourced attacker who can selectively drop ACKs might attempt to manipulate a connection's effective throughput by forcing repeated retransmission/backoff cycles|Not generally a high-value attack surface on its own, but illustrates why TCP's timing behavior (RTT estimation, backoff) is occasionally relevant in denial-of-service and traffic-analysis discussions|
 
 ---
 
 ## Questions I Still Have
 
-- [ ] TCP's retransmission uses a single timer for the oldest unACK'd byte — but real Linux TCP (`tcp_retransmit_skb`) triggers retransmission per-socket based on a `jiffies`-based timer wheel. What's the actual implementation difference between "one logical timer" and how the kernel efficiently handles thousands of simultaneous TCP connections?
-- [ ] The SACK (Selective Acknowledgment) TCP option (RFC 2018) extends the ACK field to explicitly report received out-of-order blocks. How does a TCP sender with SACK enabled decide which segment to retransmit — does it behave exactly like textbook SR, or are there corner cases (e.g., SACK scoreboard + FACK + D-SACK)?
-- [ ] During SYN floods, SYN cookies work by encoding the ISN as `hash(src_ip, src_port, dst_ip, dst_port, timestamp)` — what does the server lose by deferring buffer allocation this way? (E.g., can it still negotiate MSS and window scale options if it encoded them in the ISN hash?)
-- [ ] The TIME_WAIT timer is set to "2 × maximum segment lifetime" — RFC 793 says MSL = 2 minutes, giving a 4-minute TIME_WAIT. Modern Linux defaults to 60 seconds. In practice, high-traffic servers (millions of connections/day) can accumulate thousands of TIME_WAIT sockets. What are the real-world mitigation strategies beyond `SO_REUSEADDR`?
+- [ ] The textbook describes TCP retransmitting "at most one segment" on a triple-duplicate-ACK fast retransmit — does this mean fast retransmit and a subsequent timeout for a _different_ segment can never both fire for the same loss event, or can they interact in edge cases?
+- [ ] With selective acknowledgments (RFC 2018) enabled, how much does TCP's behavior actually converge toward "true" Selective Repeat versus staying a GBN-style hybrid in terms of sender-side state complexity?
+- [ ] The one-byte probe-segment fix for the zero-window deadlock — is there a defined interval for how often A sends these probes, or is it left to implementation, similar to how the spec leaves the timing of _when_ TCP sends buffered data unspecified?
+- [ ] How does window scaling (mentioned briefly under the Options field) interact with the 16-bit `rwnd` field, given that 16 bits alone would cap advertisable window size well below what high-speed/high-RTT links need?
+- [ ] Now that 3.5.1–3.5.5 are covered, what exactly does 3.5.6 (Connection Management) add on top of the three-way handshake already described here — presumably the full state machine and teardown (FIN/RST) sequence?
 
 ---
 
 ## Key Terms — Quick Reference
 
-|Term|Definition|
-|---|---|
-|**Connection-oriented**|A protocol that establishes shared state between endpoints via a handshake before data flows|
-|**Full-duplex**|Data can flow in both directions simultaneously over the same connection|
-|**Three-way handshake**|The SYN → SYNACK → ACK exchange that initializes a TCP connection|
-|**MSS (Maximum Segment Size)**|Maximum application-data bytes per TCP segment; typically 1460 bytes on Ethernet|
-|**ISN (Initial Sequence Number)**|The randomly chosen starting sequence number for a new TCP connection|
-|**Sequence number**|Byte-stream offset of the first data byte in a segment|
-|**Acknowledgment number**|The next byte the receiver expects; implicitly confirms all prior bytes|
-|**Cumulative ACK**|A single ACK that confirms all bytes up to and including a given sequence number|
-|**Piggybacking**|Bundling an ACK for received data together with new outgoing data in the same segment|
-|**SampleRTT**|A single measured round-trip time for one non-retransmitted segment|
-|**EstimatedRTT**|Exponential weighted moving average of SampleRTT values; α = 0.125|
-|**DevRTT**|EWMA of RTT variability (mean absolute deviation); β = 0.25|
-|**TimeoutInterval**|`EstimatedRTT + 4 × DevRTT`; the actual timer value TCP sets|
-|**Karn's algorithm**|Rule: never use a retransmitted segment's ACK arrival for SampleRTT measurement|
-|**Exponential backoff**|Doubling TimeoutInterval on each consecutive timeout, to back off under congestion|
-|**Fast retransmit**|Retransmitting a segment immediately upon receiving 3 duplicate ACKs, before the timer fires|
-|**Flow control**|Mechanism preventing the sender from overrunning the receiver's buffer|
-|**Receive window (rwnd)**|Advertised free buffer space at the receiver; constrains sender's in-flight data volume|
-|**Zero-window probe**|1-byte segment sent when rwnd = 0 to solicit an updated window advertisement|
-|**FIN**|TCP flag signaling "I have no more data to send"; initiates half-close|
-|**RST**|TCP flag signaling immediate, abnormal connection teardown|
-|**TIME_WAIT**|Post-FIN delay (≈ 2 × MSL) before fully closing, to ensure clean teardown|
-|**SYN flood**|DoS attack exploiting the half-open connection state created by unanswered SYNs|
-|**SYN cookies**|Defense against SYN floods: encode connection state in ISN, deferring buffer allocation|
+| Term                             | Definition                                                                                                                                                    |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Three-way handshake**          | The three-segment exchange (request → response → ack/first-data) by which a TCP client and server establish a connection before any bulk data transfer begins |
+| **Full-duplex**                  | A connection property where data flows in both directions simultaneously                                                                                      |
+| **Point-to-point**               | A connection property restricting TCP to exactly one sender and one receiver per connection (no multicast)                                                    |
+| **MTU**                          | Maximum Transmission Unit — the largest link-layer frame a host's local network can carry                                                                     |
+| **MSS**                          | Maximum Segment Size — the largest chunk of application data TCP places in one segment, sized so MSS + header fits inside one MTU                             |
+| **Sequence number**              | The byte-stream position of the first data byte in a given TCP segment                                                                                        |
+| **Acknowledgment number**        | The sequence number of the next byte the sender of that segment is expecting to receive                                                                       |
+| **Cumulative acknowledgment**    | TCP's ACK behavior of always naming the next byte still needed to make the stream contiguous, regardless of any later, out-of-order bytes already received    |
+| **SampleRTT**                    | A single measured round-trip time for one (non-retransmitted) segment-ACK pair                                                                                |
+| **EstimatedRTT**                 | An exponentially-weighted moving average of SampleRTT values, smoothing out short-term fluctuation                                                            |
+| **DevRTT**                       | An exponentially-weighted moving average of how far SampleRTT typically deviates from EstimatedRTT — TCP's measure of RTT variability                         |
+| **TimeoutInterval**              | TCP's actual retransmission timeout, computed as `EstimatedRTT + 4 · DevRTT`                                                                                  |
+| **SendBase**                     | Sender-side state variable: the sequence number of the oldest byte sent but not yet acknowledged                                                              |
+| **NextSeqNum**                   | Sender-side state variable: the sequence number to be assigned to the next new segment of data                                                                |
+| **Duplicate ACK**                | An ACK that re-acknowledges a byte already confirmed by an earlier ACK; generated by a receiver detecting a gap in the byte stream                            |
+| **Fast retransmit**              | Retransmitting a presumed-lost segment immediately upon receiving three duplicate ACKs for it, without waiting for the timeout                                |
+| **Flow control**                 | TCP's mechanism for preventing a fast sender from overflowing a slow receiver's buffer, by having the sender respect the receiver's advertised window         |
+| **Receive window (rwnd)**        | The amount of free space currently available in the receiver's buffer, advertised by the receiver and respected by the sender                                 |
+| **RcvBuffer**                    | The total size of the buffer a host allocates for an incoming TCP connection's data                                                                           |
+| **LastByteRead / LastByteRcvd**  | Receiver-side variables tracking, respectively, the last byte read by the application and the last byte placed in the buffer by the network                   |
+| **LastByteSent / LastByteAcked** | Sender-side variables tracking, respectively, the last byte sent into the connection and the last byte acknowledged by the receiver                           |
+| **Zero-window probe**            | A one-byte segment TCP keeps sending when told `rwnd = 0`, specifically to detect when receiver buffer space reopens                                          |
 
 ---
 
 ## Related Concepts
 
-- [[3.4 Principles of Reliable Data Transfer]] — the abstract toolkit (rdt1.0 through SR) that TCP instantiates
-- [[3.6 Principles of Congestion Control]] — the complement to flow control: protecting the _network_, not the receiver
-- [[3.7 TCP Congestion Control]] — TCP's actual congestion control algorithm (slow start, congestion avoidance, fast recovery)
-- [[2.2 The Web and HTTP]] — HTTP/1.1 runs over TCP; the three-way handshake cost is part of why HTTP/2 and QUIC were invented
-
 ---
 
-→ Next: [[3.6 Principles of Congestion Control]]
+→ Next: [[3.5.6 Connection Management]] 
