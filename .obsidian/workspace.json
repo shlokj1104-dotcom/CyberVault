@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/PRINCIPLES OF RELIABLE DATA TRANSFER.md",
+                "file": "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/MULTIPLEXING AND DEMULTIPLEXING.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "PRINCIPLES OF RELIABLE DATA TRANSFER"
+              "title": "MULTIPLEXING AND DEMULTIPLEXING"
             }
           }
         ]
@@ -252,25 +252,25 @@
   },
   "active": "957f1a7ff8e9ae06",
   "lastOpenFiles": [
-    "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/TCP.md",
-    "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/Untitled 1.md",
     "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/PRINCIPLES OF RELIABLE DATA TRANSFER.md",
+    "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/MULTIPLEXING AND DEMULTIPLEXING.md",
     "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/UDP.md",
+    "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/TCP.md",
+    "Pasted image 20260623222401.png",
+    "Pasted image 20260623222203.png",
+    "Pasted image 20260623222005.png",
+    "Pasted image 20260623221757.png",
+    "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/Untitled 1.md",
     "Images/Pasted image 20260622220206.png",
     "Images/Pasted image 20260622215912.png",
     "Images/Pasted image 20260622215610.png",
     "Images/Pasted image 20260622215332.png",
     "Images/Pasted image 20260622215011.png",
     "Images/Pasted image 20260622213433.png",
-    "Images/Pasted image 20260622213046.png",
-    "Images/Pasted image 20260622212605.png",
-    "Images/Pasted image 20260622212321.png",
-    "Images/Pasted image 20260622211927.png",
     "01-Foundations/Networking/MODULE 2 - APPLICATION LAYER/PRINCIPLES OF NETWORK APPLICATIONS.md",
     "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/INTRODUCTION & SERVICES.md",
     "01-Foundations/Networking/MODULE 2 - APPLICATION LAYER/SOCKET PROGRAMMING.md",
     "01-Foundations/Networking/MODULE 2 - APPLICATION LAYER/VIDEO STREAMING & CDN.md",
-    "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/MULTIPLEXING AND DEMULTIPLEXING.md",
     "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/INTERNET.md",
     "01-Foundations/Networking/BOOK 1 - TOP DOWN APPROACH.pdf",
     "01-Foundations/Networking/MOD.md",
@@ -290,7 +290,6 @@
     "10-Daily-Logs/2.6 - Peer-to-Peer Applications.md",
     "10-Daily-Logs/2026-05-26.md",
     "10-Daily-Logs/2026-05-17.md",
-    "03-Programming/Python/PYTHON BASICS/WEB SERVICES.md",
     "03-Programming/Python/PYTHON CRASH COURSE.pdf",
     "01-Foundations/Networking/MODULE 2 - APPLICATION LAYER",
     "10-Daily-Logs/Untitled.base",
