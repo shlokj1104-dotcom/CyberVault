@@ -469,19 +469,7 @@ Suppose a client process wants to connect to a server process. The client's TCP 
 
 > **Why randomize `client_isn` and `server_isn`?** Exactly the same reasoning given earlier for ISN randomization in general (Section 3.5.2) applies here with extra force: there has been considerable dedicated interest in properly randomizing the client's ISN specifically to defend against certain security attacks (RFC 4987) — predictable ISNs are a foothold for connection-hijacking and injection attempts.
 
-```
-   CLIENT                                          SERVER
-   ──────                                          ──────
-        │── SYN=1, seq=client_isn ──────────────────►│  (Step 1: connection request)
-        │                                            │
-        │◄── SYN=1, seq=server_isn, ───────────────────┤  (Step 2: connection granted —
-        │       ack=client_isn+1                      │   server allocates buffers/vars
-        │                                            │   *before* this 3rd step completes)
-        │── SYN=0, seq=client_isn+1, ────────────────►│  (Step 3: ACK — client allocates
-        │       ack=server_isn+1                      │   buffers/vars; may carry payload)
-        ▼                                            ▼
-                  Connection ESTABLISHED
-```
+![[Pasted image 20260624092045.png]]
 
 Because exactly three segments cross the wire — SYN, SYNACK, ACK — this is the same **three-way handshake** introduced informally back in 3.5.1, now fully specified bit-by-bit.
 
@@ -512,18 +500,7 @@ All good things come to an end, and either side of a TCP connection can independ
 4. The client acknowledges the server's FIN.
 5. At this point, all resources (buffers and variables) on **both** hosts are deallocated, and the connection ceases to exist.
 
-```
-   CLIENT                                          SERVER
-   ──────                                          ──────
-  Close
-        │── FIN ─────────────────────────────────────►│
-        │◄── ACK ───────────────────────────────────────┤
-        │                                              │ Close
-        │◄── FIN ───────────────────────────────────────┤
-        │── ACK ──────────────────────────────────────►│
-        │  (Timed wait)                                │
-   Closed                                          Closed
-```
+![[Pasted image 20260624092255.png]]
 
 ### Watching the State Machine: How TCP Actually Tracks This
 
@@ -531,22 +508,7 @@ Throughout a connection's life, the TCP protocol running on each host moves thro
 
 **Client-side states:**
 
-```
-   CLOSED ──Send SYN──► SYN_SENT ──Recv SYN & ACK, send ACK──► ESTABLISHED
-                                                                     │
-                                                              Send FIN (app
-                                                              decides to close)
-                                                                     ▼
-                                                              FIN_WAIT_1
-                                                                     │
-                                                      Recv ACK, send nothing
-                                                                     ▼
-                                                              FIN_WAIT_2
-                                                                     │
-                                                          Recv FIN, send ACK
-                                                                     ▼
-   CLOSED ◄── Wait 30 seconds ── TIME_WAIT
-```
+![[Pasted image 20260624092444.png]]
 
 |State|What's Happening|
 |---|---|
