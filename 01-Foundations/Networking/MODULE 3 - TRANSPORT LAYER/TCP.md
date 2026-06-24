@@ -10,7 +10,7 @@ status: learning
 ---
 # 3.5 Connection-Oriented Transport: TCP
 
-> **One-Line Summary:** TCP takes the unreliable, best-effort delivery service handed up from IP and, using nothing but sequence numbers, acknowledgments, timers, and a sliding receive window — all the principles built up in Section 3.4 — turns it into something an application can treat as a single, ordered, gap-free, congestion-and-receiver-aware stream of bytes flowing between two processes.
+> **One-Line Summary:** TCP takes the unreliable, best-effort delivery service handed up from IP and, using nothing but sequence numbers, acknowledgments, timers, and a sliding receive window — all the principles built up in Section 3.4 — turns it into something an application can treat as a single, ordered, gap-free, congestion-and-receiver-aware stream of bytes flowing between two processes, complete with an explicit handshake to open the connection and a matching teardown to close it cleanly.
 
 ---
 
@@ -127,7 +127,7 @@ A TCP segment is built from a **header** followed by a **data field**, where the
 |Flag|Meaning|
 |---|---|
 |**ACK**|Set when the acknowledgment number field actually contains a valid acknowledgment.|
-|**RST, SYN, FIN**|Used for connection setup and teardown (covered fully at the end of this section / in 3.5.6).|
+|**RST, SYN, FIN**|Used for connection setup and teardown (covered fully in 3.5.6).|
 |**CWR, ECE**|Used for explicit congestion notification (Section 3.7.2).|
 |**PSH**|(Rarely used in practice) signals the receiver should pass data up to the application immediately rather than buffering it.|
 |**URG**|(Rarely used in practice) signals the sender has marked some data as "urgent"; the urgent data pointer field marks where that urgent data ends.|
@@ -274,6 +274,7 @@ An initial `TimeoutInterval` value of **1 second** is recommended (RFC 6298). Wh
 > **Analogy — Why Double the Timeout After a Miss:** If you text a friend and get no reply in the time you normally expect, you might wait a bit longer before texting again rather than immediately assuming something's wrong and re-sending — because maybe they're just a little slower than usual right now, not gone entirely. Doubling the timeout is TCP giving the network the same benefit of the doubt, just once, before reverting to its normal expectation on the next successful round trip.
 
 ![[Pasted image 20260623222401.png]]
+
 ### Principles in Practice: How the Pieces Fit Together
 
 TCP provides reliable transfer using positive acknowledgments and timers, in the spirit of Section 3.4 — ACK what's correctly received, retransmit what's presumed lost or corrupted. Some implementations layer an _implicit NAK_ mechanism on top: as covered shortly under Fast Retransmit, three duplicate ACKs for the same segment act as an indirect signal that the _following_ segment was lost, triggering retransmission before the timer even expires.
@@ -452,6 +453,162 @@ A typical UDP implementation appends arriving segments into a finite-sized buffe
 
 ---
 
+## 3.5.6 TCP Connection Management
+
+This closing piece of the TCP picture looks at how a connection actually gets **established and torn down** — easy to gloss over as bureaucratic plumbing, but it matters for two concrete reasons: connection setup adds directly to perceived delay (every time you load a page over a fresh connection, you're paying this cost), and the setup procedure is the exact mechanism exploited by one of the most common denial-of-service attacks on the Internet, the SYN flood.
+
+### Establishing a Connection: Three Steps, Three Segments
+
+Suppose a client process wants to connect to a server process. The client's TCP and the server's TCP carry out the following:
+
+|Step|What Happens|
+|---|---|
+|**Step 1 — Client sends SYN**|The client-side TCP sends a special segment with **no application-layer data**, but with the **SYN bit** set to 1 in the header (hence "SYN segment"). The client also randomly chooses an **initial sequence number, `client_isn`**, and places it in the segment's sequence number field. This segment is encapsulated in an IP datagram and sent to the server.|
+|**Step 2 — Server sends SYNACK**|Once the datagram arrives, the server extracts the SYN segment, **allocates the TCP buffers and variables for the connection**, and sends back a connection-granted segment — also carrying no application data, but containing three pieces of information: the SYN bit set to 1, the acknowledgment field set to `client_isn + 1`, and the server's own randomly-chosen initial sequence number, `server_isn`, in the sequence number field. This is the **SYNACK segment**.|
+|**Step 3 — Client sends ACK**|Upon receiving the SYNACK, the client **also allocates its own buffers and variables** for the connection, then sends one final segment acknowledging the server's SYNACK — putting `server_isn + 1` in the acknowledgment field. The SYN bit is now set to **0**, since the connection is officially established. This third segment **may carry the client's first chunk of application payload.**|
+
+> **Why randomize `client_isn` and `server_isn`?** Exactly the same reasoning given earlier for ISN randomization in general (Section 3.5.2) applies here with extra force: there has been considerable dedicated interest in properly randomizing the client's ISN specifically to defend against certain security attacks (RFC 4987) — predictable ISNs are a foothold for connection-hijacking and injection attempts.
+
+```
+   CLIENT                                          SERVER
+   ──────                                          ──────
+        │── SYN=1, seq=client_isn ──────────────────►│  (Step 1: connection request)
+        │                                            │
+        │◄── SYN=1, seq=server_isn, ───────────────────┤  (Step 2: connection granted —
+        │       ack=client_isn+1                      │   server allocates buffers/vars
+        │                                            │   *before* this 3rd step completes)
+        │── SYN=0, seq=client_isn+1, ────────────────►│  (Step 3: ACK — client allocates
+        │       ack=server_isn+1                      │   buffers/vars; may carry payload)
+        ▼                                            ▼
+                  Connection ESTABLISHED
+```
+
+Because exactly three segments cross the wire — SYN, SYNACK, ACK — this is the same **three-way handshake** introduced informally back in 3.5.1, now fully specified bit-by-bit.
+
+> **Analogy — The Climber and the Belayer:** A rock climber and their belayer (the person managing the safety rope from below) use a verbal three-way exchange before the climb begins — "On belay?" / "Belay on." / "Climbing." — structurally identical to TCP's handshake: each side confirms readiness _and_ receives confirmation back before committing to the activity. Neither party wants to act on an assumption the other side never actually confirmed.
+
+### The Cost of the Handshake: One RTT Before Any Data
+
+Because the client has to wait to receive the SYNACK before it knows the server has accepted the connection and initialized its state, **a full RTT delay is structurally built into ordinary connection setup** — unavoidable with this protocol, no matter how fast either host is individually.
+
+### TCP Fast Open: Skipping the Handshake When Possible
+
+If a client and server have communicated before, a technique called **fast open** (also called **0-RTT handshaking**) can reduce the handshake delay to _zero_. During an earlier, ordinary three-way handshake, the client can request a **fast-open cookie** from the server — an encoding of all the connection information needed for a future connection, saved at both client and server. The next time that client wants to reconnect, it sends the cookie _together with its application data_ in its very first message. If the server finds the cookie acceptable, it establishes the connection and responds with application-layer data immediately — completely skipping the RTT that a traditional handshake would have spent before any data could move.
+
+|Detail|Note|
+|---|---|
+|**Client-side benefit**|Fast open is purely a potential optimization for the client — it costs the client nothing to offer the cookie|
+|**Server discretion**|The server may decline to accept the cookie for policy reasons — e.g., it no longer wants to talk to that client, or wants to force re-authentication (as in TLS handshaking)|
+|**Cookie integrity**|The cookie must be generated using cryptographically secure techniques — otherwise it becomes a forgeable shortcut around the handshake's protections|
+|**Where else this shows up**|TLS (RFC 8446) and QUIC (RFC 9000, RFC 9002) also support their own zero-RTT fast-open mechanisms — this isn't a TCP-only idea, just introduced here first|
+
+### Tearing Down a Connection
+
+All good things come to an end, and either side of a TCP connection can independently initiate closing it. Suppose the **client** decides to close:
+
+1. The client application issues a close command, causing the client TCP to send a special segment with the **FIN bit** set to 1.
+2. The server, on receiving this FIN segment, sends back an acknowledgment.
+3. The server then sends its **own** shutdown segment, also with the FIN bit set to 1.
+4. The client acknowledges the server's FIN.
+5. At this point, all resources (buffers and variables) on **both** hosts are deallocated, and the connection ceases to exist.
+
+```
+   CLIENT                                          SERVER
+   ──────                                          ──────
+  Close
+        │── FIN ─────────────────────────────────────►│
+        │◄── ACK ───────────────────────────────────────┤
+        │                                              │ Close
+        │◄── FIN ───────────────────────────────────────┤
+        │── ACK ──────────────────────────────────────►│
+        │  (Timed wait)                                │
+   Closed                                          Closed
+```
+
+### Watching the State Machine: How TCP Actually Tracks This
+
+Throughout a connection's life, the TCP protocol running on each host moves through a defined sequence of **TCP states**. Two separate state diagrams describe this — one for the side that initiates the connection (typically the client), one for the side that listens for it (typically the server).
+
+**Client-side states:**
+
+```
+   CLOSED ──Send SYN──► SYN_SENT ──Recv SYN & ACK, send ACK──► ESTABLISHED
+                                                                     │
+                                                              Send FIN (app
+                                                              decides to close)
+                                                                     ▼
+                                                              FIN_WAIT_1
+                                                                     │
+                                                      Recv ACK, send nothing
+                                                                     ▼
+                                                              FIN_WAIT_2
+                                                                     │
+                                                          Recv FIN, send ACK
+                                                                     ▼
+   CLOSED ◄── Wait 30 seconds ── TIME_WAIT
+```
+
+|State|What's Happening|
+|---|---|
+|**CLOSED**|Starting point — no connection exists yet|
+|**SYN_SENT**|Client has sent its SYN and is waiting for the server's SYNACK|
+|**ESTABLISHED**|Handshake complete; the client can freely send and receive payload-carrying segments|
+|**FIN_WAIT_1**|Client has sent its own FIN and is waiting for an ack/FIN from the server|
+|**FIN_WAIT_2**|Client's FIN has been acknowledged; now waiting for the server's own FIN|
+|**TIME_WAIT**|Client has ACKed the server's FIN and resends that final ACK if it gets lost, before fully closing|
+
+> **Why linger in TIME_WAIT instead of closing immediately?** The whole point is insurance: if the client's very last ACK never reaches the server, the server will retransmit its FIN, and the client needs to still be around — holding just enough state — to resend the ACK in response. Closing instantly would leave the server's retransmitted FIN with nowhere valid to land. The exact wait duration is **implementation-dependent**, but typical values are 30 seconds, 1 minute, or 2 minutes. Only after the wait does the connection formally close and release all client-side resources, including port numbers.
+
+**Server-side states** follow a mirrored but distinct path:
+
+```
+   CLOSED ──Create listen socket──► LISTEN ──Recv SYN, send SYN & ACK──► SYN_RCVD
+                                                                              │
+                                                                  Recv ACK, send nothing
+                                                                              ▼
+                                                                       ESTABLISHED
+                                                                              │
+                                                                        Recv FIN, send ACK
+                                                                              ▼
+                                                                       CLOSE_WAIT
+                                                                              │
+                                                                          Send FIN
+                                                                              ▼
+   CLOSED ◄── Receive ACK, send nothing ── LAST_ACK
+```
+
+> Both diagrams "only show how a TCP connection is normally established and shut down" — pathological edge cases, like both sides trying to initiate or close _simultaneously_, exist but go beyond this introductory pass (see Stevens 1994 for the full depth).
+
+### Reset Segments: When a Segment Has No Home
+
+The discussion so far has assumed both sides are prepared to communicate — the server is actually listening on the port the client is reaching for. What happens when that's _not_ true?
+
+Suppose a host receives a TCP SYN packet addressed to a port it isn't accepting connections on (no web server running on port 80, for instance, yet a SYN arrives for port 80 anyway). The host responds with a special **reset segment** — a TCP segment with the **RST flag bit** set to 1. Sending a reset segment is the host's way of explicitly telling the source, _"I don't have a socket for that segment — please don't resend it."_
+
+> The UDP equivalent of this situation produces a different response entirely: when a host receives a UDP packet whose destination port doesn't match any ongoing UDP socket, it sends a special **ICMP datagram** instead (the mechanics of ICMP are covered later, in Chapter 5) — TCP and UDP each have their own distinct way of saying "nobody's home" at a given port.
+
+---
+
+## Focus on Security: The SYN Flood Attack
+
+The three-way handshake has an exploitable asymmetry baked into it: **the server allocates and initializes connection buffers and variables the moment it receives a SYN — before it has any confirmation the client is legitimate or will ever complete the handshake.** If the client never sends the final ACK, the server eventually (often after a minute or more) times out the **half-open connection** and reclaims those resources — but in the meantime, real capacity sat reserved for a connection that was never going to complete.
+
+The **SYN flood attack** weaponizes exactly this asymmetry: an attacker sends a large volume of SYN segments without ever completing the third handshake step. The server's pool of connection resources gets exhausted allocating (but never using) half-open connections, and legitimate clients attempting to connect get denied service — a classic **Denial-of-Service (DoS)** attack. SYN flooding was among the very first documented DoS attack types, and even decades later it still accounts for a meaningful share of DoS activity in the wild (cited at 14% of DoS attacks in recent measurement, per Fastly 2024).
+
+### The Defense: SYN Cookies
+
+The standard, now widely deployed defense is **SYN cookies** (RFC 4987). The core trick is to make the server stop trusting — and stop _remembering_ — anything about a SYN until the client proves it's real by completing the handshake:
+
+|Step|What the Server Does|
+|---|---|
+|**On receiving a SYN**|Instead of creating real connection state, the server computes an initial sequence number as a **hash function** of the source/destination IP addresses, source/destination ports, _and_ a secret value known only to the server. This specially-crafted value is the **"cookie."** The server sends a SYNACK carrying this cookie as its ISN — and **deliberately keeps no memory** of the SYN or any related state.|
+|**On receiving a legitimate client's ACK**|The server must verify the ACK corresponds to a real, previously-sent SYNACK — without having stored anything about it. Since a legitimate ACK's acknowledgment field equals (SYNACK's ISN) + 1, the server simply **re-runs the same hash function** using the IP addresses, ports, and secret (all of which are still available, since the source/destination fields are right there in the incoming segment) and checks whether the result, plus one, matches the ACK's acknowledgment value. A match confirms validity; **only then** does the server allocate a real, fully open connection and socket.|
+|**If no ACK ever arrives**|No harm done — because the server never allocated any resources for the original SYN in the first place, an attacker's flood of never-completed SYNs costs the server essentially nothing beyond computing cheap hash functions.|
+
+> **Analogy — A Claim Ticket Instead of a Reserved Table:** Imagine a restaurant that, instead of immediately reserving and setting a table the moment someone calls to book, simply hands out a verifiable claim ticket (encoding who called and when) without committing any actual table or staff time. Only when the person shows up _with a valid ticket_ does the restaurant commit real resources. A prankster who calls repeatedly and never shows up costs the restaurant nothing — there was never anything to reclaim, because nothing was ever set aside.
+
+---
+
 ## Why It Matters for Security
 
 |Concept|Attacker's Perspective|Defender's Perspective|
@@ -460,6 +617,8 @@ A typical UDP implementation appends arriving segments into a finite-sized buffe
 |**TCP trusts ACKs and sequence numbers, not cryptographic identity**|An attacker positioned to sniff or guess the four-tuple plus current sequence numbers of an active connection can attempt session hijacking, since TCP's own mechanism has no concept of "proving who sent this"|Run TLS on top of TCP for genuine endpoint authentication and payload confidentiality; treat raw TCP framing as providing _delivery_, never _trust_|
 |**Telnet sends everything — including credentials — in plaintext**|Anyone able to observe traffic on the path can read login credentials and session content directly out of Telnet segments|Use SSH instead of Telnet for any real remote-login use case; this is precisely why SSH displaced Telnet in practice|
 |**Single shared retransmission timer, predictable backoff (doubling)**|A well-resourced attacker who can selectively drop ACKs might attempt to manipulate a connection's effective throughput by forcing repeated retransmission/backoff cycles|Not generally a high-value attack surface on its own, but illustrates why TCP's timing behavior (RTT estimation, backoff) is occasionally relevant in denial-of-service and traffic-analysis discussions|
+|**The handshake allocates server resources before the client is verified**|A SYN flood exploits exactly this gap — flooding half-open connection requests to exhaust server resources without ever completing a single real connection|Deploy SYN cookies so the server commits zero state until a verified ACK arrives, making half-open-connection floods essentially costless to absorb|
+|**Connection-establishment behavior reveals whether a port is listening at all**|An RST response to an unsolicited SYN, or an ICMP message to a stray UDP packet, both leak information about which ports are actually active — useful raw material for the port scanning described in Section 3.2|Don't assume silence is the only safe response; understand that explicit rejection (RST/ICMP) is itself a small information leak, and is part of why minimizing exposed ports matters at the network-design level, not just the firewall-rule level|
 
 ---
 
@@ -469,36 +628,47 @@ A typical UDP implementation appends arriving segments into a finite-sized buffe
 - [ ] With selective acknowledgments (RFC 2018) enabled, how much does TCP's behavior actually converge toward "true" Selective Repeat versus staying a GBN-style hybrid in terms of sender-side state complexity?
 - [ ] The one-byte probe-segment fix for the zero-window deadlock — is there a defined interval for how often A sends these probes, or is it left to implementation, similar to how the spec leaves the timing of _when_ TCP sends buffered data unspecified?
 - [ ] How does window scaling (mentioned briefly under the Options field) interact with the 16-bit `rwnd` field, given that 16 bits alone would cap advertisable window size well below what high-speed/high-RTT links need?
-- [ ] Now that 3.5.1–3.5.5 are covered, what exactly does 3.5.6 (Connection Management) add on top of the three-way handshake already described here — presumably the full state machine and teardown (FIN/RST) sequence?
+- [ ] What actually happens in the "pathological" cases the textbook waves off — both sides trying to initiate, or both sides trying to close, at the same time? Does the state machine have defined transitions for simultaneous SYN or simultaneous FIN, or does it just rely on one side "winning" by timing?
+- [ ] With TCP Fast Open's cookie skipping the handshake, does that also mean the usual one-RTT delay _and_ the usual ISN-randomization protection are both being traded away for speed — or does the cookie itself still encode enough randomness to preserve that protection?
+- [ ] SYN cookies replace the server's normal ISN choice with a hash-derived value — does this interact at all with the security rationale for randomized ISNs (RFC 4987), or are the two mechanisms solving genuinely separate problems that happen to both live in the sequence number field?
 
 ---
 
 ## Key Terms — Quick Reference
 
-| Term                             | Definition                                                                                                                                                    |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Three-way handshake**          | The three-segment exchange (request → response → ack/first-data) by which a TCP client and server establish a connection before any bulk data transfer begins |
-| **Full-duplex**                  | A connection property where data flows in both directions simultaneously                                                                                      |
-| **Point-to-point**               | A connection property restricting TCP to exactly one sender and one receiver per connection (no multicast)                                                    |
-| **MTU**                          | Maximum Transmission Unit — the largest link-layer frame a host's local network can carry                                                                     |
-| **MSS**                          | Maximum Segment Size — the largest chunk of application data TCP places in one segment, sized so MSS + header fits inside one MTU                             |
-| **Sequence number**              | The byte-stream position of the first data byte in a given TCP segment                                                                                        |
-| **Acknowledgment number**        | The sequence number of the next byte the sender of that segment is expecting to receive                                                                       |
-| **Cumulative acknowledgment**    | TCP's ACK behavior of always naming the next byte still needed to make the stream contiguous, regardless of any later, out-of-order bytes already received    |
-| **SampleRTT**                    | A single measured round-trip time for one (non-retransmitted) segment-ACK pair                                                                                |
-| **EstimatedRTT**                 | An exponentially-weighted moving average of SampleRTT values, smoothing out short-term fluctuation                                                            |
-| **DevRTT**                       | An exponentially-weighted moving average of how far SampleRTT typically deviates from EstimatedRTT — TCP's measure of RTT variability                         |
-| **TimeoutInterval**              | TCP's actual retransmission timeout, computed as `EstimatedRTT + 4 · DevRTT`                                                                                  |
-| **SendBase**                     | Sender-side state variable: the sequence number of the oldest byte sent but not yet acknowledged                                                              |
-| **NextSeqNum**                   | Sender-side state variable: the sequence number to be assigned to the next new segment of data                                                                |
-| **Duplicate ACK**                | An ACK that re-acknowledges a byte already confirmed by an earlier ACK; generated by a receiver detecting a gap in the byte stream                            |
-| **Fast retransmit**              | Retransmitting a presumed-lost segment immediately upon receiving three duplicate ACKs for it, without waiting for the timeout                                |
-| **Flow control**                 | TCP's mechanism for preventing a fast sender from overflowing a slow receiver's buffer, by having the sender respect the receiver's advertised window         |
-| **Receive window (rwnd)**        | The amount of free space currently available in the receiver's buffer, advertised by the receiver and respected by the sender                                 |
-| **RcvBuffer**                    | The total size of the buffer a host allocates for an incoming TCP connection's data                                                                           |
-| **LastByteRead / LastByteRcvd**  | Receiver-side variables tracking, respectively, the last byte read by the application and the last byte placed in the buffer by the network                   |
-| **LastByteSent / LastByteAcked** | Sender-side variables tracking, respectively, the last byte sent into the connection and the last byte acknowledged by the receiver                           |
-| **Zero-window probe**            | A one-byte segment TCP keeps sending when told `rwnd = 0`, specifically to detect when receiver buffer space reopens                                          |
+|Term|Definition|
+|---|---|
+|**Three-way handshake**|The three-segment exchange (request → response → ack/first-data) by which a TCP client and server establish a connection before any bulk data transfer begins|
+|**Full-duplex**|A connection property where data flows in both directions simultaneously|
+|**Point-to-point**|A connection property restricting TCP to exactly one sender and one receiver per connection (no multicast)|
+|**MTU**|Maximum Transmission Unit — the largest link-layer frame a host's local network can carry|
+|**MSS**|Maximum Segment Size — the largest chunk of application data TCP places in one segment, sized so MSS + header fits inside one MTU|
+|**Sequence number**|The byte-stream position of the first data byte in a given TCP segment|
+|**Acknowledgment number**|The sequence number of the next byte the sender of that segment is expecting to receive|
+|**Cumulative acknowledgment**|TCP's ACK behavior of always naming the next byte still needed to make the stream contiguous, regardless of any later, out-of-order bytes already received|
+|**SampleRTT**|A single measured round-trip time for one (non-retransmitted) segment-ACK pair|
+|**EstimatedRTT**|An exponentially-weighted moving average of SampleRTT values, smoothing out short-term fluctuation|
+|**DevRTT**|An exponentially-weighted moving average of how far SampleRTT typically deviates from EstimatedRTT — TCP's measure of RTT variability|
+|**TimeoutInterval**|TCP's actual retransmission timeout, computed as `EstimatedRTT + 4 · DevRTT`|
+|**SendBase**|Sender-side state variable: the sequence number of the oldest byte sent but not yet acknowledged|
+|**NextSeqNum**|Sender-side state variable: the sequence number to be assigned to the next new segment of data|
+|**Duplicate ACK**|An ACK that re-acknowledges a byte already confirmed by an earlier ACK; generated by a receiver detecting a gap in the byte stream|
+|**Fast retransmit**|Retransmitting a presumed-lost segment immediately upon receiving three duplicate ACKs for it, without waiting for the timeout|
+|**Flow control**|TCP's mechanism for preventing a fast sender from overflowing a slow receiver's buffer, by having the sender respect the receiver's advertised window|
+|**Receive window (rwnd)**|The amount of free space currently available in the receiver's buffer, advertised by the receiver and respected by the sender|
+|**RcvBuffer**|The total size of the buffer a host allocates for an incoming TCP connection's data|
+|**LastByteRead / LastByteRcvd**|Receiver-side variables tracking, respectively, the last byte read by the application and the last byte placed in the buffer by the network|
+|**LastByteSent / LastByteAcked**|Sender-side variables tracking, respectively, the last byte sent into the connection and the last byte acknowledged by the receiver|
+|**Zero-window probe**|A one-byte segment TCP keeps sending when told `rwnd = 0`, specifically to detect when receiver buffer space reopens|
+|**SYN segment**|The first handshake segment — no payload, SYN bit set to 1, carries the client's randomly-chosen `client_isn`|
+|**SYNACK segment**|The server's handshake reply — SYN bit set to 1, acknowledges `client_isn + 1`, carries the server's own randomly-chosen `server_isn`|
+|**TCP Fast Open / 0-RTT**|A cookie-based technique letting a returning client skip the handshake delay entirely by sending application data with its first message|
+|**FIN segment**|A segment with the FIN bit set to 1, signaling one side's intent to close its half of the connection|
+|**TIME_WAIT state**|A client-side state held briefly after closing, to allow resending a final ACK if the server's FIN gets retransmitted due to ACK loss|
+|**RST segment**|A segment with the RST bit set to 1, sent when a host receives a segment for a port with no matching socket — "please don't resend this"|
+|**Half-open connection**|A connection for which the server has allocated resources after receiving a SYN, but for which the third handshake step (ACK) has not yet arrived|
+|**SYN flood attack**|A DoS attack that floods a server with SYNs and never completes the handshake, exhausting resources reserved for half-open connections|
+|**SYN cookie**|A defense against SYN flooding: the server encodes connection info into a hash-derived ISN and verifies it on ACK receipt, without storing any state up front|
 
 ---
 
@@ -506,4 +676,4 @@ A typical UDP implementation appends arriving segments into a finite-sized buffe
 
 ---
 
-→ Next: [[3.5.6 Connection Management]] 
+→ Next: [[3.6 Principles of Congestion Control]]
