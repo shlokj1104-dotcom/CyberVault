@@ -337,4 +337,4 @@ Suppose a peer with identifier 13 wants to join, knowing only the existence of p
 
 ---
 
-→ Next: [[2.7 - Video Streaming and Content Distribution Networks]]
+→ Next: [[INTRODUCTION & SERVICES]]
