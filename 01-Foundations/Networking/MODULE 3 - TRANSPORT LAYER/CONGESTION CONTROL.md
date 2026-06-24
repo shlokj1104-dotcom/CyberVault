@@ -38,6 +38,8 @@ To build precise intuition, the textbook walks through three progressively reali
 
 ### Scenario 1: Two Senders, a Router with Infinite Buffers
 
+![[Pasted image 20260624145910.png]]
+
 **Setup:**
 
 - Two hosts (A and B), each with a connection sharing a single router hop between source and destination (Figure 3.41).
@@ -54,6 +56,8 @@ Host B ──┘
 ```
 
 **What Figure 3.42 reveals:**
+
+![[Pasted image 20260624150104.png]]
 
 _Left graph — Throughput (λ_out) vs. Sending Rate (λ_in):_
 
@@ -83,6 +87,8 @@ _Right graph — Delay vs. Sending Rate (λ_in):_
 
 ### Scenario 2: Two Senders and a Router with Finite Buffers
 
+![[Pasted image 20260624150325.png]]
+
 **The Two Key Changes from Scenario 1:**
 
 1. **Finite router buffers** — packets _are_ dropped when the buffer is full.
@@ -103,6 +109,9 @@ Host A ──┐  λ'_in (original + retransmitted)
 Host B ──┘
          (packets dropped when buffer full → retransmissions needed)
 ```
+
+
+![[Pasted image 20260624150621.png]]
 
 **Three sub-cases (Figure 3.44):**
 
@@ -135,6 +144,8 @@ Host B ──┘
 
 ### Scenario 3: Four Senders, Routers with Finite Buffers, and Multihop Paths
 
+![[Pasted image 20260624151100.png]]
+
 **Setup (Figure 3.45):**
 
 - Four hosts transmit packets, each over overlapping two-hop paths.
@@ -161,6 +172,7 @@ In the extreme limit, as B–D's offered load approaches infinity, every availab
 
 > **Cost #4 Discovered (and the most structurally important one):** _When a packet is dropped due to congestion, the transmission capacity that was used at each of the upstream links to forward that packet to the point at which it is dropped ends up having been wasted._
 
+![[Pasted image 20260624151240.png]]
 Figure 3.46 shows the result: as offered load increases beyond a moderate level, throughput actually **decreases** and eventually **collapses to zero**. This phenomenon — _congestion collapse_ — means that at very high load levels, sending more only yields less, because so many upstream resources are consumed carrying packets that will be dropped downstream.
 
 > **Analogy — Carrying Groceries Upstairs Only to Find a Locked Door:** Imagine carrying heavy bags up five flights of stairs, only to find the apartment you're delivering to is locked. All that effort was wasted. Now imagine hundreds of delivery people doing this simultaneously, each clogging the stairwells carrying bags that will never be accepted — so even the few deliveries that _could_ succeed can't get through because the stairwells are full of people carrying bags to locked doors. That's congestion collapse in a multihop network.
@@ -178,7 +190,10 @@ Figure 3.46 shows the result: as offered load increases beyond a moderate level,
 
 ## The Bottleneck Link: The Fundamental Problem
 
-Before developing solutions, it helps to characterize the fundamental problem precisely. Figure 3.47 shows N transport-layer connections, each passing through a shared **bottleneck link** of capacity R bps.
+![[Pasted image 20260624151456.png]]
+
+Before developing solutions, it helps to characterize the fundamental problem precisely. 
+Figure 3.47 shows N transport-layer connections, each passing through a shared **bottleneck link** of capacity R bps.
 
 **What is a bottleneck link?** A connection's bottleneck link is the link along its end-to-end path that, if senders slowly increase their transmission rate, would be the _first_ link on that path to experience congestion loss. It's the narrowest point in the pipe.
 
@@ -245,19 +260,7 @@ _Rich feedback (explicit rate):_
 
 **Two paths for delivering network feedback back to the sender (Figure 3.48):**
 
-```
-Path 1 — Direct Network Feedback:
-         Router detects congestion
-              ↓ (choke packet)
-         Directly to Sender (rare in practice)
-
-Path 2 — Network Feedback via Receiver:
-         Router marks/updates a field in a passing data packet
-              ↓ (marked packet travels to Receiver)
-         Receiver notifies Sender in its next ACK or control message
-              ↓ (takes one full RTT to reach Sender)
-         Sender adjusts rate
-```
+![[Pasted image 20260624151815.png]]
 
 The second path (via receiver) is the more common form and is what TCP's ECN mechanism uses. Because the notification travels in the data packet to the receiver, and then back to the sender in the acknowledgment, this round-trip takes a full RTT — meaning congestion signals always arrive at the sender with at least one RTT of delay.
 
@@ -325,4 +328,4 @@ The need for some form of congestion control is clear. The question is only whic
 
 ## Related Concepts
 
-→ Previous: [[3.5 Connection-Oriented Transport: TCP]] → Next: [[3.7 TCP Congestion Control]]
+→ Next: [[3.6 Principles of Congestion Control]]

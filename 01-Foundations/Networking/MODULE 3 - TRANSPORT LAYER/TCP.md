@@ -624,4 +624,4 @@ The standard, now widely deployed defense is **SYN cookies** (RFC 4987). The cor
 
 ---
 
-→ Next: [[3.6 Principles of Congestion Control]]
+→ Next: [[CONGESTION CONTROL]]
