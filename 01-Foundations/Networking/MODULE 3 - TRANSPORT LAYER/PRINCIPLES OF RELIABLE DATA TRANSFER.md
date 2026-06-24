@@ -417,4 +417,4 @@ GBN and SR together account for almost every reliable-data-transfer technique th
 
 ---
 
-→ Next: [[3.5 Connection-Oriented Transport TCP]]
+→ Next: [[TCP]]

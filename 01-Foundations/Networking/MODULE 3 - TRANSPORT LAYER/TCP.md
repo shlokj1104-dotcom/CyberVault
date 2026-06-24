@@ -523,21 +523,7 @@ Throughout a connection's life, the TCP protocol running on each host moves thro
 
 **Server-side states** follow a mirrored but distinct path:
 
-```
-   CLOSED ──Create listen socket──► LISTEN ──Recv SYN, send SYN & ACK──► SYN_RCVD
-                                                                              │
-                                                                  Recv ACK, send nothing
-                                                                              ▼
-                                                                       ESTABLISHED
-                                                                              │
-                                                                        Recv FIN, send ACK
-                                                                              ▼
-                                                                       CLOSE_WAIT
-                                                                              │
-                                                                          Send FIN
-                                                                              ▼
-   CLOSED ◄── Receive ACK, send nothing ── LAST_ACK
-```
+![[Pasted image 20260624092635.png]]
 
 > Both diagrams "only show how a TCP connection is normally established and shut down" — pathological edge cases, like both sides trying to initiate or close _simultaneously_, exist but go beyond this introductory pass (see Stevens 1994 for the full depth).
 
