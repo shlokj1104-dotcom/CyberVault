@@ -373,4 +373,4 @@ Even if UDP traffic could somehow be forced to behave fairly, the fairness probl
 
 ---
 
-→ Next: [[3.8 Chapter 3 Summary]]
+→ Next: [[TRANSPORT LAYER FUNCTIONALITY]]
