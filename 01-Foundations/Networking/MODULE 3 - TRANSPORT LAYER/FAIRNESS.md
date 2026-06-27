@@ -294,23 +294,7 @@ Consider `K` TCP connections, each following a different end-to-end path, but al
 
 Consider two TCP connections sharing one bottleneck link of capacity `R`, with the same MSS and RTT (so equal congestion windows translate to equal throughput), both with plenty of data to send, and no other competing traffic. Plot the realized throughput of connection 2 against connection 1's throughput. If TCP shares the link equally, the realized throughputs should sit along the **45-degree "equal capacity share" line** emanating from the origin; ideally, the _sum_ of the two throughputs should also equal `R` (the **full-utilization line**) — the actual goal is for the achieved throughputs to land somewhere near where these two lines intersect.
 
-```
-Connection 2
- throughput
-    R │\                    
-      │ \    ← full utilization line (sum = R)
-      │  \         ╱ equal-capacity-share line (45°)
-      │   \    D  ╱
-      │    \  ╱ ╲╱
-      │     \╱   ╲
-      │     ╱╲    B
-      │    ╱  C  ╱
-      │   ╱  ╲  ╱
-      │  ╱    ╲╱
-      │ ╱      A
-      │╱________________________________► Connection 1 throughput
-      0                                  R
-```
+![[Pasted image 20260627131219.png]]
 
 **Walking the dynamics:** Suppose at some point in time the two connections' windows realize throughputs at point **A**. Because the _total_ link capacity jointly consumed is less than `R`, no loss occurs, and _both_ connections increase their windows by 1 MSS per RTT (congestion avoidance) — so the joint throughput climbs along a 45-degree line (equal increase for both) starting from A. Eventually the link's full capacity is exceeded and packet loss occurs — say, when throughputs reach point **B**. Both connections then halve their windows, landing at point **C** — exactly halfway along the line from B back toward the origin. Because joint capacity is now well under `R` again, both connections resume climbing along a new 45-degree line from C, eventually triggering loss again at point **D**, halving again, and so on.
 

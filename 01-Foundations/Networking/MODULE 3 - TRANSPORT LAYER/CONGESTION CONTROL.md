@@ -328,4 +328,4 @@ The need for some form of congestion control is clear. The question is only whic
 
 ## Related Concepts
 
-→ Next: [[3.6 Principles of Congestion Control]]
+→ Next: [[FAIRNESS]]
