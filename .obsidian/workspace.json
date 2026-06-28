@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/TRANSPORT LAYER FUNCTIONALITY.md",
+                "file": "01-Foundations/Networking/MODULE 4 - THE NETWORK LAYER (DATA PLANE)/INTRODUCTION - NETWORK LAYER.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "TRANSPORT LAYER FUNCTIONALITY"
+              "title": "INTRODUCTION - NETWORK LAYER"
             }
           }
         ]
@@ -250,11 +250,14 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "8fcd1ab0efc64805",
+  "active": "957f1a7ff8e9ae06",
   "lastOpenFiles": [
+    "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/TRANSPORT LAYER FUNCTIONALITY.md",
+    "01-Foundations/Networking/MODULE 4 - THE NETWORK LAYER (DATA PLANE)/INTRODUCTION - NETWORK LAYER.md",
+    "01-Foundations/Networking/MODULE 4 - THE NETWORK LAYER (DATA PLANE)",
+    "01-Foundations/Networking/Untitled.md",
     "Images/Pasted image 20260627135902.png",
     "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/FAIRNESS.md",
-    "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/TRANSPORT LAYER FUNCTIONALITY.md",
     "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/CONGESTION CONTROL.md",
     "Images/Pasted image 20260627131219.png",
     "Images/Pasted image 20260627124049.png",
@@ -266,7 +269,6 @@
     "Images/Pasted image 20260627122549.png",
     "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/TCP.md",
     "Images/Pasted image 20260624151815.png",
-    "Images/Pasted image 20260624151456.png",
     "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/INTRODUCTION & SERVICES.md",
     "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/PRINCIPLES OF RELIABLE DATA TRANSFER.md",
     "01-Foundations/Networking/MODULE 2 - APPLICATION LAYER/P2P.md",
@@ -290,7 +292,6 @@
     "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/DELAY, LOSS, AND THROUGHPUT IN PACKET-SWITCHED NETWORKS.md",
     "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/THE NETWORK CORE.md",
     "01-Foundations/Networking/BOOK 1 - KUROSE ROSS.pdf",
-    "10-Daily-Logs/2026-06-17.md",
     "03-Programming/Python/PYTHON CRASH COURSE.pdf",
     "01-Foundations/Networking/MODULE 2 - APPLICATION LAYER",
     "10-Daily-Logs/Untitled.base",
@@ -298,7 +299,6 @@
     "Canvas/Untitled.canvas",
     "Canvas",
     "03-Programming/Python/PYTHON BASICS",
-    "Images",
-    "01-Foundations/Linux/THE LINUX COMMAND LINE.pdf"
+    "Images"
   ]
 }

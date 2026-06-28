@@ -286,4 +286,4 @@ QUIC's congestion control is based on **TCP NewReno** (RFC 6582) — a slight mo
 
 ---
 
-→ Next: [[Chapter 3 Summary]]
+→ Next: [[INTRODUCTION - NETWORK LAYER]]

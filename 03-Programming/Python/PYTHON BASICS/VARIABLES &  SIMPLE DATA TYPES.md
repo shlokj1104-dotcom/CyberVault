@@ -378,5 +378,5 @@ Key principles that shape how Python handles variables and types:
 
 ## Related Notes
 
-- [[INTRODUCTION]]
+- [[03-Programming/Python/PYTHON BASICS/INTRODUCTION]]
 - 
