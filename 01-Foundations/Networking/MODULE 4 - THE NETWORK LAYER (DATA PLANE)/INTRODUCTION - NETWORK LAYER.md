@@ -33,7 +33,7 @@ Traditionally, a single router has implemented _both_ of these functions monolit
 
 Picture a simple network: two hosts, H1 and H2, with a handful of routers — including R1 (nearest H1) and R2 (nearest H2) — somewhere on the path between them.
 
-![[Figure 4.1.png]]
+![[Pasted image 20260628144936.png]]
 
 Suppose H1's transport layer hands the network layer a 1,000-byte HTTP response segment, destined for H2. Concretely, here's what happens at each hop:
 
