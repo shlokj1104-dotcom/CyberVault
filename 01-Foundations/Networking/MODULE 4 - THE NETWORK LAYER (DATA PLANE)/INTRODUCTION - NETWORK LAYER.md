@@ -177,7 +177,7 @@ In the SDN approach, a **physically separate, remote controller** computes and d
                                    the table came from differs)
 ```
 
-![[Figure 4.3.png]]
+![[Pasted image 20260628151218.png]]
 
 This remote controller might run in a remote data center with built-in reliability and redundancy, and could be managed by the ISP itself or by some third party entirely. The routers and the controller communicate by exchanging messages that contain forwarding tables and other routing-related information — structurally the same _kind_ of communication as before, just rerouted to a centralized point rather than peer-to-peer between routers.
 

@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "01-Foundations/Networking/MODULE 4 - THE NETWORK LAYER (DATA PLANE)/INTRODUCTION - NETWORK LAYER.md",
+                "file": "01-Foundations/Networking/MODULE 4 - THE NETWORK LAYER (DATA PLANE)/Untitled.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "INTRODUCTION - NETWORK LAYER"
+              "title": "Untitled"
             }
           }
         ]
@@ -252,10 +252,13 @@
   },
   "active": "957f1a7ff8e9ae06",
   "lastOpenFiles": [
-    "Pasted image 20260628150654.png",
-    "Pasted image 20260628144936.png",
-    "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/TRANSPORT LAYER FUNCTIONALITY.md",
     "01-Foundations/Networking/MODULE 4 - THE NETWORK LAYER (DATA PLANE)/INTRODUCTION - NETWORK LAYER.md",
+    "01-Foundations/Networking/MODULE 4 - THE NETWORK LAYER (DATA PLANE)/Untitled.md",
+    "01-Foundations/Networking/MODULE 4 - THE NETWORK LAYER (DATA PLANE)/Untitled",
+    "Images/Pasted image 20260628151218.png",
+    "Images/Pasted image 20260628150654.png",
+    "Images/Pasted image 20260628144936.png",
+    "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/TRANSPORT LAYER FUNCTIONALITY.md",
     "01-Foundations/Networking/MODULE 4 - THE NETWORK LAYER (DATA PLANE)",
     "01-Foundations/Networking/Untitled.md",
     "Images/Pasted image 20260627135902.png",
@@ -267,8 +270,6 @@
     "Images/Pasted image 20260627123717.png",
     "Images/Pasted image 20260627123446.png",
     "Images/Pasted image 20260627123252.png",
-    "Images/Pasted image 20260627122939.png",
-    "Images/Pasted image 20260627122549.png",
     "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/TCP.md",
     "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/INTRODUCTION & SERVICES.md",
     "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/PRINCIPLES OF RELIABLE DATA TRANSFER.md",
@@ -298,7 +299,6 @@
     "Untitled.canvas",
     "Canvas/Untitled.canvas",
     "Canvas",
-    "03-Programming/Python/PYTHON BASICS",
-    "Images"
+    "03-Programming/Python/PYTHON BASICS"
   ]
 }
