@@ -37,28 +37,13 @@ Picture a simple network: two hosts, H1 and H2, with a handful of routers — in
 
 Suppose H1's transport layer hands the network layer a 1,000-byte HTTP response segment, destined for H2. Concretely, here's what happens at each hop:
 
-```
-  H1 (full stack)                                          H2 (full stack)
-  ───────────────                                          ───────────────
-  Application                                               Application
-  Transport     ── 1,000-byte segment ──┐                   Transport     ▲
-  Network       ◄── encapsulates segment │                  Network       │
-       │            into a DATAGRAM      │                       │  extracts segment
-  Link/Physical       (adds header)      │                  Link/Physical │ from datagram,
-       │                                  ▼                       ▲       │ hands up to
-       ▼                                                          │       │ transport layer
-   sent to R1                                                 received from R2
-       │                                                          ▲
-       ▼                                                          │
-   ┌─────────────────────┐                              ┌─────────────────────┐
-   │   Router R1          │                              │   Router R2          │
-   │   (truncated stack)  │   ── many hops, many ──►     │   (truncated stack)  │
-   │   Network            │      routers in between      │   Network            │
-   │   Link / Physical    │                              │   Link / Physical    │
-   └─────────────────────┘                              └─────────────────────┘
-       no Application or Transport layer running here — routers only run
-       up through the Network layer; they never run a browser or a TCP stack
-```
+H1 (full stack)                    R1           R2              H2 (full stack)
+┌──────────────┐                ┌──────┐     ┌──────┐        ┌──────────────┐
+│ Application  │                │      │     │      │        │ Application  │
+│ Transport    │──1000B seg──►  │      │────►│      │ ──►    │ Transport    │
+│ Network      │                │ Net  │     │ Net  │        │ Network      │
+│ Link/Phys    │                │ L/P  │     │ L/P  │        │ Link/Phys    │
+└──────────────┘                └──────┘     └──────┘        └──────────────┘
 
 |Step|What Happens|
 |---|---|
