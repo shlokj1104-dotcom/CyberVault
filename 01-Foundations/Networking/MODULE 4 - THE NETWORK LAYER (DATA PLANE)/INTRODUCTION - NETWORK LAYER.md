@@ -37,6 +37,7 @@ Picture a simple network: two hosts, H1 and H2, with a handful of routers — in
 
 Suppose H1's transport layer hands the network layer a 1,000-byte HTTP response segment, destined for H2. Concretely, here's what happens at each hop:
 
+```
 H1 (full stack)                    R1           R2              H2 (full stack)
 ┌──────────────┐                ┌──────┐     ┌──────┐        ┌──────────────┐
 │ Application  │                │      │     │      │        │ Application  │
@@ -44,6 +45,15 @@ H1 (full stack)                    R1           R2              H2 (full stack)
 │ Network      │                │ Net  │     │ Net  │        │ Network      │
 │ Link/Phys    │                │ L/P  │     │ L/P  │        │ Link/Phys    │
 └──────────────┘                └──────┘     └──────┘        └──────────────┘
+
+  ↑ full stack:                  ↑ truncated stacks:           ↑ full stack:
+  all 5 layers                   Network + Link/Phys only       all 5 layers
+                                 (no Application or Transport)
+
+no Application or Transport layer running here —
+routers only run up through the Network layer;
+they never run a browser or a TCP stack.
+```
 
 |Step|What Happens|
 |---|---|
@@ -73,7 +83,7 @@ Forwarding is the most common — and most important — function implemented in
 
 "Forwarding" and "routing" are frequently used interchangeably by other authors discussing the network layer — but it's worth being precise, because the two operate on genuinely different timescales and in genuinely different places:
 
-||Forwarding|Routing|
+| |Forwarding|Routing|
 |---|---|---|
 |**Scope**|Router-local — the action of moving a packet from one specific input interface to the appropriate output interface|Network-wide — the process that determines the end-to-end path packets take from source all the way to destination|
 |**Timescale**|Very short — typically a few **nanoseconds**|Much longer — typically **seconds**|
@@ -102,7 +112,7 @@ Suppose a router's forwarding table looks like this:
 
 A packet carrying header field value **`0110`** arrives at the router. The router indexes into its forwarding table using that exact value, finds the matching row, and determines that the correct output link interface for this particular packet is **interface 2**. The router then internally forwards the packet to interface 2 — and that's the entire forwarding decision, made in a few nanoseconds, with nothing more than a table lookup.
 
-![[Figure 4.2.png]]
+![[Pasted image 20260628150654.png]]
 
 ```
                        ┌─────────────────────┐
@@ -112,16 +122,16 @@ A packet carrying header field value **`0110`** arrives at the router. The route
    ─────────────────────────────────────────────────────────────────────
                        ┌──────────▼────────────┐
                        │  Local forwarding table │  ← Data plane
-                       │  header │ output         │     (nanosecond
-                       │  0100   │  3              │      timescale,
-                       │  0110   │  2              │      typically hardware)
-                       │  0111   │  2              │
-                       │  1001   │  1              │
+                       │  header │ output       │     (nanosecond
+                       │  0100   │  3           │      timescale,
+                       │  0110   │  2           │      typically hardware)
+                       │  0111   │  2           │
+                       │  1001   │  1           │
                        └──────────┬────────────┘
                                   │
-   Header value of arriving         ┌──┐
-   packet:  [0110]  ───────────────►│  │── interface 2 ──► out the door
-                                     └──┘
+   Header value of arriving      ┌──┐
+   packet:  [0110]  ────────────►│  │── interface 2 ──► out the door
+                                 └──┘
                           (3 other interfaces, unused
                            by this particular packet)
 ```
@@ -150,18 +160,18 @@ In the SDN approach, a **physically separate, remote controller** computes and d
 
 ```
                        ┌───────────────────────────────────┐
-                       │          REMOTE CONTROLLER          │  ← Control plane
-                       │   (computes & distributes tables)   │     (can run in a
-                       └─────┬──────┬──────┬──────┬─────────┘      remote data center)
+                       │          REMOTE CONTROLLER        │  ← Control plane
+                       │   (computes & distributes tables) │   (can run in a
+                       └─────┬──────┬──────┬──────┬────────┘  remote data                                                                     center)
        ─────────────────────│──────│──────│──────│──────────────────────
                              ▼      ▼      ▼      ▼
                        ┌─────────────────────────────────────┐
-                       │  Local forwarding table (per router)  │  ← Data plane
-                       │  header │ output                       │
-                       │  0100   │  3                            │
-                       │  0110   │  2                            │
-                       │  0111   │  2                            │
-                       │  1001   │  1                            │
+                       │  Local forwarding table (per router)│  ← Data plane
+                       │  header │ output                    │
+                       │  0100   │  3                        │
+                       │  0110   │  2                        │
+                       │  0111   │  2                        │
+                       │  1001   │  1                        │
                        └─────────────────────────────────────┘
                                   (same as before — only WHERE
                                    the table came from differs)
