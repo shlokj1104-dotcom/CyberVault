@@ -301,4 +301,4 @@ Recall from Section 1.5.2 that network-layer (Layer 3) packets are called **data
 
 ---
 
-→ Next: [[4.2 Inside a Router]]
+→ Next: [[INSIDE A ROUTER]]
