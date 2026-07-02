@@ -35,7 +35,7 @@ Five nanoseconds. At that rate, if the router also supports _N_ ports on a singl
 
 ## The Four Router Components
 
-![[Figure 4.4.png]]
+![[Pasted image 20260702234507.png]]
 
 |Component|Plane|Speed|Key Job|
 |---|---|---|---|
@@ -73,7 +73,7 @@ Entry road  ──►  Entry station (attendant)  ──►  Roundabout  ──�
 
 ## 4.2.1 Input Port Processing and Destination-Based Forwarding
 
-![[Figure 4.5.png]]
+![[Pasted image 20260702234735.png]]
 
 An input port performs three functions in a left-to-right pipeline:
 
@@ -213,7 +213,7 @@ The match-plus-action abstraction becomes the foundation of the generalized forw
 
 The switching fabric is **at the very heart of a router** — it is literally where packets get forwarded from an input port to an output port. Three main switching approaches have been used:
 
-![[Figure 4.6.png]]
+![[Pasted image 20260702235024.png]]
 
 ### Switching Via Memory
 
@@ -271,7 +271,7 @@ Only bus Y picks up the packet (all other horizontal buses ignore it)
 
 ## 4.2.3 Output Port Processing
 
-![[Figure 4.7.png]]
+![[Pasted image 20260702235227.png]]
 
 Output port processing is the mirror image of input port processing, running in reverse order:
 
@@ -297,7 +297,7 @@ Queues can form at **both input ports and output ports**. Which one dominates de
 
 If _R_switch_ is **not** significantly faster than _N × R_line_, the switch fabric can't keep up with arriving packets, and input queues form. But even if the fabric _is_ fast enough overall, a subtle problem can still cause input-queue growth: **Head-of-Line (HOL) blocking**.
 
-![[Figure 4.8.png]]
+![[Pasted image 20260702235532.png]]
 
 #### Worked Example: HOL Blocking Step by Step
 
@@ -450,11 +450,11 @@ Having established that output queues form, the question becomes: **in what orde
 
 ### First-In-First-Out (FIFO / FCFS)
 
-![[Figure 4.11.png]]
+![[Pasted image 20260702235850.png]]
 
 The FIFO (also called First-Come-First-Served, FCFS) discipline transmits packets in **exactly the order they arrived** at the output queue. Packets arriving when the link is busy wait in the queue; packets arriving when the queue is full may be dropped (per the AQM policy in use). When a packet is completely transmitted, it is removed from the queue.
 
-![[Figure 4.12.png]]
+![[Pasted image 20260703000007.png]]
 
 #### Worked Example: FIFO Queue Operation
 
@@ -478,7 +478,7 @@ Note: the link was IDLE from t=9 to t=12, since no packets were waiting.
 
 ### Priority Queuing
 
-![[Figure 4.13.png]]
+![[Pasted image 20260703000426.png]]
 
 Under priority queuing, packets are **classified into priority classes** on arrival at the output queue. Each priority class has its own queue. On choosing a packet to transmit, the scheduler selects a packet from the **highest-priority class that currently has a non-empty queue**. Within the same priority class, packets are typically served in FIFO order.
 
@@ -528,7 +528,7 @@ Under priority queuing, packets are **classified into priority classes** on arri
   the link finishes a transmission and becomes free.
 ```
 
-![[Figure 4.14.png]]
+![[Pasted image 20260703000636.png]]
 
 #### Worked Example: Priority Queue in Operation
 
@@ -563,7 +563,7 @@ Under **round robin** queuing, packets are classified into classes (as in priori
 
 **Work-conserving:** A round-robin scheduler will never leave the link idle when any packets of _any_ class are queued. If the scheduler looks for a packet from a given class and finds none, it **immediately advances** to the next class in the round-robin sequence — it doesn't wait.
 
-![[Figure 4.15.png]]
+![[Pasted image 20260703000839.png]]
 
 #### Worked Example: Two-Class Round Robin in Operation
 
@@ -628,7 +628,7 @@ Even in the worst case — all three classes always have packets queued simultan
 
 WFQ is work-conserving: if one class's queue is empty, its share is redistributed among the remaining classes rather than leaving the link idle.
 
-![[Figure 4.16.png]]
+![[Pasted image 20260703000951.png]]
 
 ---
 
