@@ -36,7 +36,7 @@ Because a generalized forwarding decision can be made using **network-layer and/
 
 ### The SDN Architecture: Control Plane Moves Off-Box
 
-![[Figure 4.28.png]]
+![[Pasted image 20260703222512.png]]
 
 In generalized forwarding, a **match-plus-action table** in each packet switch generalizes the destination-based forwarding table from Section 4.2.1. Critically, this table is **computed, installed, and updated by a remote controller** — not computed locally by each device's own routing processor (contrast this with the traditional router architecture of Section 4.2, where each router runs its own routing protocol software).
 
@@ -102,22 +102,7 @@ Each entry in the match-plus-action forwarding table is known, in OpenFlow termi
 
 Figure 4.29 shows the specific packet-header fields (plus the incoming port ID) that OpenFlow 1.0 allows a match-plus-action rule to inspect.
 
-![[Figure 4.29.png]]
-
-```
-             OpenFlow 1.0 MATCH FIELDS — SPANNING THREE PROTOCOL LAYERS
-             ───────────────────────────────────────────────────────────
-
-  Link layer            Network layer                Transport layer
-  ┌───────┬───────┬───────┬────────┬────────┬──────┐┌────────┬────────┬────────┐┌─────────┬─────────┐
-  │Ingress│Src MAC│Dst MAC│Eth Type│VLAN ID │VLAN  ││IP Src  │IP Dst  │IP Proto││TCP/UDP  │TCP/UDP  │
-  │Port   │       │       │        │        │Pri   ││        │        │        ││Src Port │Dst Port │
-  └───────┴───────┴───────┴────────┴────────┴──────┘└────────┴────────┴────────┘└─────────┴─────────┘
-      (also: IP TOS field, matched alongside the network-layer fields)
-
-  12 TOTAL matchable fields in OpenFlow 1.0 (grown to 41 in later
-  OpenFlow specifications, reflecting years of accumulated deployment needs)
-```
+![[Pasted image 20260703222904.png]]
 
 ### The Deliberate Layering Violation
 
@@ -424,9 +409,6 @@ This tension — clean layered elegance versus messy but genuinely useful real-w
 ---
 
 ## Related Concepts
-
-- [[4.2 What's Inside a Router?]] — Section 4.2.1's destination-based forwarding and TCAM lookup is the specific case that generalized forwarding's match-plus-action abstraction subsumes
-- [[4.3 The Internet Protocol (IP) — IPV4, Addressing, and More]] — NAT (Section 4.3.3) and the Firewalls/IDS security box are both concrete examples of what this section formalizes as middlebox categories
 
 ---
 
