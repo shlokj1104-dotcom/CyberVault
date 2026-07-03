@@ -175,7 +175,7 @@ Each flow table entry also carries a **list of zero or more actions** that deter
 
 To ground match-plus-action concretely, consider a sample network with **6 hosts** (h1–h6) and **3 packet switches** (s1, s2, s3), each with **four local interfaces** (numbered 1 through 4), all under the control of a single OpenFlow controller.
 
-![[Figure 4.30.png]]
+![[Pasted image 20260703223445.png]]
 
 ```
 Network topology:
