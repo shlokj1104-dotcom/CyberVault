@@ -363,7 +363,7 @@ Every small office/home office (SOHO) network wants to connect multiple devices 
 
 Because these blocks are reused by hundreds of thousands of independent home and enterprise networks simultaneously, packets addressed to `10.0.0.1` mean something completely different depending on _which_ private network they're on — which is precisely why they can never be routed on the public Internet as-is.
 
-![[Figure 4.25.png]]
+![[Pasted image 20260703160742.png]]
 
 ### How NAT Actually Works
 
@@ -457,7 +457,7 @@ The core motivation, dating to the early 1990s IETF effort, was stark: the **32-
 
 ### IPv6 Datagram Format
 
-![[Figure 4.26.png]]
+![[Pasted image 20260703161041.png]]
 
 The most important structural changes IPv6 introduces:
 
@@ -516,7 +516,7 @@ New IPv6-capable systems can be made backward-compatible (able to send, receive,
 
 ### The Adopted Solution: Tunneling
 
-![[Figure 4.27.png]]
+![[Pasted image 20260703161337.png]]
 
 **Tunneling** is the practical mechanism that has seen the most widespread real-world adoption for IPv4-to-IPv6 transition. The core idea generalizes far beyond this specific use case (it's reused extensively in all-IP cellular networks, covered in Chapter 7).
 
