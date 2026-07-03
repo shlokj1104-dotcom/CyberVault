@@ -220,7 +220,7 @@ Those remaining 11 bits may _further_ be subdivided internally — e.g., an orga
 
 CIDR's real power shows up when ISPs allocate address blocks hierarchically to client organizations.
 
-![[Figure 4.21.png]]
+![[Pasted image 20260703155127.png]]
 
 #### Worked Example: Address Aggregation
 
@@ -297,9 +297,9 @@ DHCP is **client-server**: a newly arriving host is the client, requesting confi
 
 #### The Four-Step DHCP Process (DORA)
 
-![[Figure 4.23.png]]
+![[Pasted image 20260703155823.png]]
 
-![[Figure 4.24.png]]
+![[Pasted image 20260703160206.png]]
 
 ```
                          DHCP FOUR-STEP HANDSHAKE
