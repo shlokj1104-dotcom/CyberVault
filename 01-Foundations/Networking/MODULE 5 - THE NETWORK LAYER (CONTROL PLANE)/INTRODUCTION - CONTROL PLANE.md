@@ -177,4 +177,4 @@ This is a particularly compelling real-world validation of the logically central
 
 ---
 
-→ Next: [[5.2 Routing Algorithms]]
+→ Next: [[ROUTING ALGORITHM]]

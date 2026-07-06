@@ -351,7 +351,7 @@ The process of receiving updated distance vectors from neighbors, recomputing ro
 
 #### Good News Travels Fast
 
-![[Figure 5.7a — good news.png]]
+![[Pasted image 20260706222133.png]]
 
 ```
        y
@@ -375,7 +375,7 @@ When a node running the DV algorithm detects a change in the link cost from itse
 
 #### Bad News Travels Slowly: The Count-to-Infinity Problem
 
-![[Figure 5.7b — bad news.png]]
+![[Pasted image 20260706222437.png]]
 
 ```
        y
@@ -534,9 +534,6 @@ The DV and LS algorithms take complementary approaches toward computing routing.
 ---
 
 ## Related Concepts
-
-- [[5.1 Introduction (Network Control Plane)]] — the per-router control (Figure 5.1) architecture is the natural home for both LS and DV, since both require direct node-to-node (or node-to-broadcast) communication rather than a remote controller
-- [[4.2 What's Inside a Router?]] — the forwarding table these algorithms compute is exactly the same forwarding-table structure and next-hop-only design already introduced there
 
 ---
 
