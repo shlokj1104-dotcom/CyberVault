@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "01-Foundations/Networking/MODULE 5 - THE NETWORK LAYER (CONTROL PLANE)/INTRODUCTION - CONTROL PLANE.md",
+                "file": "01-Foundations/Networking/MODULE 5 - THE NETWORK LAYER (CONTROL PLANE)/OSPF.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "INTRODUCTION - CONTROL PLANE"
+              "title": "OSPF"
             }
           }
         ]
@@ -253,6 +253,8 @@
   "active": "2f001bc9f3951aa9",
   "lastOpenFiles": [
     "01-Foundations/Networking/MODULE 5 - THE NETWORK LAYER (CONTROL PLANE)/ROUTING ALGORITHM.md",
+    "01-Foundations/Networking/MODULE 5 - THE NETWORK LAYER (CONTROL PLANE)/OSPF.md",
+    "01-Foundations/Networking/MODULE 5 - THE NETWORK LAYER (CONTROL PLANE)/INTRODUCTION - CONTROL PLANE.md",
     "Images/Pasted image 20260706222437.png",
     "Images/Pasted image 20260706222133.png",
     "Images/Pasted image 20260706221624.png",
@@ -260,7 +262,6 @@
     "Images/Pasted image 20260706221124.png",
     "Images/Pasted image 20260706220749.png",
     "Images/Pasted image 20260706220613.png",
-    "01-Foundations/Networking/MODULE 5 - THE NETWORK LAYER (CONTROL PLANE)/INTRODUCTION - CONTROL PLANE.md",
     "Images/Pasted image 20260706145446.png",
     "Images/Pasted image 20260706145219.png",
     "01-Foundations/Networking/MODULE 4 - THE NETWORK LAYER (DATA PLANE)/GENERALIZED FORWARDING & SDN.md",
