@@ -37,22 +37,23 @@ An autonomous system is identified by its globally unique **autonomous system nu
 **Routers within the same AS all run the same routing algorithm and have information about each other.** The routing algorithm running _within_ an autonomous system is called an **intra-autonomous system routing protocol**.
 
 ```
-THE INTERNET: PARTITIONED INTO AUTONOMOUS SYSTEMS (ASes)
-────────────────────────────────────────────────────────
+             THE INTERNET: PARTITIONED INTO ASes
+             ───────────────────────────────────
 
-┌──────────────────────┐     ┌──────────────────────┐     ┌──────────────────────┐
-│     AS 1 (ISP A)     │     │     AS 2 (ISP B)     │     │     AS 3 (ISP C)     │
-│   routers running    │     │   routers running    │     │   routers running    │
-│    SAME intra-AS     │     │    SAME intra-AS     │     │    SAME intra-AS     │
-│   routing protocol   │     │   routing protocol   │     │   routing protocol   │
-└──────────────────────┘     └──────────────────────┘     └──────────────────────┘
+┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐
+│       AS 1      │  │       AS 2      │  │       AS 3      │
+│     (ISP A)     │  │     (ISP B)     │  │     (ISP C)     │
+│                 │  │                 │  │                 │
+│  SAME intra-AS  │  │  SAME intra-AS  │  │  SAME intra-AS  │
+│ routing protocol│  │ routing protocol│  │ routing protocol│
+└─────────────────┘  └─────────────────┘  └─────────────────┘
 
-            ●────────────────────────────●────────────────────────────●
-               BGP (inter-AS routing)
+         ●────────────────────●────────────────────●
+        BGP (inter-AS routing)
 
-Each AS independently runs its OWN intra-AS (interior gateway)
-routing protocol internally (e.g. OSPF) -- invisible to other ASes.
-ASes connect to EACH OTHER via BGP, the Internet's inter-AS protocol.
+Each AS runs its OWN intra-AS routing protocol
+internally (e.g. OSPF) -- invisible to other ASes.
+ASes connect to each other via BGP (inter-AS routing).
 ```
 
 Notice exactly how this maps back onto the two original problems:
@@ -121,27 +122,32 @@ RFC 2328 explains the rationale directly: _"this periodic updating of link state
 The OSPF protocol also checks that links are operational via a **HELLO** message that is sent to an attached neighbor, and allows an OSPF router to obtain a neighboring router's database of network-wide link state.
 
 ```
-                    OSPF's POSITION IN THE PROTOCOL STACK
-                    ──────────────────────────────────────
+    OSPF's POSITION IN THE PROTOCOL STACK
+    ─────────────────────────────────────
 
-        ┌─────────────────────────────────────────────┐
-        │              OSPF (protocol 89)               │
-        │  - link-state advertisements (LSAs)           │
-        │  - HELLO messages (neighbor liveness check)   │
-        │  - reliable message transfer (self-implemented)│
-        │  - link-state broadcast (self-implemented)    │
-        └───────────────────────┬───────────────────────┘
-                                 │  carried DIRECTLY by IP
-                                 ▼
-        ┌─────────────────────────────────────────────┐
-        │                      IP                       │
-        │        (no reliability guarantee here --      │
-        │         that's why OSPF builds its own)       │
-        └─────────────────────────────────────────────┘
+┌────────────────────────────────────────────┐
+│ OSPF (protocol 89)                         │
+│ - link-state ads (LSAs)                    │
+│ - HELLO messages                           │
+│ - reliable transfer (self-                 │
+│   implemented)                             │
+│ - link-state broadcast (self-              │
+│   implemented)                             │
+└────────────────────────────────────────────┘
+                       │
+            carried DIRECTLY by IP
+                       ▼
+┌────────────────────────────────────────────┐
+│        IP                                  │
+│ (no reliability guarantee                  │
+│  here -- that's why OSPF                   │
+│  builds its own above)                     │
+└────────────────────────────────────────────┘
 
-  Contrast: RIP rides on top of UDP; OSPF rides directly on IP,
-  and therefore has to reinvent (inside OSPF itself) the reliability
-  functions a transport-layer protocol would normally provide.
+Contrast: RIP rides on UDP; OSPF rides
+directly on IP, and must reinvent (inside
+itself) reliability a transport layer
+would normally provide.
 ```
 
 ---
@@ -195,31 +201,30 @@ Inter-area routing within the AS requires that a packet be:
 3. Then routed to the final destination (again, **intra-area routing**, but now within the destination area).
 
 ```
-OSPF HIERARCHY WITHIN A SINGLE AUTONOMOUS SYSTEM
-────────────────────────────────────────────────
+            OSPF HIERARCHY WITHIN ONE AS
+            ────────────────────────────
 
-         ┌────────────────────────────────────────────────────┐
-         │               BACKBONE AREA (Area 0)               │
-         │                                                    │
-         │            ABR-1 ─────────────── ABR-2             │
-         │                                                    │
-         │         Contains ALL area border routers;          │
-         │            routes traffic BETWEEN areas            │
-         └──────┬───────────────────────────────────────┬─────┘
-                ▼                                       ▼
+        ┌──────────────────────────────────┐
+        │        BACKBONE (Area 0)         │
+        │                                  │
+        │         ABR-1 ──── ABR-2         │
+        │                                  │
+        │       routes BETWEEN areas       │
+        └───┬───────────────────────────┬──┘
+            ▼                           ▼
 
-┌──────────────────────────────┐        ┌──────────────────────────────┐
-│            AREA 1            │        │            AREA 2            │
-│                              │        │                              │
-│        R1 ── R2 ── R3        │        │        R4 ── R5 ── R6        │
-│                              │        │                              │
-│   (intra-area LS flooding    │        │   (intra-area LS flooding    │
-│    stays within this area)   │        │    stays within this area)   │
-└──────────────────────────────┘        └──────────────────────────────┘
+┌──────────────────────┐    ┌──────────────────────┐
+│        AREA 1        │    │        AREA 2        │
+│                      │    │                      │
+│       R1─R2─R3       │    │       R4─R5─R6       │
+│                      │    │                      │
+│    (intra-area LS    │    │    (intra-area LS    │
+│    flooding only)    │    │    flooding only)    │
+└──────────────────────┘    └──────────────────────┘
 
-Routing a packet from R1 (Area 1) to R6 (Area 2):
-  R1 -> R2 -> R3 -> ABR-1 -> [backbone] -> ABR-2 -> R4 -> R5 -> R6
-       (intra-area)      (inter-area, via backbone)   (intra-area)
+R1 (Area 1) to R6 (Area 2):
+R1-R2-R3-ABR1-[backbone]-ABR2-R4-R5-R6
+(intra-area) (inter-area) (intra-area)
 ```
 
 > **Analogy — A Country's Regional Highway System:** Think of each OSPF area as a state, with the backbone area as the interstate highway network connecting states together. Local traffic within a state (non-border routers) uses state roads (intra-area routing) and never needs to know the detailed street layout of any _other_ state. To travel between states, you first drive to an on-ramp (an area border router), take the interstate (the backbone) to the off-ramp nearest your destination state (the destination area's ABR), and then use _that_ state's local roads to reach your final address. No driver needs a map of the entire country's every street — only their own state's roads, plus the interstate system connecting the on/off-ramps.
@@ -275,9 +280,6 @@ Routing a packet from R1 (Area 1) to R6 (Area 2):
 ---
 
 ## Related Concepts
-
-- [[5.2 Routing Algorithms]] — OSPF is a direct, production-grade implementation of this section's Link-State (LS) algorithm and Dijkstra's shortest-path computation, applied within the scope of a single AS
-- [[5.4 Inter-AS Routing: BGP]] — the protocol that connects separately-administered ASes to each other, picking up exactly where intra-AS routing (this note) leaves off
 
 ---
 
