@@ -58,8 +58,6 @@ In BGP, **pairs of routers exchange routing information over semi-permanent TCP 
 
 > Note that iBGP connections do not always correspond to physical links.
 
-
-
 ```
    Fig 5.8/5.9: Three ASes, Gateway Routers,
           and eBGP Connections
