@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "01-Foundations/Networking/MODULE 5 - THE NETWORK LAYER (CONTROL PLANE)/ROUTING AMONG ISPS - BGP.md",
+                "file": "01-Foundations/Networking/MODULE 5 - THE NETWORK LAYER (CONTROL PLANE)/SDN CONTROL PLANE.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "ROUTING AMONG ISPS - BGP"
+              "title": "SDN CONTROL PLANE"
             }
           }
         ]
@@ -252,12 +252,15 @@
   },
   "active": "957f1a7ff8e9ae06",
   "lastOpenFiles": [
+    "Pasted image 20260708220455.png",
+    "Pasted image 20260708220153.png",
+    "01-Foundations/Networking/MODULE 5 - THE NETWORK LAYER (CONTROL PLANE)/ROUTING AMONG ISPS - BGP.md",
+    "Pasted image 20260708215741.png",
     "Pasted image 20260708215124.png",
     "Pasted image 20260708215107.png",
     "Pasted image 20260708215033.png",
     "Pasted image 20260708214222.png",
     "01-Foundations/Networking/MODULE 5 - THE NETWORK LAYER (CONTROL PLANE)/OSPF.md",
-    "01-Foundations/Networking/MODULE 5 - THE NETWORK LAYER (CONTROL PLANE)/ROUTING AMONG ISPS - BGP.md",
     "01-Foundations/Networking/MODULE 5 - THE NETWORK LAYER (CONTROL PLANE)/ICMP.md",
     "01-Foundations/Networking/MODULE 5 - THE NETWORK LAYER (CONTROL PLANE)/NETWORK MANAGEMENT.md",
     "01-Foundations/Networking/MODULE 5 - THE NETWORK LAYER (CONTROL PLANE)/SDN CONTROL PLANE.md",
@@ -269,9 +272,6 @@
     "Images/Pasted image 20260706222133.png",
     "Images/Pasted image 20260706221624.png",
     "Pasted image 20260706221408.png",
-    "Images/Pasted image 20260706221124.png",
-    "Images/Pasted image 20260706220749.png",
-    "Images/Pasted image 20260706220613.png",
     "01-Foundations/Networking/MODULE 4 - THE NETWORK LAYER (DATA PLANE)/GENERALIZED FORWARDING & SDN.md",
     "01-Foundations/Networking/MODULE 4 - THE NETWORK LAYER (DATA PLANE)/IPV4, NAT & IPV6.md",
     "01-Foundations/Networking/MODULE 5 - THE NETWORK LAYER (CONTROL PLANE)",

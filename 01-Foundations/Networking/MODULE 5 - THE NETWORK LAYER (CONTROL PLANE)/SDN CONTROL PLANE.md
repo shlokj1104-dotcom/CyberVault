@@ -43,6 +43,8 @@ This section builds directly on the earlier discussion of generalized SDN forwar
 
 > **The Big Picture — SDN as "Unbundling":** From this discussion, SDN represents a significant **unbundling** of network functionality — data-plane switches, SDN controllers, and network-control applications are separate entities that may each be provided by **different vendors and organizations**. This contrasts with the pre-SDN model, in which a switch/router (together with its embedded control-plane software and protocol implementations) was monolithic, vertically integrated, and sold by a single vendor. This unbundling of network functionality in SDN has been likened to the earlier evolution of mainframe computers (where hardware, system software, and applications were all provided by a single vendor) into personal computers (with their separate hardware, operating systems, and applications). The unbundling of computing hardware, system software, and applications led to a rich, open ecosystem driven by innovation in all three of these areas; one hope for SDN is that it will continue to drive and enable such rich innovation.
 
+![[Pasted image 20260708220153.png]]
+
 ```
 Fig 5.2/5.14 -- The Core SDN Split
 ────────────────────────────────────
@@ -90,7 +92,7 @@ The ultimate control-plane decisions made by the SDN control plane — for examp
 
 A switch's flow table also contains **counters** whose values might profitably be used by network-control applications; these values should thus be available to the applications too. Since the ultimate aim of the control plane is to determine flow tables for the various controlled devices, a controller might also maintain a **copy of these tables**. All of these pieces of information collectively constitute the **network-wide "state"** maintained by the SDN controller.
 
-![[Figure 5.15 - Components of an SDN controller.png]]
+![[Pasted image 20260708220455.png]]
 
 ### Layer 3 (Top): The Interface to the Network-Control Application Layer — Northbound Interface
 

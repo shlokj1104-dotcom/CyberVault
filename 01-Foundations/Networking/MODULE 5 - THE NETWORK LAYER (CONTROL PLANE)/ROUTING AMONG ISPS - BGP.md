@@ -233,6 +233,8 @@ When a router selects a route to a destination, the **AS routing policy can trum
 
 Consider six interconnected autonomous systems: **A, B, C, W, X,** and **Y** (these are ASes, not individual routers). Assume that W, X, and Y are **access ISPs**, and that A, B, and C are **backbone provider networks**. A, B, and C directly send traffic to each other, and provide full BGP information to their customer networks.
 
+![[Pasted image 20260708215741.png]]
+
 ```
 Fig 5.13 -- Connectivity Among A,B,C,W,X,Y
 ─────────────────────────────────────────
