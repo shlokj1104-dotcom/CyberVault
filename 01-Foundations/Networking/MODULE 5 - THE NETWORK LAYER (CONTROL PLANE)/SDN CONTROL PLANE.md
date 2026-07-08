@@ -181,11 +181,7 @@ In order to solidify our understanding of the interaction between SDN-controlled
 
 This SDN scenario has **two important differences** from the earlier per-router-control scenario of Sections 5.2.1 and 5.3, where Dijkstra's algorithm was implemented in each and every router and link-state updates were flooded among all network routers:
 
-|Traditional (OSPF-style)|SDN|
-|---|---|
-|Dijkstra's algorithm runs **inside every router**|Dijkstra's algorithm is executed as a **separate application**, outside the packet switches|
-|Routers **flood** link-state updates to **all** other routers directly|Packet switches send link updates to the **SDN controller**, and **not to each other**|
-
+![[Pasted image 20260708221731.png]]
 ### Setup
 
 Assume the link between switch **s1** and **s2** goes down; consequently, incoming and outgoing flow-forwarding rules at s1, s3, and s4 are affected, but s2's operation is unchanged. Assume OpenFlow is used as the communication-layer protocol, and that the control plane performs no other function than link-state routing.
@@ -235,33 +231,7 @@ In the earliest days of SDN, there was a single SDN protocol (**OpenFlow** [McKe
 
 **Open Network Operating System (ONOS®)** [ONOS 2025] is an open-source SDN controller created, distributed, and supported by the Open Networking Foundation [OpenNetworking 2025].
 
-```
-Fig 5.17 -- ONOS Controller Architecture
-──────────────────────────────────────────
-
-  Network control apps  (routing, etc.)
-              ▲
-              │ Northbound abstractions/protocols
-   ┌──────────┴───────────────┐
-   │  REST API   |   Intent   │
-   └──────────┬────────────────┘
-   ┌──────────▼────────────────┐
-   │  ONOS Distributed Core     │
-   │  Hosts | Paths | Flow rules│
-   │  Devices|Links |Statistics │
-   │              Topology      │
-   └──────────┬────────────────┘
-              │ Southbound abstractions/protocols
-   ┌──────────▼────────────────┐
-   │ Device | Link | Host | Flow│
-   │        | Packet             │
-   │  OpenFlow | Netconf | OVSDB │
-   └──────────┬────────────────┘
-              │
-        (mesh of network devices)
-```
-
-![[Figure 5.17 - ONOS controller architecture.png]]
+![[Pasted image 20260708221806.png]]
 
 Figure 5.17 presents a simplified view of ONOS — similar to the canonical controller in Figure 5.15. Three layers can be identified in the ONOS architecture:
 
@@ -307,7 +277,7 @@ Fig 5.18 -- Google's Orion SDN
 
 Each Google network is divided into one or more **domains**, with an Orion controller instance being responsible for managing and controlling the devices within its domain. The use of **multiple domains** permanently limits the scope and impact of any failures, as well as the amount of work that must be performed by an Orion controller.
 
-![[Figure 5.18 - Google's Orion SDN.png]]
+![[Pasted image 20260708222116.png]]
 
 At the heart of the core is the **Network Information Base (NIB)**. The NIB is a **logically centralized data store**, coupled with a data-driven **publish/subscribe (pub/sub)** system that allows Orion apps and core components to read/write NIB data, as well as receive notifications when NIB data changes. A logically centralized data store also has the advantage of globally ordering network events, which significantly helps with debugging and troubleshooting problems. [Ferguson 2021] notes: "Based on years of experience, the NIB has been one of our most successful design elements." An Orion NIB can process roughly **a million read/write events per second**.
 

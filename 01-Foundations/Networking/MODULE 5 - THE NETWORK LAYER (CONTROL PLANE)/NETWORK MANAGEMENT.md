@@ -62,34 +62,7 @@ The **network management protocol** is the final component — it runs between t
 
 > **Important, subtle distinction:** The network management protocol does **not itself manage** the network. Instead, it provides the _capabilities_ that network managers can use to manage ("monitor, test, poll, configure, analyze, evaluate, and control") the network. The intelligence and decision-making remain with the human managers and their tools — the protocol is just the communication substrate.
 
-```
-Fig 5.20 -- Network Management Framework
-────────────────────────────────────────
-
-   Network Managers (humans, in NOC)
-                │
-                ▼
-   ┌─────────────────────────┐
-   │   Managing Server /       │
-   │      Controller            │
-   │  (config + operational     │
-   │   data store)               │
-   └───────────┬─────────────┘
-               │ Controller-to-device
-               │ protocol (SNMP /
-               │ NETCONF)
-     ┌─────────┼─────────┬─────────┐
-     ▼         ▼         ▼         ▼
-  ┌──────┐ ┌──────┐  ┌──────┐  ┌──────┐
-  │Agent │ │Agent │  │Agent │  │Agent │
-  │Device│ │Device│  │Device│  │Device│
-  │ data │ │ data │  │ data │  │ data │
-  └───┬──┘ └───┬──┘  └───┬──┘  └───┬──┘
-      ▼        ▼         ▼         ▼
-   Managed  Managed   Managed   Managed
-   Device   Device    Device    Device
-   (host)   (switch)  (router)  (modem)
-```
+![[Pasted image 20260708222412.png]]
 
 ### Three Ways to Manage a Network in Practice
 
@@ -239,42 +212,7 @@ Figure 5.21 shows an example NETCONF session:
 4. Device notifications themselves are proactively sent from a managed device to the managing server using NETCONF **`<notification>`** messages.
 5. A session is closed with the **`<close-session>`** message.
 
-```
-Fig 5.21 -- NETCONF Session Sequence
-────────────────────────────────────────
-
-  Managing Server /            Agent /
-     Controller            Managed Device
-       │                          │
-       │   secure TLS-over-TCP    │
-       │◀────────connection──────▶│
-       │                          │
-       │   <hello> (capabilities) │
-       ├─────────────────────────▶│
-       │        <hello>           │
-       │◀─────────────────────────┤
-       │                          │
-       │        <rpc>             │
-       ├─────────────────────────▶│
-       │     <rpc-reply>          │
-       │◀─────────────────────────┤
-       │           ⋮               │
-       │        <rpc>             │
-       ├─────────────────────────▶│
-       │     <rpc-reply>          │
-       │◀─────────────────────────┤
-       │                          │
-       │    <notification>        │
-       │◀─────────────────────────┤
-       │                          │
-       │        <rpc>             │
-       ├─────────────────────────▶│
-       │     <rpc-reply>          │
-       │◀─────────────────────────┤
-       │                          │
-       │   <close-session>        │
-       ├─────────────────────────▶│
-```
+![[Pasted image 20260708222828.png]]
 
 ### Selected NETCONF Operations
 
