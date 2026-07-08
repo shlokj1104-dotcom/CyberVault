@@ -537,4 +537,4 @@ The DV and LS algorithms take complementary approaches toward computing routing.
 
 ---
 
-→ Next: [[5.3 Intra-AS Routing in the Internet: OSPF]]
+→ Next: [[OSPF]]

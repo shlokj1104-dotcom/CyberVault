@@ -397,9 +397,6 @@ This completes our brief introduction to BGP. Understanding BGP is important pre
 
 ## Related Concepts
 
-- [[5.2 Routing Algorithms]] — BGP is decentralized and asynchronous in the spirit of this section's Distance-Vector algorithm, though far more policy-driven and attribute-rich than plain DV
-- [[5.3 Intra-AS Routing in the Internet: OSPF]] — OSPF governs routing _within_ an AS; BGP picks up exactly where OSPF's scope ends, and the two protocols work together (via the NEXT-HOP attribute and hot-potato routing) whenever a forwarding-table entry for an outside-AS prefix is added
-
 ---
 
-→ Next: [[5.5 SDN Control Plane]]
+→ Next: [[SDN CONTROL PLANE]]

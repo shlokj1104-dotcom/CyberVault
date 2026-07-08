@@ -283,4 +283,4 @@ R1-R2-R3-ABR1-[backbone]-ABR2-R4-R5-R6
 
 ---
 
-→ Next: [[5.4 Inter-AS Routing: BGP]]
+→ Next: [[ROUTING AMONG ISPS - BGP]]
