@@ -60,24 +60,6 @@ In BGP, **pairs of routers exchange routing information over semi-permanent TCP 
 
 ![[Pasted image 20260708214222.png]]
 
-```
-   Fig 5.8/5.9: Three ASes, Gateway Routers,
-          and eBGP Connections
-   ──────────────────────────────────────────
-
-   AS1              AS2                AS3
- ┌───────┐        ┌───────┐          ┌───────┐
- │ 1a 1b │        │ 2b 2d │          │ 3b 3d │─x
- │  1c ──┼──eBGP──┼─ 2a   │          │  3a   │
- │  1d   │        │  2c ──┼───eBGP───┼─      │
- └───────┘        └───────┘          └───────┘
-  gw: 1c           gw: 2a, 2c          gw: 3a
-
-Within each AS, ALL routers (gateway + internal)
-exchange routing info via iBGP -- a full mesh of
-semi-permanent TCP (port 179) connections.
-```
-
 ### Worked Example: Propagating Reachability for Prefix x
 
 In order to propagate reachability information, **both iBGP and eBGP sessions are used.** Consider advertising the reachability information for prefix `x` to _all_ routers in AS1 and AS2:
@@ -148,25 +130,7 @@ Router 1b would then consult its forwarding table (configured by its intra-AS al
 
 ### The Four-Step Process (Figure 5.11)
 
-```
-Fig 5.11 -- Adding an outside-AS prefix
-─────────────────────────────────────────
-
-1. Learn (via BGP) that prefix x is
-   reachable via multiple gateways
-              │
-              ▼
-2. Use intra-AS protocol (OSPF) to find
-   least-cost path to EACH gateway
-              │
-              ▼
-3. Hot-potato: choose the gateway with
-   the smallest least-cost (closest one)
-              │
-              ▼
-4. Look up interface I on that least-cost
-   path; add entry (x, I) to fwd. table
-```
+![[Pasted image 20260708215107.png]]
 
 It is important to note that when adding an outside-AS prefix to a router's forwarding table, **both** the inter-AS routing protocol (BGP) _and_ the intra-AS routing protocol (e.g., OSPF) are used.
 
@@ -217,6 +181,8 @@ A CDN, for example, may replicate videos and other objects on servers in many di
 ### How It Works
 
 During an initial "IP-anycast configuration" stage, a CDN assigns the **exact same IP address** to each of its servers, and uses standard BGP to advertise this one IP address from **each** server's location. A BGP router that receives multiple route advertisements for this IP address treats them as though they were simply providing different _paths_ to the very same physical location — when, in fact, they are genuinely different paths to genuinely _different_ physical locations. Each router locally uses the BGP route-selection algorithm described above to pick the "best" (in practice, the closest, as determined by AS-hop count) route to that IP address.
+
+![[Pasted image 20260708215124.png]]
 
 ```
 Fig 5.12 -- IP-Anycast: Reaching the Closest
