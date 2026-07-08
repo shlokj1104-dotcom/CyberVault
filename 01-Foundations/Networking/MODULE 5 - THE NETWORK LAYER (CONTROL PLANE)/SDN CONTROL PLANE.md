@@ -186,8 +186,6 @@ This SDN scenario has **two important differences** from the earlier per-router-
 |Dijkstra's algorithm runs **inside every router**|Dijkstra's algorithm is executed as a **separate application**, outside the packet switches|
 |Routers **flood** link-state updates to **all** other routers directly|Packet switches send link updates to the **SDN controller**, and **not to each other**|
 
-![[Figure 5.16 - SDN controller scenario Link-state change.png]]
-
 ### Setup
 
 Assume the link between switch **s1** and **s2** goes down; consequently, incoming and outgoing flow-forwarding rules at s1, s3, and s4 are affected, but s2's operation is unchanged. Assume OpenFlow is used as the communication-layer protocol, and that the control plane performs no other function than link-state routing.
