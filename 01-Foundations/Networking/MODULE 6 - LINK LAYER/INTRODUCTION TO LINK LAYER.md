@@ -237,4 +237,4 @@ This is the single most important takeaway of Section 6.1.2: **the link layer is
 
 ---
 
-→ Next: 6.1.3 / 6.2 Error-Detection and Error-Correction Techniques
+→ Next: [[ERROR DETECTION & CORRECTION TECHNIQUE]]

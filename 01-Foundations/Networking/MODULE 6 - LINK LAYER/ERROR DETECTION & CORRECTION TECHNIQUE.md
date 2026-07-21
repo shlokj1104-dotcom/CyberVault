@@ -316,4 +316,4 @@ G_CRC-32 = 100000100110000010001110110110111
 
 ---
 
-→ Next: 6.3 Multiple Access Links and Protocols
+→ Next: [[MULTIPLE ACCESS LINK & PROTOCOL]]

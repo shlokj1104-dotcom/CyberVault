@@ -551,4 +551,4 @@ A cable access network thus serves as a **terrific example of multiple access pr
 
 ---
 
-→ Next: 6.4 Switched Local Area Networks
+→ Next: [[SWITCHED LANS]]
