@@ -549,4 +549,4 @@ This discussion has only briefly touched on VLANs, focusing on **port-based** VL
 
 ---
 
-→ Next: 6.5 Data Center Networking
+→ Next: [[LINK VIRTUALIZATION]]
