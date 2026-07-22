@@ -98,7 +98,7 @@ Fig -- ARP: Resolving IP to MAC on a LAN
  A caches the mapping in its ARP table.
 ```
 
-![[Pasted image 20260718000015.png]]
+![[Pasted image 20260722205827.png]]
 
 Suppose host **222.222.222.220** wants to send an IP datagram to host **222.222.222.222**, where both source and destination reside in the same subnet. To send a datagram, the source must furnish (provide) its adapter not only with the IP datagram but **also with the MAC address for destination 222.222.222.222**. The sending adapter will then construct a link-layer frame containing the destination's MAC address and send the frame into the LAN.
 
@@ -122,7 +122,7 @@ Fig -- A Sample ARP Table (at host A)
  and are then re-queried via ARP.
 ```
 
-![[Pasted image 20260718000016.png]]
+![[Pasted image 20260722205950.png]]
 
 Note that a table need **not** contain an entry for every host and router on the subnet — some may never have been entered into the table, and others may have expired. A **typical expiration time** for an entry is **20 minutes** from when it was placed in the table.
 
