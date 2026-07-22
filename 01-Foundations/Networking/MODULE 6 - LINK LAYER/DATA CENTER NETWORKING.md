@@ -113,7 +113,7 @@ Fig -- Hierarchical Data Center Topology
   access-router level)
 ```
 
-![[Pasted image 20260718000027.png]]
+![[Pasted image 20260722212059.png]]
 
 At the **top** of the hierarchy, the **border router** connects to **access routers** (only two are shown in the figure, but there can be many more). Below each access router, there are **three tiers of switches**: each access router connects to a **top-tier** switch, and each top-tier switch connects to multiple **second-tier** switches and a load balancer. Each second-tier switch, in turn, connects to multiple racks via the racks' **TOR switches** (third-tier switches). All links typically use **Ethernet** for their link-layer and physical-layer protocols, with a mix of **copper and fiber cabling**. With such a hierarchical design, it's possible to scale a data center to **hundreds of thousands of hosts**.
 
@@ -175,7 +175,7 @@ Fig -- Three-Tier, Highly Interconnected
  routing (e.g. ECMP) becomes possible.
 ```
 
-![[Pasted image 20260718000028.png]]
+![[Pasted image 20260722212257.png]]
 
 Increasing the **degree of connectivity** between tiers has **two significant benefits**: there's both **increased capacity** and **increased reliability** (because of **path diversity (multiple independent routes to choose among)**) between switches. In **Facebook's data center** [FB 2019], each TOR is connected to **16 different tier-2 switches**, and each tier-2 switch is connected to **16 different tier-1 switches**.
 
