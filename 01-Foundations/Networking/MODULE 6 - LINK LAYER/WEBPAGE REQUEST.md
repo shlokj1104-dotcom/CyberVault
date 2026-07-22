@@ -46,7 +46,7 @@ Fig -- Network Setting (Figure 6.34)
   64.233.169.105
 ```
 
-![[Pasted image 20260722000001.png]]
+![[Pasted image 20260722212710.png]]
 
 > **Analogy — Watching a Play from Backstage Instead of the Audience:** Reading about DHCP, DNS, TCP, and HTTP separately, chapter by chapter, is like learning each actor's individual lines and blocking (movements) in a play, one actor at a time, in an empty rehearsal room. This section is like finally watching **opening night from backstage**: you see how the lighting cue, the sound cue, and three actors' entrances all have to line up **within seconds of each other** for a single scene to work — the "big picture" only becomes visible once you watch the whole cast perform **together**, in order, under real time pressure.
 

@@ -204,7 +204,7 @@ Fig -- Leaf-Spine Topology (2 layers)
  apart -- no variable-depth hierarchy.
 ```
 
-![[Pasted image 20260718000029.png]]
+![[Pasted image 20260722212456.png]]
 
 In the **leaf-spine** topology, the **access switch** (known as a **leaf switch**) is connected to **each and every** **core switch** (known as a **spine switch**). The interconnection capacity of the leaf-spine topology can scale by **either** upgrading link speeds between the leaf and spine nodes, **or** by adding more spine nodes **horizontally**. In a leaf-spine topology, **all communication** within the data center — beyond the access switch — requires **exactly two switch hops**, as opposed to the **variable and potentially larger** number of hops in the earlier hierarchical/three-tier topologies.
 
@@ -343,4 +343,4 @@ The cost of **power** is a significant factor in operating a data center. With a
 
 ---
 
-→ Next: 6.7 Retrospective — A Day in the Life of a Web Page Request
+→ Next: [[WEBPAGE REQUEST]]
