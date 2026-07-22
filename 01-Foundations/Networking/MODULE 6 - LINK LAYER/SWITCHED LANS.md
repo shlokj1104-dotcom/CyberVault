@@ -460,7 +460,7 @@ Fig -- 802.1Q VLAN Tag
  * CRC recomputed since header changed
 ```
 
-![[Pasted image 20260718000023.png]]
+![[Pasted image 20260722211046.png]]
 
 The VLAN tag itself consists of:
 

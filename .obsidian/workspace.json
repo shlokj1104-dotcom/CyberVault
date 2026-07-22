@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "01-Foundations/Networking/MODULE 6 - LINK LAYER/SWITCHED LANS.md",
+                "file": "01-Foundations/Networking/MODULE 6 - LINK LAYER/LINK VIRTUALIZATION.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "SWITCHED LANS"
+              "title": "LINK VIRTUALIZATION"
             }
           }
         ]
@@ -250,8 +250,11 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "8fcd1ab0efc64805",
+  "active": "957f1a7ff8e9ae06",
   "lastOpenFiles": [
+    "Pasted image 20260722211459.png",
+    "01-Foundations/Networking/MODULE 6 - LINK LAYER/SWITCHED LANS.md",
+    "Pasted image 20260722211046.png",
     "Images/Pasted image 20260722210854.png",
     "Images/Pasted image 20260722210725.png",
     "Images/Pasted image 20260722210538.png",
@@ -262,15 +265,12 @@
     "01-Foundations/Networking/MODULE 6 - LINK LAYER/MULTIPLE ACCESS LINK & PROTOCOL.md",
     "Images/Pasted image 20260722205438.png",
     "Images/Pasted image 20260722205242.png",
-    "Images/Pasted image 20260722204739.png",
-    "Images/Pasted image 20260722204523.png",
     "01-Foundations/Networking/MODULE 6 - LINK LAYER/ERROR DETECTION & CORRECTION TECHNIQUE.md",
     "01-Foundations/Networking/MODULE 6 - LINK LAYER/INTRODUCTION TO LINK LAYER.md",
     "01-Foundations/Networking/MODULE 5 - THE NETWORK LAYER (CONTROL PLANE)/NETWORK MANAGEMENT.md",
     "01-Foundations/Networking/MODULE 6 - LINK LAYER/WEBPAGE REQUEST.md",
     "01-Foundations/Networking/MODULE 6 - LINK LAYER/DATA CENTER NETWORKING.md",
     "01-Foundations/Networking/MODULE 6 - LINK LAYER/LINK VIRTUALIZATION.md",
-    "01-Foundations/Networking/MODULE 6 - LINK LAYER/SWITCHED LANS.md",
     "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/INTERNET.md",
     "Templates/Project.md",
     "01-Foundations/Networking/MODULE 6 - LINK LAYER",

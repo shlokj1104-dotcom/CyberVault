@@ -64,8 +64,6 @@ Fig -- MPLS Header: Between L2 and L3
         20b   3b  1b  8b
 ```
 
-![[Pasted image 20260718000024.png]]
-
 |Field in MPLS Header|Purpose|
 |---|---|
 |**Label**|The fixed-length label itself, used for forwarding|
@@ -111,7 +109,7 @@ Fig -- MPLS Label-Switched Paths to A
  path would normally be chosen).
 ```
 
-![[Pasted image 20260718000025.png]]
+![[Pasted image 20260722211459.png]]
 
 > **Analogy — Coat-Check Tickets Instead of Reading Descriptions:** Imagine a large coat-check counter (a checkroom where guests hand over their coats and receive numbered tickets in return) at a huge event, with **multiple attendants** passing coats along a chain to reach the final storage rack. Ordinary IP forwarding is like each attendant having to **re-examine** the coat itself every time — checking its color, size, and owner's description — to figure out which direction to pass it. MPLS is like handing out a small numbered **ticket (the label)** the moment the coat arrives: from then on, every attendant down the chain just glances at the ticket **number** and instantly knows which direction to pass it, without ever having to re-inspect the coat itself. This is dramatically faster and simpler, especially when the same coat might need to travel down one of **several possible chains** depending on which ticket it was given — something that would be far harder to arrange if every attendant had to make an independent judgment call based solely on the coat's description.
 
