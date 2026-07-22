@@ -160,7 +160,7 @@ Fig -- Sending a Datagram Off the Subnet
  IP address stays the same throughout.
 ```
 
-![[Pasted image 20260718000017.png]]
+![[Pasted image 20260722210150.png]]
 
 Several noteworthy details:
 
@@ -213,8 +213,6 @@ Fig -- Ethernet Frame Structure
        (demultiplexing, e.g. IP, ARP)
  CRC: bit-error detection (Sec 6.2.3)
 ```
-
-![[Pasted image 20260718000018.png]]
 
 |Field|Size|Purpose|
 |---|---|---|
@@ -290,8 +288,6 @@ Fig -- Switch Table (Self-Learning)
  purged after an "aging" timeout.
 ```
 
-![[Pasted image 20260718000019.png]]
-
 Interestingly, many modern layer-2 switches can be configured to forward on the basis of **either** layer-2 destination MAC addresses (functioning as a layer-2 switch) **or** layer-3 IP destination addresses (functioning as a layer-3 router). Nonetheless, the important distinction retained here: switches forward packets based on **MAC addresses**, rather than on IP addresses — and a traditional (non-SDN) switch table is constructed in a **very different manner** from a router's forwarding table.
 
 ### The Three Cases of Switch Filtering and Forwarding
@@ -352,22 +348,7 @@ Having described the basic operation of a link-layer switch, consider now its sa
 
 Routers are **store-and-forward packet switches** that forward packets using **network-layer addresses**. Although a switch is also technically a store-and-forward packet switch, it is **fundamentally different** from a router in that it forwards packets using **MAC addresses**. Whereas a router is a **layer-3** packet switch, a switch is a **layer-2** packet switch. Recall, however, that modern switches using the **"match plus action"** operation can forward a layer-2 frame based on its destination MAC address **as well as** a layer-3 datagram based on its destination IP address — indeed, switches using the **OpenFlow** standard can perform generalized packet forwarding based on any of eleven different frame, datagram, and transport-layer header fields.
 
-```
-Fig -- Packet Processing: Switch vs Router
-────────────────────────────────────────
- Host --- Switch --- Router --- Host
-  App                             App
-  Transport                  Transport
-  Network             Network  Network
-  Link      Link  Link  Link     Link
-  Phys      Phys  Phys  Phys     Phys
-
- Switch: processes up through LINK (L2)
- Router: processes up through NETWORK
-         (L3) -- one extra layer of work
-```
-
-![[Pasted image 20260718000020.png]]
+![[Pasted image 20260722210538.png]]
 
 Even though switches and routers are fundamentally different, network administrators must often choose between them when installing an interconnection device. For example, the network administrator building the network in Figure 6.15 could just as easily have used a router instead of a switch to connect the department LANs, servers, and internet gateway router — indeed, a router would permit interdepartmental communication **without creating collisions**. Given that both switches and routers are viable candidates for interconnection, what are the pros and cons of each?
 
