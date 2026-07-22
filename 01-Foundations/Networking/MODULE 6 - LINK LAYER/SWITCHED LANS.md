@@ -410,7 +410,7 @@ Fig -- Port-Based VLAN (single switch)
  though it's one physical switch.
 ```
 
-![[Pasted image 20260718000021.png]]
+![[Pasted image 20260722210725.png]]
 
 One can readily (easily) picture how a VLAN switch is configured and operates — the network manager declares a port to belong to a given VLAN (with undeclared ports belonging to a default VLAN) using switch management software; a table of port-to-VLAN mappings is maintained within the switch; and switch **hardware** only delivers frames between ports belonging to the **same** VLAN.
 
@@ -437,7 +437,7 @@ Fig -- VLAN Trunking (two switches)
  ports should get the frame.
 ```
 
-![[Pasted image 20260718000022.png]]
+![[Pasted image 20260722210854.png]]
 
 **A new question this raises:** how does a switch know that a frame arriving on a trunk port belongs to a particular VLAN? The IEEE has defined an **extended Ethernet frame format**, **802.1Q**, specifically for frames crossing a VLAN trunk.
 
