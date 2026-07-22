@@ -180,7 +180,7 @@ Fig -- VXLAN: Ethernet Frame Tunneled
  To hosts A and B: looks like ONE LAN.
 ```
 
-![[Pasted image 20260718000026.png]]
+![[Pasted image 20260722211725.png]]
 
 ### Step-by-Step: How a Frame Actually Crosses a VXLAN Tunnel
 
@@ -251,4 +251,4 @@ Good sources of further information on the details of VXLANs and their use inclu
 
 ---
 
-→ Next: 6.6 Data Center Networking
+→ Next: [[DATA CENTER NETWORKING]]
