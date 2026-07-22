@@ -53,7 +53,7 @@ Host -1-> AP -2-> Switch -3-> Router -4-> Router
  protocol run over one individual link.
 ```
 
-![[Pasted image 20260718000001.png]]
+![[Pasted image 20260722203323.png]]
 
 The critical insight here: **different links along the same end-to-end path can — and often do — run entirely different link-layer protocols.** The WiFi hop uses one protocol; the Ethernet hops use another. Each link-layer protocol only has to worry about correctly moving a frame across _its own_ link — it has no responsibility for, or awareness of, the rest of the path.
 
@@ -174,7 +174,7 @@ Fig -- Network Adapter (NIC) in a Host
                          └─────────────┘
 ```
 
-![[Pasted image 20260718000002.png]]
+![[Pasted image 20260722203512.png]]
 
 ### The Hardware/Software Split
 

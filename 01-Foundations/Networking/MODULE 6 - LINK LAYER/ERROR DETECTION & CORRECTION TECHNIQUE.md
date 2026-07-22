@@ -43,7 +43,7 @@ Fig -- EDC Setup (Sender-to-Receiver)
    NO  -> error detected
 ```
 
-![[Pasted image 20260718000003.png]]
+![[Pasted image 20260722203658.png]]
 
 > **Analogy — A Sealed, Tamper-Evident Package:** Think of **D** as the actual contents of a package, and **EDC** as a special **tamper-evident seal** applied at the factory based on the package's exact weight and contents. When the package arrives, the receiver doesn't need to know exactly _what's_ inside to check whether it was tampered with — they just re-verify the seal against what arrived. If the seal doesn't match, _something_ changed in transit. Crucially — and this is the subtle part — a clever enough tamperer could conceivably alter the contents in a way that still produces a seal that looks valid (this is exactly the **undetected error** problem discussed below).
 
@@ -85,7 +85,6 @@ Fig -- Single (Even) Parity Bit
                   numbers of bit flips!)
 ```
 
-![[Pasted image 20260718000004.png]]
 
 **Receiver operation** with a single parity bit is equally simple: the receiver need only count the number of 1s in the received **d + 1** bits. If an **odd** number of 1-valued bits is found under an even-parity scheme, the receiver knows that **at least one** bit error has occurred. More precisely, it knows that some **odd** number of bit errors has occurred.
 
@@ -119,8 +118,6 @@ Fig -- Two-Dimensional Parity
  its COLUMN parity both flag error, so
  receiver can locate AND correct it.
 ```
-
-![[Pasted image 20260718000005.png]]
 
 **Why this works for correction, not just detection:** Suppose a single bit error occurs somewhere in the original **d** bits of information. With this two-dimensional parity scheme, the parity of **both** the column **and** the row containing the flipped bit will be in error. The receiver can therefore not only **detect** that a single-bit error has occurred, but can use the **column and row indices** with parity errors to actually **identify the exact bit** that was corrupted — and **correct** that error! This is a genuine, if limited, example of the receiver fixing an error on its own, without needing a retransmission.
 
@@ -209,8 +206,6 @@ Fig -- CRC: Sender and Receiver View
    remainder = 0  -> no error detected
    remainder ≠ 0  -> error detected
 ```
-
-![[Pasted image 20260718000006.png]]
 
 **The key idea** behind CRC codes: for a given piece of data, **D**, the sender chooses **r** additional bits, **R**, and appends them to **D** such that the resulting **d + r** bit pattern (interpreted as a binary number) is **exactly divisible by G** (i.e., has **no remainder**), using **modulo-2 arithmetic**. The process of error checking is thus simple: **the receiver divides the received d + r bits by G.** If the remainder is **nonzero**, the receiver knows an error has occurred; otherwise, the data is accepted as being correct.
 

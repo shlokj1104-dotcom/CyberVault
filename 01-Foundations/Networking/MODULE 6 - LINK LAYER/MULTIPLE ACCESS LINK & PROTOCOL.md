@@ -75,7 +75,7 @@ Fig -- Real-World Broadcast Channel Settings
  Cocktail party: everyone shares "the air"
 ```
 
-![[Pasted image 20260718000007.png]]
+![[Pasted image 20260722204007.png]]
 
 Although technically each node accesses the broadcast channel through its **adapter**, this section will simply refer to the "**node**" as the sending and receiving device. In practice, hundreds or even thousands of nodes can directly communicate over a single broadcast channel.
 
@@ -138,7 +138,7 @@ Fig -- TDM vs FDM (N=4 nodes, rate R)
   Each node gets 1 slot per TDM frame.
 ```
 
-![[Pasted image 20260718000008.png]]
+![[Pasted image 20260722204220.png]]
 
 Returning to the cocktail party analogy: a TDM-regulated cocktail party would allow one partygoer to speak for a fixed period of time, then let another partygoer speak for the same amount of time, and so on — once everyone had a chance to talk, the pattern would repeat.
 
@@ -207,7 +207,7 @@ Fig -- Slotted ALOHA: Slot Outcomes
   pairing illustrative only)
 ```
 
-![[Pasted image 20260718000009.png]]
+![[Pasted image 20260722204356.png]]
 
 ### Advantages of Slotted ALOHA
 
@@ -261,7 +261,7 @@ Fig -- Pure ALOHA: Vulnerable Period
  (double that of slotted ALOHA)
 ```
 
-![[Pasted image 20260718000010.png]]
+![[Pasted image 20260722204523.png]]
 
 **Determining pure ALOHA's maximum efficiency:** using the same assumptions as in the slotted ALOHA analysis, take the frame transmission time as the unit of time. Suppose a node begins transmission at time t₀. For this frame to be successfully transmitted, **no other nodes can begin their transmission** in the interval [t₀ − 1, t₀] — such a transmission would overlap with the beginning of node i's frame. The probability that all other nodes do not begin a transmission in this interval is **(1 − p)^(N−1)**. Similarly, no other node can begin a transmission while node i is transmitting, as such a transmission would overlap with the _latter_ part of node i's transmission — the probability of this is also **(1 − p)^(N−1)**. Thus, the probability that a given node has a successful transmission is **p(1 − p)^(2(N−1))**. Taking limits as in the slotted ALOHA case, the maximum efficiency of pure ALOHA is only **1/(2e) — exactly half that of slotted ALOHA**. This is the price paid for a **fully decentralized** ALOHA protocol (no need for slot synchronization).
 
@@ -298,7 +298,7 @@ Fig -- CSMA Space-Time Diagram
      -> collision occurs near D
 ```
 
-![[Pasted image 20260718000011.png]]
+![[Pasted image 20260722204739.png]]
 
 Consider four nodes (A, B, C, D) attached to a linear broadcast bus; the horizontal axis shows the position of each node in space, the vertical axis represents time. **At time t₀**, node B senses the channel idle (no other nodes are currently transmitting) and begins transmitting, with its bits propagating in both directions along the broadcast medium. The downward propagation of B's bits with increasing time indicates that a **nonzero amount of time is needed** for B's bits to actually propagate (albeit near the speed of light) along the broadcast medium.
 
