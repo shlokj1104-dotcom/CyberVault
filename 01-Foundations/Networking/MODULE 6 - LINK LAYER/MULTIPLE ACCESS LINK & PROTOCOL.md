@@ -326,7 +326,7 @@ Fig -- CSMA/CD: Detect and Abort Early
  doomed frame anyway.
 ```
 
-![[Pasted image 20260718000012.png]]
+![[Pasted image 20260722205242.png]]
 
 **Adding collision detection to a multiple access protocol helps protocol performance** by not wasting channel capacity transmitting a frame that's already doomed to be unusable.
 
@@ -469,7 +469,7 @@ Fig -- DOCSIS Upstream / Downstream
  eliminating upstream collisions.
 ```
 
-![[Pasted image 20260718000013.png]]
+![[Pasted image 20260722205438.png]]
 
 ### How the Upstream Channel Is Managed: TDM + Explicit Grants
 

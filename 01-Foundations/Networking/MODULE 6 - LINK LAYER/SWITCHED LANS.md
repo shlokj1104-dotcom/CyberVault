@@ -51,7 +51,7 @@ Fig -- Adapters Have MAC Addresses
  host itself.
 ```
 
-![[Pasted image 20260718000014.png]]
+![[Pasted image 20260722205646.png]]
 
 Notably, link-layer **switches** do **not** have link-layer addresses associated with the interfaces that connect to hosts and routers — this is because the job of a switch is to carry datagrams between hosts and routers **transparently** (invisibly, without the sender needing to know), without the host or router having to explicitly address the frame to the intervening (in-between) switch.
 
