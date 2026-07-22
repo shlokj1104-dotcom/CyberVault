@@ -158,7 +158,7 @@ Fig -- DNS Query Reaches the DNS Server
  to open a TCP socket to it
 ```
 
-![[Pasted image 20260722000004.png]]
+![[Pasted image 20260722213356.png]]
 
 > **Analogy — Domestic Mail vs. an International Courier Handoff:** Getting a datagram from Bob's laptop to the DNS server, entirely inside Comcast's network, is like **domestic mail routing within one country's postal service** — a single organization's internal sorting facilities (routers running RIP/OSPF/IS-IS) know exactly how to route a letter (the DNS query) from a local post office to any address within that same country, using nothing but their own internal address book. If the destination had instead been in a **different** country (a different Autonomous System), the letter would need to be handed off at a border crossing according to a treaty between postal services — that handoff protocol is BGP, and it only comes into play the moment a packet needs to leave the network that originated it.
 
@@ -197,7 +197,7 @@ Fig -- TCP 3-Way Handshake + HTTP
  the Web page               sent page content
 ```
 
-![[Pasted image 20260722000005.png]]
+![[Pasted image 20260722213525.png]]
 
 > **Analogy — Answering the Phone Before Talking Business:** The TCP three-way handshake is like a **phone call's opening ritual** before any real conversation happens: "Hello?" (SYN) → "Hello, who's calling?" (SYNACK) → "It's me, ready to talk" (final ACK, here carrying the HTTP GET as its first real content). Only once both parties have confirmed they can hear each other does the actual **business of the call** — the HTTP request and response, like asking a librarian for a specific book and having them hand it over — take place.
 
