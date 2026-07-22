@@ -87,7 +87,7 @@ Fig -- DHCP: Getting an IP Address
  (IP, gateway, DNS)         know laptop's MAC
 ```
 
-![[Pasted image 20260722000002.png]]
+![[Pasted image 20260722212924.png]]
 
 > **Analogy — Checking Into a Hotel:** DHCP is like arriving at a hotel with no reservation confirmation in hand. You **announce yourself at the front desk** (broadcast request) rather than mailing a letter to a specific person, because you don't yet know who's working the desk. The front desk hands you back a **room key, a map showing the elevator to the lobby (default gateway), and the phone number for the concierge (DNS server)** — all four things you need before you can do anything else in the building. Only after checking in can you sensibly ask the concierge to look anything up for you.
 
@@ -124,7 +124,7 @@ Fig -- ARP: Finding the Gateway's MAC
  gateway's real MAC            answers)
 ```
 
-![[Pasted image 20260722000003.png]]
+![[Pasted image 20260722213138.png]]
 
 > **Analogy — Knowing Someone's Name but Not Their Extension:** DNS is like knowing a company's **name** ("www.google.com") but needing the **phone directory service** to give you a number to actually dial (an IP address). ARP is a _different_, more local problem: you already have your own **receptionist's four-digit internal extension** (the gateway's IP) written on a sticky note, but internal phone systems route by **physical line number**, not extension — so before you can even dial the receptionist to relay your outside call, you have to ask "which physical line is extension 2.1 on?" That's ARP: translating a known local address into the physical (MAC) identifier the wire itself understands.
 
