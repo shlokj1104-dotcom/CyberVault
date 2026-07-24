@@ -258,4 +258,4 @@ The book is explicit that this integrated trace, while covering **a lot** of gro
 
 ---
 
-→ Next: Chapter 7 — Wireless and Mobile Networks
+→ Next: [[INTRODUCTION TO WIRELESS LINK]]
