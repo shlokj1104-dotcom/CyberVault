@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "01-Foundations/Networking/MODULE 7 - WIRELESS AND MOBILE NETWORK/WIRELESS ACCESS NETWORK.md",
+                "file": "01-Foundations/Networking/MODULE 7 - WIRELESS AND MOBILE NETWORK/WIRELESS CORE NETWORK.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "WIRELESS ACCESS NETWORK"
+              "title": "WIRELESS CORE NETWORK"
             }
           }
         ]
@@ -252,9 +252,10 @@
   },
   "active": "957f1a7ff8e9ae06",
   "lastOpenFiles": [
+    "01-Foundations/Networking/MODULE 7 - WIRELESS AND MOBILE NETWORK/WIRELESS ACCESS NETWORK.md",
+    "01-Foundations/Networking/MODULE 7 - WIRELESS AND MOBILE NETWORK/WIRELESS CORE NETWORK.md",
     "01-Foundations/Networking/MODULE 7 - WIRELESS AND MOBILE NETWORK/INTRODUCTION TO WIRELESS LINK.md",
     "01-Foundations/Networking/MODULE 7 - WIRELESS AND MOBILE NETWORK/PHYSICAL LAYER.md",
-    "01-Foundations/Networking/MODULE 7 - WIRELESS AND MOBILE NETWORK/WIRELESS ACCESS NETWORK.md",
     "01-Foundations/Networking/MODULE 6 - LINK LAYER/SWITCHED LANS.md",
     "01-Foundations/Networking/MODULE 6 - LINK LAYER/WEBPAGE REQUEST.md",
     "Pasted image 20260724133501.png",
@@ -292,7 +293,6 @@
     "02-CSE/Data-Structures/JAVA",
     "01-Foundations/Networking/MODULE 4 - THE NETWORK LAYER (DATA PLANE)/INTRODUCTION - NETWORK LAYER.md",
     "01-Foundations/Networking/MODULE 4 - THE NETWORK LAYER (DATA PLANE)/Untitled",
-    "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER/TRANSPORT LAYER FUNCTIONALITY.md",
     "01-Foundations/Networking/MODULE 4 - THE NETWORK LAYER (DATA PLANE)",
     "01-Foundations/Networking/BOOK 1 - TOP DOWN APPROACH.pdf",
     "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER",
