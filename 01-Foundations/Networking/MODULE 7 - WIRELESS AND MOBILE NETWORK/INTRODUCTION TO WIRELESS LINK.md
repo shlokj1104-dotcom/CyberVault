@@ -223,4 +223,4 @@ The answers to these and many other mobility-related questions will be **explore
 
 ---
 
-→ Next: 7.2 Wireless Links and Network Characteristics
+→ Next: [[PHYSICAL LAYER]]

@@ -595,4 +595,4 @@ As the SNR varies over time — due to a device moving, obstacles appearing, or 
 
 ---
 
-→ Next: [[7.3 WIFI 802.11 WIRELESS LANS]]
+→ Next: [[WIRELESS ACCESS NETWORK]]
