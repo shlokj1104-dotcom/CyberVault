@@ -51,7 +51,7 @@ Fig 7.2 -- EM Wave: Amplitude, Wavelength, Phase
    Phase(deg):  0   90  180  270  360
 ```
 
-![[Pasted image 20260724151720.png]]
+![[Pasted image 20260724152421.png]]
 
 Electromagnetic waves have a **direction** and propagate at approximately the speed of light, 3 × 10⁸ m/sec.
 
@@ -75,13 +75,7 @@ Fig 7.3a -- Power Spectral Density
    +-------------------------> Freq
         .9975  1.00  1.0025 (GHz)
              carrier (center) freq
-```
-
-![[Pasted image 20260724140200.png]]
-
-Armed with the concept of power spectral density, we can now precisely define a radio signal's **bandwidth** — the width (measured in Hz) of the range of frequencies occupied by the signal. A 22-MHz-wide channel, spread evenly between 2.427 and 2.429 GHz, corresponds to WiFi channel 6 (covered in Section 7.6).
-
-```
+             
 Fig 7.3b -- Signal Bandwidth (22 MHz channel)
 ────────────────────────────────────────
  Power
@@ -92,7 +86,9 @@ Fig 7.3b -- Signal Bandwidth (22 MHz channel)
         2.427   2.438   2.449 (GHz)
 ```
 
-![[Pasted image 20260724140400.png]]
+![[Pasted image 20260724152646.png]]
+
+Armed with the concept of power spectral density, we can now precisely define a radio signal's **bandwidth** — the width (measured in Hz) of the range of frequencies occupied by the signal. A 22-MHz-wide channel, spread evenly between 2.427 and 2.429 GHz, corresponds to WiFi channel 6 (covered in Section 7.6).
 
 **A crucial source of confusion, worth dwelling on:** this precise physical-layer notion of "bandwidth" (measured in Hertz, describing the width of a frequency band) is genuinely **different** from the far more informal, everyday networking usage of "bandwidth" to mean a link's bit transmission rate or capacity (measured in bits per second). The two are **related** — a wider radio channel generally supports a higher bit rate — but the relationship, as later sections make clear, is rather intricate (elaborate, not a simple one-to-one correspondence).
 
@@ -108,17 +104,7 @@ Radio signals, familiarly from everyday experience with AM/FM/satellite radio, c
 - **EM (electromagnetic) radiators:** electric motors and microwave ovens, particularly older and less-shielded models, can emit stray radio waves.
 - **Thermal and electronic noise:** natural thermal variations and inherent imperfections in the transmitter's or receiver's own electronics introduce noise into the signal, entirely independent of any external interferer.
 
-```
-Fig 7.4 -- Original Signal + Noise = Received
-────────────────────────────────────────
- Original: ~~~~~~~~~~~~~~~~~~~~~~~~~~
- Noise:    ____/\/\/\/\/\____________
- Received: ~~~~/\/\/\/\/\~~~~~~~~~~~~
-           (noise corrupts one burst
-            of the transmitted wave)
-```
-
-![[Pasted image 20260724140600.png]]
+![[Pasted image 20260724152938.png]]
 
 ---
 
@@ -157,33 +143,13 @@ P_received / P_transmitted  ~  1 / (f · d)^2
 
 where _f_ is the signal's frequency and _d_ is the transmitter–receiver distance. The intuition: since the surface area of a sphere grows as the **square** of its radius, the same fixed quantity of radiated energy is spread over an area four times larger at distance 2_d_, and nine times larger at distance 3_d_, than at distance _d_. A path-loss **exponent** of 2 describes free-space loss in open air; an exponent around 3 is typical of an outdoor urban environment, and an exponent of 4 or higher is common **within buildings** — making path loss an even more pernicious (harmful, insidious) concern indoors.
 
-```
-Fig 7.5 -- Free-Space Path Loss (Inverse-Square)
-────────────────────────────────────────
-  o -- d --[ 1x area, full power ]
- /|\ ---- 2d ----[ 4x area, 1/4 power ]
-/ | \ -------- 3d ----[ 9x area,1/9pwr]
-Sender     (same energy spread over an
-            area growing as distance^2)
-```
-
-![[Pasted image 20260724140800.png]]
+![[Pasted image 20260724153139.png]]
 
 This **quadratic (squared)** relationship holds in both distance **and** frequency, with a direct, practical corollary: low-frequency (e.g., kHz) radio tends toward long-distance, low-data-rate applications such as radio navigation, whereas high frequencies (e.g., GHz) tend toward shorter-distance terrestrial applications such as cellular and WiFi.
 
 **The hidden terminal problem.** The exponential decline of received power with distance gives rise to a genuinely thorny (difficult, prickly) scenario: nodes A and B might be within range of each other, and B and C might likewise be within range of each other, and yet A and C are **too far apart** — below the signal-detection threshold — to hear one another directly. A and C are said to be **hidden** from each other. If both A and C wish to transmit to B, they may each sense an apparently idle channel (since neither hears the other transmitting), yet their simultaneous transmissions will nonetheless **interfere** with one another precisely at B, corrupting what B receives.
 
-```
-Fig 7.6 -- Hidden Terminals
-────────────────────────────────────────
-  A ●───can hear───● B ───can hear───● C
-  │                                    │
-  └────────── CANNOT hear ─────────────┘
- A,B in range of each other; B,C in
- range; A,C are NOT -> "hidden" pair
-```
-
-![[Pasted image 20260724141000.png]]
+![[Pasted image 20260724153340.png]]
 
 A second, geometrically distinct variant of this same problem arises when A's and B's signals are **physically blocked** from each other — say, by an intervening mountain — even though both A and B can independently reach C; their transmissions to C still interfere with each other at C, notwithstanding that A and B never sense each other at all. Later, in Section 7.3.1, this physical-layer reality will be shown to directly motivate wireless link-layer multiple-access protocols such as WiFi's CSMA/CA.
 
@@ -191,35 +157,11 @@ A second, geometrically distinct variant of this same problem arises when A's an
 
 **Multipath.** Beyond simple attenuation, part of a transmitted signal follows a direct **line-of-sight (LOS) path** to the receiver, while other parts of the very same signal **reflect** off intervening objects (buildings, terrain) and arrive at the receiver at slightly **later** points in time, having traveled a longer physical distance. These reflected, delayed copies are called **multipath** signals.
 
-```
-Fig 7.7 -- LOS Signal vs. LOS + Reflected (Multipath)
-────────────────────────────────────────
- (a) Sender --LOS------> Receiver
-      Received: one clean pulse
-
- (b) Sender --LOS-----------> Receiver
-        \--reflect (bldg)----/
-      Received: LOS pulse + delayed
-                reflected pulse(s)
-```
-
-![[Pasted image 20260724141200.png]]
+![[Pasted image 20260724153525.png]]
 
 Because of multipath, the reception of a signal transmitted at one single instant is smeared (spread out) over time at the receiver — considerably complicating the receiver's job of reconstructing the originally transmitted signal. Multipath also constrains the maximum rate at which a transmitter can safely change its transmitted signal: the sender must space successive signal transitions far enough apart that the LOS pulse **and** all of its multipath reflections are received before the _next_ LOS pulse arrives — otherwise, successive pulses (and their reflections) blur together at the receiver. This receiver-dictated minimum spacing between signal changes is called the receiver's **coherence time**.
 
-```
-Fig 7.8 -- Multipath Reflections & Coherence Time
-────────────────────────────────────────
- Sent pulses:     _|_            _|_
- Received:       _|_~~          _|_~~
-                 LOS refl       LOS refl
-                 |<-- Tc: coherence -->|
-                        time
- (pulses must be spaced >= Tc apart or
-  they blur together at the receiver)
-```
-
-![[Pasted image 20260724141400.png]]
+![[Pasted image 20260724153718.png]]
 
 ---
 
@@ -241,7 +183,7 @@ Fig 7.9a -- MIMO Spatial Diversity
   differently-faded paths/antennas)
 ```
 
-![[Pasted image 20260724141600.png]]
+![[Pasted image 20260724154104.png]]
 
 - **MIMO spatial multiplexing**, by contrast, sends **different, independent** streams of information in parallel along the different paths between transmitter and receiver antennas. Each receiving antenna picks up a signal containing **both** transmitted streams, combined "in the air" — e.g., y₁ = H₁,₁(x₁) + H₂,₁(x₂). The receiver's task is then to disentangle (separate out) the original signals x₁ and x₂ from the received mixtures y₁ and y₂ — a signal-processing problem that, given two equations (one per receive antenna) and two unknowns (x₁ and x₂), is at least conceptually tractable, though the true channel functions H must be jointly estimated by sender and receiver in practice.
 
@@ -258,7 +200,7 @@ Fig 7.9b -- MIMO Spatial Multiplexing
   mixed together at each receive ant.)
 ```
 
-![[Pasted image 20260724141800.png]]
+![[Pasted image 20260724154326.png]]
 
 |Property|Spatial Diversity|Spatial Multiplexing|
 |---|---|---|
@@ -290,20 +232,7 @@ Beamforming is used widely in WiFi, modern cellular networks, and satellite comm
 
 The MIMO discussion above implicitly focused on **single-user MIMO (SU-MIMO)** — multiple antennas at transmitter and/or receiver serving a **single** device (typically 2 to 4 antennas in a WiFi base station). **Multi-user MIMO (MU-MIMO)**, sometimes called **Massive MIMO**, instead uses different subsets of a large antenna array to transmit to **multiple different devices simultaneously**. Each subset employs MIMO spatial diversity to reliably deliver its signal to one device, and MU-MIMO commonly layers **beamforming** on top, steering an independent beam toward each recipient at the same time. A modern MU-MIMO antenna for a 5G base station can contain an array of up to **64 beamforming transmitter elements**, with a comparable number of receiving elements.
 
-```
-Fig 7.10 -- SU-MIMO vs. MU-MIMO Beamforming
-────────────────────────────────────────
- (a) SU-MIMO: many antennas -> ONE user
-       [Tower] =====>>>>> [Phone]
-
- (b) MU-MIMO: separate beams, same time
-       [Tower]----->[Phone A]
-              \---->[Police car]
-               \---->[Phone B]
- (independent beams share the spectrum)
-```
-
-![[Pasted image 20260724142000.png]]
+![[Pasted image 20260724154545.png]]
 
 |Feature|SU-MIMO|MU-MIMO / Massive MIMO|
 |---|---|---|
@@ -321,17 +250,17 @@ The **radio spectrum** is the range of the electromagnetic spectrum from 3 Hz to
 - **Licensed spectrum.** A government-issued license must be obtained to operate a transmitter in a licensed band — this includes the bands used by commercial cellular network providers. In many countries, such spectrum is allocated via **auctions** that have generated tens to hundreds of billions of dollars in licensing fees. Because commercial operators must recoup (recover) these steep licensing, tower, and land-access costs, cellular service pricing reflects this considerable overhead — unlike, say, WiFi providers operating in unlicensed spectrum.
 - **Unlicensed spectrum.** Portions of the spectrum are available for use without obtaining any license at all — institutions and individuals may purchase and use devices (garage door openers, baby monitors, microwave ovens, and, notably, WiFi networks) here, subject only to constraints such as transmission power limits. Because many uncoordinated devices can transmit in unlicensed spectrum, they can — and routinely do — interfere with one another.
 
-|Spectrum Band|Network Type|Licensed / Unlicensed|
-|---|---|---|
-|2.4 GHz (2.40–2.49 GHz)|WiFi, Bluetooth, Zigbee|Unlicensed|
-|5 GHz (5.17–5.83 GHz)|WiFi|Unlicensed|
-|6 GHz (5.9–7.12 GHz)|WiFi|Unlicensed|
-|< 1 GHz ("low-band" cellular)|2G/3G/4G/5G — long range, lower rate (50–250 Mbps)|Licensed|
-|1.8, 3.3–3.8, 6 GHz ("mid-band" cellular)|2G/3G/4G/5G — the "sweet spot" (~5 mi, 100–900 Mbps)|Licensed|
-|3.5 GHz CBRS|Cellular / "Private 5G"|Licensed **and** Unlicensed|
-|26, 40, 50, 66 GHz ("mmWave", high-band)|5G — short range (< 1 mi), very high speed (< 3 Gbps)|Licensed|
-|915 MHz (902–928 MHz)|LoRa (IoT)|Unlicensed|
-|![[Pasted image 20260724142200.png]]|||
+| Spectrum Band                             | Network Type                                          | Licensed / Unlicensed       |
+| ----------------------------------------- | ----------------------------------------------------- | --------------------------- |
+| 2.4 GHz (2.40–2.49 GHz)                   | WiFi, Bluetooth, Zigbee                               | Unlicensed                  |
+| 5 GHz (5.17–5.83 GHz)                     | WiFi                                                  | Unlicensed                  |
+| 6 GHz (5.9–7.12 GHz)                      | WiFi                                                  | Unlicensed                  |
+| < 1 GHz ("low-band" cellular)             | 2G/3G/4G/5G — long range, lower rate (50–250 Mbps)    | Licensed                    |
+| 1.8, 3.3–3.8, 6 GHz ("mid-band" cellular) | 2G/3G/4G/5G — the "sweet spot" (~5 mi, 100–900 Mbps)  | Licensed                    |
+| 3.5 GHz CBRS                              | Cellular / "Private 5G"                               | Licensed **and** Unlicensed |
+| 26, 40, 50, 66 GHz ("mmWave", high-band)  | 5G — short range (< 1 mi), very high speed (< 3 Gbps) | Licensed                    |
+| 915 MHz (902–928 MHz)                     | LoRa (IoT)                                            | Unlicensed                  |
+
 
 New spectrum-sharing methods are also being developed to let non-incumbent devices (those not associated with a spectrum's licensee) opportunistically use spectrum the licensee isn't currently using — the CBRS band, for instance, permits cellular base stations to transmit provided no naval radar (the licensed incumbent) is actively present.
 
@@ -358,7 +287,7 @@ Fig 7.11 -- Physical-Layer Transmission Pipeline
   back flows from receiver to sender)
 ```
 
-![[Pasted image 20260724142400.png]]
+![[Pasted image 20260724154801.png]]
 
 Data bits are presented to the physical layer at the transmitter, processed into electromagnetic waveforms that propagate over the (noisy) channel to the receiver, and are there transformed back into bits, which are then passed up to the link layer. Ideally, this entire pipeline proceeds as swiftly (quickly) as possible.
 
@@ -386,18 +315,7 @@ If three consecutive received bits are lost to a burst of interference (denoted 
 - **Frequency Modulation (FSK — frequency shift keying):** bit values are encoded by changing the carrier's **frequency** across different time intervals — e.g., one frequency represents a 0-bit, a different frequency a 1-bit.
 - **Phase Modulation (PSK — phase shift keying):** bit values are encoded by changing the carrier's **phase** across different time intervals — e.g., a signal that is zero-and-increasing at the start of an interval encodes a 0-bit, while one that is zero-and-decreasing (180 degrees out of phase) encodes a 1-bit.
 
-```
-Fig 7.12 -- Amplitude / Frequency / Phase Modulation
-────────────────────────────────────────
- Bits:       0    0    1    0    1    1
- Amplitude:  low  low  HIGH low  HIGH HIGH
- Frequency:  lo   lo   HI   lo   HI   HI
- Phase:      0deg 0deg 180  0deg 180  180
- (each row modulates ONE wave property
-  to carry the identical bit sequence)
-```
-
-![[Pasted image 20260724142600.png]]
+![[Pasted image 20260724155006.png]]
 
 In each scheme, the receiver need only measure the amplitude, frequency, or phase of the incoming analog radio signal to correctly infer whether a 0-bit or 1-bit was sent — though reliably detecting frequency and phase shifts does require that sender and receiver clocks be carefully synchronized with one another.
 
@@ -417,34 +335,13 @@ The examples above show only **two** values of amplitude, frequency, or phase en
 
 **Quadrature Phase Shift Keying (QPSK)** groups the serial bitstream **two bits at a time** into a single **symbol**, using **four** distinct phase-shift values (45°, 135°, 225°, 315°) to represent the four possible two-bit combinations: "00", "01", "10", "11". All four QPSK signals share the same amplitude — only their phase differs.
 
-```
-Fig 7.13 -- Quadrature Phase Shift Keying (QPSK)
-────────────────────────────────────────
- Bits:    0 0   1 1   0 0   1 1   1 1
- Symbol:  "00"  "11"  "00"  "11"  "11"
- Phase:   45d   315d  45d   315d  315d
- (2 bits grouped -> one of 4 phases)
-```
-
-![[Pasted image 20260724142800.png]]
+![[Pasted image 20260724155223.png]]
 
 A crucial consequence: because each transmitted symbol now carries **two** bits at once, the rate at which symbols must be processed is only **half** the underlying bit rate — leaving correspondingly more time, per symbol, for signal processing than pure bit-by-bit signaling would allow.
 
 The four QPSK symbols are often depicted on a **constellation diagram** — a plot where a point's angular position (measured counterclockwise from due east, i.e., the 3:00 position) represents the symbol's phase, and its distance from the origin represents amplitude.
 
-```
-Fig 7.14 -- QPSK Constellation Diagram
-────────────────────────────────────────
-             135°   |   45°
-              "01"  |  "00"
-          ----------+----------
-              "10"  |  "11"
-             225°   |   315°
-      (4 dots, equal amplitude, phases
-       spaced 90 degrees apart)
-```
-
-![[Pasted image 20260724143000.png]]
+![[Pasted image 20260724155507.png]]
 
 > **Analogy — A Clock Face as a Mailbox Grid:** Imagine a clock face with exactly four mail slots positioned at the 1:30, 4:30, 7:30, and 10:30 marks — every letter dropped in must land in exactly one of these four slots, and which slot a letter lands in instantly conveys **two bits' worth** of information (since there are four possible slots) rather than the mere one bit conveyed by a simple "slot present / no slot" binary system.
 
@@ -454,35 +351,13 @@ Fig 7.14 -- QPSK Constellation Diagram
 
 In QPSK, only the signal's **phase** is modulated, while its amplitude stays fixed. **Quadrature Amplitude Modulation (QAM)** modulates **both** phase **and** amplitude simultaneously, allowing many more distinct symbols to be packed onto a single constellation diagram. The number preceding "-QAM" names how many distinct symbols that version of QAM uses: 4-QAM is essentially identical to QPSK (4 symbols, 2 bits/symbol); 16-QAM uses 16 symbols (4 bits/symbol); 64-QAM uses 64 symbols (6 bits/symbol).
 
-```
-Fig 7.15 -- 4-QAM / 16-QAM / 64-QAM Constellations
-────────────────────────────────────────
- 4-QAM:   4 dots   (2 bits per symbol)
- 16-QAM: 16 dots, 4x4 grid (4 bits)
- 64-QAM: 64 dots, 8x8 grid (6 bits)
- (denser grid = more bits/symbol, but
-  dots sit closer together = riskier)
-```
-
-![[Pasted image 20260724143200.png]]
+![[Pasted image 20260724155755.png]]
 
 16-QAM, 64-QAM, and 256-QAM are all used in 4G/5G and WiFi networks today, with even higher-order QAMs (1024-QAM, 4096-QAM) appearing in the WiFi-6 and WiFi-7 standards.
 
 A constellation diagram also offers direct insight into how noise produces symbol errors. Suppose a sender transmits the "1111" symbol of a 16-QAM constellation. Changing electromagnetic conditions and measurement noise at the receiver mean that the **received** amplitude and phase for that same "1111" symbol will differ slightly **each time** it is sent — scattering a cloud of possible received measurements around the true transmitted point. Most of these land closer to "1111" than to any other symbol, so the receiver correctly infers "1111" was sent — but occasionally a received measurement lands closer to a **neighboring** symbol (e.g., "1011"), and the receiver incorrectly infers the wrong symbol was transmitted, resulting in a **symbol error**.
 
-```
-Fig 7.16 -- Transmitted vs. Received 16-QAM
-────────────────────────────────────────
-          ● "1111" sent (exact, red)
-         o o o
-        o o ● o o  <- received copies
-         o o o        (yellow), noise-
-                       scattered around it
- one stray dot lands nearer "1011" ->
- receiver misreads the intended symbol
-```
-
-![[Pasted image 20260724143400.png]]
+![[Pasted image 20260724155944.png]]
 
 |QAM Order|Bits per Symbol|Constellation Density|Noise Sensitivity|
 |---|---|---|---|
@@ -498,19 +373,7 @@ Fig 7.16 -- Transmitted vs. Received 16-QAM
 
 Figures 7.15 and 7.16 together suggest an important, somewhat counterintuitive (contrary to naive expectation) tension: as a constellation diagram grows more densely packed at higher-order QAMs, the effects of noise and receiver measurement error become more **pronounced** (noticeable), resulting in higher symbol-error rates and hence higher **bit error rates (BER)**. While higher transmission rates might always **seem** desirable, blindly reaching for a higher-order QAM is not always wise if the resulting error rate proves too high.
 
-```
-Fig 7.17 -- SNR vs. Bit Error Rate (BER)
-────────────────────────────────────────
- BER
- 10^-1 |\
- 10^-3 | \    \      4-QAM (leftmost)
- 10^-5 |  \    \--   16-QAM (middle)
- 10^-7 |   \      \-- 64-QAM (right)
- 10^-9 +--------------------------> SNR
-         0   5  10  13 15 17  20 dB
-```
-
-![[Pasted image 20260724143600.png]]
+![[Pasted image 20260724160146.png]]
 
 Suppose the goal is to keep BER below 10⁻⁴ while achieving the highest bit rate possible subject to that constraint. Figure 7.17 indicates a natural, layered decision rule:
 

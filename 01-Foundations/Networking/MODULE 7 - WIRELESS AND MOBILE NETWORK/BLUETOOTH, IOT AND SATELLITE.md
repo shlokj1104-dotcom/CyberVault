@@ -36,22 +36,7 @@ Bluetooth networks operate in the **unlicensed 2.4 GHz Industrial, Scientific, a
 
 The Bluetooth wireless channel is operated in a combined **TDM and FDM** manner: there are **79 frequency channels**, and **625-microsecond time slots** on each channel. During each time slot, a sender transmits on just one of the 79 channels — and then the sender changes the channel (frequency) used, in a **pre-determined manner**, from one slot to the next.
 
-```
-Fig 7.46 -- Bluetooth Frequency Hopping (FHSS)
-------------------------------------------------
-Ch#  Slot1 Slot2 Slot3 Slot4 Slot5 Slot6 ...
- 1    N1    .     .    N2     .     .
- 2    .    N2     .     .    N1     .
- 3    .     .    N1     .     .    N2
- 4    .    N1    N2     .     .     .
-...
-79   N2     .     .     .    N1     .
-(N1/N2 = channel used, that 625 us slot,
- by BT network 1 / network 2; each hops
- to a different channel each time slot)
-```
-
-![[Pasted image 20260724180000.png]]
+![[Pasted image 20260724165544.png]]
 
 This form of channel hopping is known as **frequency-hopping spread spectrum (FHSS)**. It's used so that interference from another device operating at a _given_ frequency in the ISM band will only ever interfere with Bluetooth communications during a small number of slots — not the entire conversation. Additionally, slots that experience significant interference (manifested, or revealed, as a low signal-to-noise ratio) can be **adaptively removed** from the hopping pattern altogether. Multiple Bluetooth networks can co-exist in the same physical space so long as each uses a **different** frequency-hopping pattern (note network 1 and network 2's distinct patterns in Figure 7.46). Bluetooth data rates can reach up to 2 to 3 Mbps.
 
@@ -63,18 +48,7 @@ Bluetooth networks are **ad hoc networks**, meaning no network infrastructure (i
 
 Bluetooth devices organize themselves into a **piconet** of up to **eight active devices**. One of these devices is designated as the **centralized controller**, with the remaining devices acting as **clients** in a "peripheral" role.
 
-```
-Fig 7.47 -- A Bluetooth Piconet
-------------------------------------
-              (P)
-               .
-      (P) . . (C) . . (P)
-               .
-      <-- diameter of coverage -->
-   C = central role   P = peripheral
-```
-
-![[Pasted image 20260724180200.png]]
+![[Pasted image 20260724165245.png]]
 
 The centralized controller node truly **rules** the piconet:
 
@@ -112,25 +86,7 @@ Because Bluetooth ad hoc networks must be **self-organizing**, it's worth lookin
 
 Because Bluetooth was designed for a specific, limited set of services (unlike the general-purpose Internet or 5G networks), it's instructive to take a quick look at its protocol stack.
 
-```
-Fig 7.48 -- Bluetooth Protocol Stack
------------------------------------------
-Central (laptop)    Peripheral (earbuds)
-MP3 | Remote | Svc   MP3 music | Svc disc
-music| kbd   | disc  --------------------
--------------------        L2CAP
-      L2CAP                 Link
-      Link                Physical
-    Physical
-        \            Peripheral (keyboard)
-         \  piconet   Remote kbd | Svc disc
-          \ channels  --------------------
-           \                L2CAP
-            \                Link
-             \-------------Physical
-```
-
-![[Pasted image 20260724180400.png]]
+![[Pasted image 20260724165745.png]]
 
 Perhaps most strikingly, the Bluetooth protocol stack **lacks both a network layer and a traditional transport layer**! This lack of a network layer is perhaps unsurprising, given that Bluetooth networks are generally **single-hop**, with only controller-to-peripheral or peripheral-to-controller transmissions — so multi-hop forwarding and routing simply aren't a concern. (Multi-hop extensions to the basic Bluetooth mechanisms do exist, in the **Bluetooth Scatternet** and, more recently, the **Low Energy Mesh** specifications, but these have seen extremely limited deployment.)
 
@@ -203,20 +159,7 @@ As of November 2022, only **6,800 active satellites** had been launched in all o
 
 ### LEO Satellite Network Architecture — Figure 7.49
 
-```
-Fig 7.49 -- Components of a LEO Satellite Network
------------------------------------------------------
-  [Sat]==ISL==[Sat]==ISL==[Sat]==ISL==[Sat]
-   /|\          |            |          /|\
-  / | \      (dish)       (dish)       / | \
-airborne  ground station  rural area  mobile
-maritime  (--> Internet)  comms       user
-vehicles                              terminal
-   Channel: broadcast down, unicast up
-   "Footprint" = coverage area on ground
-```
-
-![[Pasted image 20260724180600.png]]
+![[Pasted image 20260724170039.png]]
 
 - **LEO satellites.** Orbiting LEO satellites are often referred to collectively as a **constellation**. Starlink reports more than **6,750 satellites** in its constellation; in early 2025 there were approximately **650 LEO satellites** in the OneWeb constellation. Because of their relatively low altitude, LEO satellites are **not geostationary**, but instead are in constant motion with respect to the Earth below, traveling at roughly **27,000 km/hr** relative to the ground — as we'll see, this takes the entire topic of "network mobility" in a whole new direction.
 - **Satellite links.** The coverage area of a satellite's wireless transmitter/receiver on the ground below is known as its **footprint**. In the downlink direction, a satellite's transmissions are **broadcast** in nature, received by all ground stations within the footprint. In the uplink direction, transmissions from the various ground stations within a satellite's footprint are **unicast** to the satellite — a classical **multiple access channel**! The footprint of a typical LEO satellite is **15 miles in diameter**. A ground station will remain in the footprint of a satellite link's beam for only about **10 minutes or so**, until the satellite's own motion takes it out of view of that ground station.
@@ -239,30 +182,6 @@ Since a ground station remains attached to any one satellite for only about 10 m
 |**Handover maturity**|Well-developed, orchestrated 3-phase process|Less well-developed; packet loss suspected|
 
 > **Analogy — Waiting at a Bus Stop That Never Moves, While the Buses Keep Changing:** In 5G mobility, it's _you_ (the device) walking from one bus stop's coverage to another's. In LEO satellite mobility, it's the reverse: you (the ground station) stand at a single, fixed bus stop, and it's the _buses themselves_ (satellites) that keep arriving, lingering only about ten minutes, and then speeding off to be replaced by the next bus in the queue — the handover burden falls on tracking which bus is currently serving your stop, not on your own movement at all.
-
-### A Link in the Air, or a Network in the Air? — Figure 7.50
-
-Two possible approaches exist for actually building out satellite networks:
-
-```
-Fig 7.50 -- Links in the Sky or Network in the Sky?
----------------------------------------------------
-(a) "Bent pipe": links in the sky
-  [Sat]      [Sat]      [Sat]
-   |          |          |
- (dish)     (dish)     (dish)
- each satellite = one single-hop link;
- packet returns to ground after each hop
-
-(b) A network in the sky
-  [Sat]--ISL--[Sat]--ISL--[Sat]
-    \                        /
-   (dish)                (dish)
- packet may cross multiple ISL hops
- among satellites before reaching ground
-```
-
-![[Pasted image 20260724180800.png]]
 
 - **(a) "Bent pipe" architecture.** Each satellite is treated as a single **link**, with ground stations at each end of each link. An end-to-end path thus consists of a series of **single-hop satellite links**, with a packet returning to ground after each and every hop.
 - **(b) A network in the sky.** Here, **inter-satellite links (ISLs)** directly connect satellites to one another, and a packet may cross **multiple hops among satellites** before ever returning to ground. Because satellites are non-stationary both with respect to the ground _and_ with respect to each other, the ISL links in a "network in the sky" are **dynamically changing** — making routing in LEO satellite (LEOS) networks a genuinely challenging problem.
@@ -296,24 +215,7 @@ With so many different applications, and so many different requirements, and suc
 
 Figure 7.51 provides a **three-faceted characterization** of IoT networking technologies, illustrating the extent to which a particular technology emphasizes **area coverage**, **energy consumption**, and/or **high data rates**. Each of the technologies shown emphasizes _two_ of these three characteristics — **none emphasize all three**. This suggests that, rather than a winner-take-all outcome in IoT networking, we're likely to see **different solutions adopted in practice**, depending on the specific context.
 
-```
-Fig 7.51 -- IoT Communication Tech Emphases
--------------------------------------------------
-                 higher data rate
-                       /\
-                      /  \
-     short range:     /    \
-     WiFi,BLE,Zigbee /      \
-                     /--------\
-                    / low power\ traditional
-                   /  wide area:\ cellular:
-                  / LoRaWAN,     \ LTE-M /
-                 /  NB-IoT        \ 5G
-                --------------------
-             emphasis: wider area coverage
-```
-
-![[Pasted image 20260724181000.png]]
+![[Pasted image 20260724170133.png]]
 
 ### Emphasizing Low Energy and Low Data Rate: Short-Range Technologies
 

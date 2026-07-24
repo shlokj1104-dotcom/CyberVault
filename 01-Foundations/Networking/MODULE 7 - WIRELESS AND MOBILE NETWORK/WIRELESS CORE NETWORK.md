@@ -46,27 +46,7 @@ The 5G Core adopts a **Service-Based Architecture (SBA)**: architectural element
 
 ### The Big Picture: Figure 7.40
 
-```
-Fig 7.40 -- 5G Core: Key Network Functions
-------------------------------------------
- Data storage:     UDR            UDSF
-                (repository)   (unstructured)
- +--------------------------------------+
- |        Control Plane Functions        |
- |  AUSF  PCF   UDM   NEF   SEPP -------> other
- |  AMF   SMF   NRF   AF                | providers
- +--------------------------------------+
-     |N1              |N2
-  (())  device      (tower) base station
-                            |N3
-                        [ UPF ]
-                            |
-                       User plane
-                            v
-                        Internet
-```
-
-![[Pasted image 20260724160000.png]]
+![[Pasted image 20260724163927.png]]
 
 Figure 7.40 (adapted from the 3GPP 23.501 specification) lays out the Core's major components. Of the roughly dozen standardized Network Functions, three deserve special attention as arguably the "top three" — the ones without which nothing else in the Core would function.
 
@@ -121,20 +101,7 @@ Recall from Chapters 4 and 6 that tunneling provides the abstraction of a virtua
 
 ### Figure 7.41: Tunneling in the 5G Protocol Stack
 
-```
-Fig 7.41 -- 5G Protocol Stacks, with Tunneling
-------------------------------------------------
- Device(z)   Base station(y)        UPF(x)  Net(w)
- SDAP,RRC    RRC   SDAP,PDCP               
- PDCP        |     RLC,MAC     GTP-U   GTP-U
- RLC,MAC     |     Physical    UDP     UDP
- Physical    |       :         IP------IP----IP
-   (())<===>(tower)==backhaul==>[tunnel endpt]==>
- payload: src=w dst=z carried inside tunnel
- outer hdrs: base sta<->UPF = (src y,dst x) etc.
-```
-
-![[Pasted image 20260724160200.png]]
+![[Pasted image 20260724164149.png]]
 
 Having studied the RAN protocol stacks in detail in Section 7.3, we can now focus specifically on the data-plane protocol stacks at the base station and at the UPF in the 5G Core. As discussed in Section 7.4.3, the SMF establishes a tunnel between the base station and the device's UPF instance when the device joins the network. When a UPF receives a datagram from the external Internet destined for one of "its" devices, it encapsulates that datagram inside a UDP segment using the **GPRS Tunneling Protocol (GTP)** — specifically its user-plane variant, **GTP-U**. That UDP segment then becomes the payload of a _new_ IP datagram, which is forwarded from the UPF, through the **backhaul network** (the sea of routers and links between the base station and the Core), to the base station. On the receiving end, the base station decapsulates the tunneled UDP datagram, extracts the original encapsulated IP datagram, and forwards it over the RAN to the device — exactly as we'd carefully examine addresses in any "datagram-within-a-datagram" scenario, echoing the mixed IPv4/IPv6 tunneling discussion of Section 4.3.
 
@@ -182,26 +149,7 @@ After both steps complete, the device is fully attached to the network and ready
 
 ### Figure 7.42: The Full Sequence
 
-```
-Fig 7.42 -- Registration & Session Setup
--------------------------------------------
- Device  BaseSta   AMF    AUSF  SMF   UPF  UDM
-  |-RRC setup req/resp->|        |     |    |
-  |          |-- registration -->|     |    |
-  |          |    request        |     |    |
-  |<--------- identity req/resp -------|--->|
-  |<======== authentication, security =====>|
-  |          |     (update conn data at UDM)|
-  |<-------- registration accept ------------
-  |--PDU session establishment req--->|      |
-  |          |    session create req/resp -->|
-  |          |    subscription check <------>|
-  |          |    UPF selected, tunnel set up |
-  |<-------- session resp (tunnel, IPv4) ----|
-  |==== 1st uplink datagram, data plane =====>|
-```
-
-![[Pasted image 20260724160400.png]]
+![[Pasted image 20260724164354.png]]
 
 **Registration, walked through.** Recall from Section 7.3.4 that the device and base station first exchange RRC connection setup request/response messages, establishing a RAN signaling channel between themselves — but the device still isn't yet registered with the Core. After this initial exchange, the base station selects an instance of the AMF for that device and sends it a registration request. The AMF contacts the device and requests device identity information, which is then passed to the Authentication Function to perform mutual authentication with the device (the full details of this authentication are postponed to Chapter 8). If the network being joined is _not_ the device's home network, the local Authentication Function in the visited network serves purely as a proxy to the Authentication Function in the device's home network, which actually performs the authentication. Following successful authentication, the AMF registers the device's identity and subscribed service information in the local UDM, and returns a registration acceptance message to the device.
 

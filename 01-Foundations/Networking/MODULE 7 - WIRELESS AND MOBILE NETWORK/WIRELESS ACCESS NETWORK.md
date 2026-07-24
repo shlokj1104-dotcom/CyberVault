@@ -30,23 +30,7 @@ Section 6.3 introduced three general families of multiple-access technique: **ch
 
 A single wideband channel concentrates a device's entire power spectrum in one contiguous block (Figure 7.18a). Because wideband hardware is difficult to build cheaply, and different devices rarely need the full channel width, a band is more often divided into multiple **narrowband channels** — classic **frequency-division multiplexing (FDM)**. FDM channels are separated by **guard bands**: idle slices of spectrum that prevent one channel's transmission from bleeding into its neighbor (Figure 7.18b).
 
-```
-Fig 7.18 -- Wideband vs. FDM vs. OFDM Spectrum
-────────────────────────────────────────
- a. Wideband:   [###################]
-                -0.5      freq      0.5
-
- b. FDM:  |ch|gap|ch|gap|ch|gap|ch|
-              (guard bands waste spectrum)
-
- c. OFDM: overlapping, orthogonal lobes
-          ~/\~/\~/\~/\~/\~/\~/\~/\~
-          (zero-crossings align at peaks
-           of neighbors -> no interference,
-           no guard bands needed)
-```
-
-![[Pasted image 20260724150000.png]]
+![[Pasted image 20260724160402.png]]
 
 **Orthogonal frequency division multiplexing (OFDM)** modulates the FDM subchannel carriers so that, although adjacent channels' power spectra now _overlap_, each subchannel's signal is mathematically zero exactly at its neighbors' peak frequencies — the signals cancel each other out at the points that would otherwise cause interference. Because guard bands become unnecessary, OFDM packs strictly more usable spectrum into the same bandwidth than FDM — it has higher **spectral efficiency**, a genuinely valuable property (recall from 7.2 that spectrum is a scarce, auctioned commodity in licensed bands).
 
@@ -56,18 +40,7 @@ Fig 7.18 -- Wideband vs. FDM vs. OFDM Spectrum
 
 **OFDMA** combines OFDM's frequency-division with **time-division** multiplexing. Each OFDM subchannel is further sliced into short time **minislots**, producing a two-dimensional grid of frequency × time cells. The smallest addressable cell — one minislot at one subchannel frequency, carrying exactly one modulation symbol — is called a **Resource Element (RE)**. In 4G/5G, an RE spans 15 kHz and lasts 66.6 μsec; in WiFi (which supports OFDMA from WiFi-6 onward), an RE spans 78 kHz and lasts 12.8 μsec.
 
-```
-Fig 7.19 -- OFDMA: Frequency x Time Grid
-────────────────────────────────────────
- Freq ▲ ● ● ● ● ● ● ●   subchannel 12
-      │ ● ● ● ● ● ● ●     ...
-      │ ● ● ● ● ● ● ●   subchannel 2
-      │ ● ● ● ● ● ● ●   subchannel 1
-      └───────────────▶ Time (minislots)
-   each ● = one Resource Element (RE)
-```
-
-![[Pasted image 20260724150200.png]]
+![[Pasted image 20260724160546.png]]
 
 REs are never scheduled individually. Instead, adjacent REs are grouped — same modulation, same power — into a **resource block (RB)** in 4G/5G, or a **Resource Unit (RU)** in WiFi. A base station or wireless device transmits its data as symbols across one or more RBs/RUs, as scheduled in Section 7.3.5.
 
@@ -82,17 +55,7 @@ REs are never scheduled individually. Instead, adjacent REs are grouped — same
 
 Because collisions at the _destination_ are consequently more prevalent in wireless networks than wired ones, CSMA/CA adds an explicit **link-layer acknowledgment**: after correctly receiving a frame (verified via the CRC), the destination waits a brief **Short Inter-frame Spacing (SIFS)** and sends back an ACK.
 
-```
-Fig 7.20 -- CSMA/CA Link-Layer Acknowledgment
-────────────────────────────────────────
- Source              Destination
-   │  DIFS               │
-   ├───────DATA─────────>│
-   │                 SIFS│
-   │<───────ACK──────────┤
-```
-
-![[Pasted image 20260724150400.png]]
+![[Pasted image 20260724160721.png]]
 
 If no ACK arrives, the sender assumes a collision (or other error) occurred and retransmits, up to some fixed number of retries, using CSMA/CA anew.
 
@@ -118,21 +81,7 @@ The full **CSMA/CA protocol** runs as follows:
 
 CSMA/CA offers an optional **reservation scheme** to further mitigate hidden terminals: the **Request to Send (RTS)** and **Clear to Send (CTS)** control frames. When a sender wants to transmit a DATA frame to an access point (AP), it first sends a short RTS to the AP, stating the total time needed for the DATA and its ACK. The AP replies by **broadcasting** a CTS — heard by every station within the AP's own range, including stations hidden from the original sender — which grants the sender permission to transmit _and_ instructs all other stations to defer for the reserved duration.
 
-```
-Fig 7.21 -- Collision Avoidance Using RTS/CTS
-────────────────────────────────────────
- Source    Destination    All other nodes
-  │ DIFS        │                │
-  ├────RTS─────>│                │
-  │         SIFS│                │
-  │<────CTS─────┼──────CTS──────>│ (defer)
-  │SIFS          │                │
-  ├────DATA─────>│                │
-  │         SIFS│                │
-  │<────ACK─────┼──────ACK──────>│
-```
-
-![[Pasted image 20260724150600.png]]
+![[Pasted image 20260724160859.png]]
 
 RTS/CTS improves performance two ways: the hidden-station problem is mitigated, since the full DATA frame is only sent after the channel is reserved; and because RTS/CTS frames are short, a collision **involving** an RTS or CTS wastes only that short frame's duration rather than an entire long DATA frame. (An RTS/CTS exchange itself isn't foolproof — the CTS or RTS can still be lost to fading or noise.) Because the exchange adds delay and consumes channel resources, it's typically only used — if at all — to reserve the channel ahead of a **long** DATA frame.
 
@@ -165,18 +114,8 @@ Three trends stand out beyond the relentless increase in theoretical throughput:
 
 The fundamental building block of an 802.11 network is the **basic service set (BSS)**: two or more wireless nodes, typically including a central base station called an **access point (AP)**.
 
-```
-Fig 7.22 -- Elements of an 802.11 WLAN
-────────────────────────────────────────
-   BSS 1                   BSS 2
- (::)Station             (::)   (::)
-        \    Switch/         (::)
-   (::)AP ─── Router ──── AP(::)
-              │
-           Internet
-```
 
-![[Pasted image 20260724150800.png]]
+![[Pasted image 20260724161038.png]]
 
 Each AP connects, in turn, to an interconnection device (switch or router), which leads to the Internet. Although in casual 802.11 parlance "AP" is often used loosely to mean the whole combined box (AP + switch + router, common in home deployments), the 802.11 standard itself defines the AP as a strictly **layer-2-only** device: wireless stations transmit and receive only to/from the AP, and cannot communicate device-to-device directly (in this infrastructure-mode configuration).
 
@@ -184,28 +123,7 @@ Each AP connects, in turn, to an interconnection device (switch or router), whic
 
 Figure 7.23 shows how the 2.4 GHz and 5 GHz bands are divided into numbered, 20-MHz-wide channels. In the 2.4 GHz band, adjacent channels **overlap**; two channels are non-overlapping only if separated by four or more channel numbers, making **{1, 6, 11}** the only set of three simultaneously non-overlapping channels — a real practical constraint when configuring neighboring home WiFi networks. The 5 GHz band offers a much larger, cleaner set of non-overlapping options, and its higher channel-bandwidth tiers (40/80/160 MHz) are formed by **bonding** together multiple adjacent 20 MHz channels.
 
-```
-Fig 7.23a -- 2.4 GHz WiFi Channels (USA)
-────────────────────────────────────────
- 2.40 ─ch1─ch2─ch3...ch6...ch9─ch11─ 2.48
-      |<--20MHz-->|          GHz
- non-overlapping set = {1, 6, 11}
-```
-
-![[Pasted image 20260724151000.png]]
-
-```
-Fig 7.23b -- 5 GHz WiFi Channel Bonding
-────────────────────────────────────────
-  20MHz:  |36|40|44|48|...|161|165|
-  40MHz:  |  38  |  46  |...| 159  |
-  80MHz:  |     42     |...| 155  |
- 160MHz:  |          50          |
-  (wider bonded channels absorb several
-   narrower channel numbers underneath)
-```
-
-![[Pasted image 20260724151200.png]]
+![[Pasted image 20260724161341.png]]
 
 An individual WiFi network operates on only **one** of these channels (potentially dynamically bonding secondary channels to its primary channel for extra bandwidth) — never several simultaneously.
 
@@ -217,19 +135,7 @@ An AP can operate using just one fixed-bandwidth channel (plain OFDM), with all 
 
 The mechanism that lets OFDM-only, OFDMA-capable, and plain CSMA/CA-only devices all **coexist** on the same AP is a clever extension of RTS/CTS: the **multi-user RTS (MU-RTS)**. In the downlink, the AP sends an MU-RTS specifying a list of RU allocations (which RUs go to which devices) and the reserved duration. An OFDMA-capable device responds with a CTS transmitted only in its assigned frequencies; an OFDM-only (legacy) device simply responds to the RTS with an ordinary CTS, as in Figure 7.20. Once the MU-RTS/CTS exchange succeeds, the AP has reserved the channel and can schedule RUs to the multiple devices using OFDMA. In the uplink direction, device transmissions to the AP are likewise coordinated via MU-RTS/CTS.
 
-```
-Fig 7.24 -- Intervals of CSMA/CA, OFDM, OFDMA
-────────────────────────────────────────
- t0   t1        t2            t3      t4
- │dev_a│ dev_b │ MU-RTS/CTS │dev_5  │OFDMA│
- [OFDM] [OFDM] [  reserve  ][ OFDM ][ RUs:│
-                [  via CSMA/CA ]    [1,2,3]
-  (legacy devices use plain OFDM one at a
-   time; AP uses MU-RTS to reserve, then
-   several devices share via OFDMA RUs)
-```
-
-![[Pasted image 20260724151400.png]]
+![[Pasted image 20260724161540.png]]
 
 In this way, WiFi 6's three sharing mechanisms — CSMA/CA (to gain initial channel access), OFDM (single-device full-channel use), and OFDMA (multi-device simultaneous sub-channel use) — interoperate on one AP serving a heterogeneous mix of old and new devices.
 
@@ -237,41 +143,13 @@ In this way, WiFi 6's three sharing mechanisms — CSMA/CA (to gain initial chan
 
 The IEEE 802.11 **medium access control (MAC)** layer sits directly above the physical layer and below the network layer on every wireless device, and has both **data-plane** and **control-plane** components. The data plane transports link-layer frames end-to-end between application-facing protocol layers; the control plane implements functions such as RTS/CTS, ACKs/NAKs, beaconing (Section 7.3.4), and power control (Section 7.3.6). Because control-plane modules on the device and the AP exchange control messages as link-layer frames, a logical control connection is often drawn (with dashed lines) between the two sides. Both data and control frames are scheduled for transmission by the **MAC scheduler** (Section 7.3.5).
 
-```
-Fig 7.25 -- WiFi: The Wireless Link Layer
-────────────────────────────────────────
- Device                          AP  Router
- Application     Data  Control        
- Transport       plane plane          
- Network                              
- 802.11 MAC <== control ==> 802.11│802.3
- 802.11 PHY                  MAC │ MAC
-                              PHY│ PHY
-        (data plane frames flow through)
-```
-
-![[Pasted image 20260724151600.png]]
+![[Pasted image 20260724161720.png]]
 
 ### 802.11 Frame Format
 
 The 802.11 frame (Figure 7.26) shares broad similarities with an Ethernet frame, but adds several wireless-specific fields.
 
-```
-Fig 7.26 -- 802.11 Frame Format (bytes)
-────────────────────────────────────────
-|FrameCtl|Dur/ID|Addr1|Addr2|Addr3|
-|   2    |  2   |  6  |  6  |  6  |
-|SeqCtl|Addr4|Payload  |CRC|
-|  2   |  6  | 0-2312  | 4 |
-
-Frame Control subfields (bits):
-|Ver|Type|Subtyp|ToAP|FromAP|MoreFrag|
-| 2 | 2  |  4   | 1  |  1   |   1    |
-|Retry|PwrMgt|MoreData|Protect|+HTC/Ord|
-|  1  |  1   |   1    |   1   |   1    |
-```
-
-![[Pasted image 20260724151800.png]]
+![[Pasted image 20260724161824.png]]
 
 **Payload and CRC fields.** At the heart of the frame is the payload — typically an IP datagram, a MAC control frame, or an ARP packet — permitted up to 2,312 bytes, though in practice usually well under 1,500. As with Ethernet, a 32-bit **CRC** lets the receiver detect bit errors; given that bit errors are considerably more common on wireless links than wired ones (per 7.2.1), the CRC is even more indispensable here.
 
@@ -281,18 +159,7 @@ Frame Control subfields (bits):
 - **Address 1** is the MAC address of whichever device is meant to _receive_ the frame (the destination AP, if a station is sending; the destination station, if the AP is sending).
 - **Address 3** contains the MAC address of the **router interface** that connects the BSS's subnet onward to other subnets — a field the AP relies on because the AP itself is a purely layer-2 device with no notion of IP addressing.
 
-```
-Fig 7.27 -- Use of Address Fields: H1 <-> R1
-────────────────────────────────────────
-        Router
-        R1 │
-   ┌────────┴────────┐    Internet
-  AP                AP
- (::)H1 (::)      (::)  (::)
-   BSS 1              BSS 2
-```
-
-![[Pasted image 20260724152000.png]]
+![[Pasted image 20260724161943.png]]
 
 Walking through the example above: the router at R1, unaware any AP even exists, uses **ARP** to learn H1's MAC address exactly as on any Ethernet LAN, then sends an _Ethernet_ frame with source R1 and destination H1. When this Ethernet frame reaches the AP, the AP converts it to an 802.11 frame — filling **Address 1** with H1's MAC (the receiving station) and **Address 2** with the AP's own MAC (the transmitter), while **Address 3** carries R1's MAC, letting H1 later determine which router interface originally sent the datagram into the subnet.
 
@@ -319,52 +186,19 @@ A cellular network — 3G, 4G, or 5G — has two principal components: the **Rad
 
 The **5G Core** consists of the links, routers, and servers connecting a RAN to the broader Internet (and other provider networks), using standard wired Internet protocols and technology. Just as with the layer separation from Chapters 4–5, the 5G Core separates a **user plane** (data) from a **control plane** — so foundational to 5G architecture that it has its own acronym, **CUPS** (Control Plane and User Plane Separation). The Core's set of control and management functions are collectively the **Core Network Functions**, providing RAN access/authorization and mobility support (Figure 7.28): AMF (Access, Mobility Management), AUSF (Authentication Server), SMF (Session Management), NSSF (Network Slice Selection), NRF (Network Repository), AF (Application Function), UPF (User Plane), PCF (Policy Control), UDM (Unified Data Management), NSSAAF (NSS Authorization), and NEF (Network Exposure). Where these Core services are physically implemented — co-located at the base station for a small private 5G network, in an edge-cloud near the RAN, or in a large distant data center — varies by deployment; the only firm requirement is IP reachability. Application code may even run at the base station or in the RAN itself, so a user's client-server traffic never leaves the cellular network — a pattern called **local breakout**.
 
-```
-Fig 7.28 -- Major Elements of a 5G Network
-────────────────────────────────────────
-|AMF|AUSF|SMF |NSSF|NRF|AF|   Core Network
-|UPF|PCF |UDM |NSSAAF|NEF|   Functions
-          │
- (::)     ▼
- (::)──[Base Station]──[router]──Internet
- (::)
- |<---- RAN ---->|<---- 5G Core ---->|
-```
-
-![[Pasted image 20260724152200.png]]
+![[Pasted image 20260724162054.png]]
 
 ### 4G, 5G RAN: The Physical Radio Channel
 
 4G and 5G RANs implement OFDMA channel sharing, using exactly the same RE / RB building blocks introduced generally in Section 7.3.1. In 4G, the smallest subchannel bandwidth is 15 kHz, with a 66.6 μsec transmission time per minislot. 5G defines several larger subchannel bandwidths (30, 60, 120, 240, 480, and 960 kHz) with proportionally _shorter_ minislot durations — trading subchannel width for finer time granularity.
 
-```
-Fig 7.29 -- 4G Resource Blocks (RBs)
-────────────────────────────────────────
- Freq ▲ [][][][][]...[][]   50 RBs, each
-      │ [][][][][]...[][]   180 kHz wide
-      │ [][][][][]...[][]
-      └────────────────────▶ Time
-          |<---- 1 ms ---->|
-  1 RB = 84 REs (12 subcarriers x 7
-          consecutive 66.6us minislots)
-```
-
-![[Pasted image 20260724152400.png]]
+![[Pasted image 20260724162307.png]]
 
 A 10 MHz-wide 4G channel, for instance, consists of 50 time-parallel RBs, each occupying one of 50 different 180 kHz-wide frequency subchannels. 5G defines several additional ways to bundle REs into an RB, and incorporates all the earlier 4G channel-bandwidth definitions (1.4, 3, 5, 10, 15, 20 MHz) while adding wider channels up to 100 MHz.
 
 There is a still higher level of bandwidth aggregation: a **band** is an aggregation of one or more **channels**, with each channel itself consisting of a number of different subcarriers/subchannels (Figure 7.30). National governments allocate licensed spectrum within these bands to carriers, typically via auction (recall 7.2.1); once allocated a band, an operator decides how to divide the band into channels, and the channels into subcarriers.
 
-```
-Fig 7.30 -- Bands, Channels, and Subcarriers
-────────────────────────────────────────
- One Band
-  ├─ Channel 1 ── [subcarrier][subcarrier]
-  ├─  ...
-  └─ Channel N ── [subcarrier][subcarrier]
-```
-
-![[Pasted image 20260724152600.png]]
+![[Pasted image 20260724162422.png]]
 
 ### 4G, 5G RAN Radio: Physical and Logical Control and Data Channels
 
@@ -392,21 +226,7 @@ There are also multiple **logical channels** defined in the uplink and downlink 
 
 Having studied WiFi's link-layer protocol stack, we turn to the considerably richer link-layer stack of the 5G RAN (Figure 7.31). As with WiFi, link layers in both the device and the base station have a **user plane** and a **control plane**. The user plane's job is to move link-layer frames between the device's applications and the base station (and _vice versa_). The control plane's job is to configure and control the RAN's radio resources, provide control functions for user-plane frame transfer (e.g., ARQ and quality of service), and support additional services such as device mobility (Section 7.4.2), network attachment (Section 7.3.4), channel-quality measurement and reporting (Section 7.3.5), and power control (Section 7.3.6). Because control-plane actions typically involve message exchange between the device and the base station, a logical connection (dashed line) is shown between control modules in the sublayers on both sides of the wireless link; control messages are themselves carried in link-layer frames over the appropriate 5G physical control channels.
 
-```
-Fig 7.31 -- 5G RAN Protocol Stacks
-────────────────────────────────────────
-  Device                 Base Station
- Net|SDAP|RRC        RRC|SDAP|Net
-    |PDCP| :            : |PDCP|
-    |RLC | :            : |RLC |
-    |MAC | :            : |MAC |
-    |PHY | :            : |PHY |
-   (::) <====RAN link====> (tower)
-  (dashed ctrl lines link RRC to each
-   sublayer's control-plane component)
-```
-
-![[Pasted image 20260724153200.png]]
+![[Pasted image 20260724162536.png]]
 
 The 5G RAN link layer is divided into a number of sublayers:
 
@@ -427,20 +247,7 @@ The 5G RAN link layer is divided into a number of sublayers:
 
 While the WiFi link-layer frame (Figure 7.26) is relatively simple, a 5G RAN link-layer frame is considerably more complex, owing to these multiple sublayers. A 5G frame carries an IP datagram or an RRC control-plane message, with SDAP, PDCP, RLC, and MAC header fields all layered on top — each sublayer contributing its own user/control message bit, sequence number or identifier, payload field, and other bookkeeping needed to accomplish that sublayer's function.
 
-```
-Fig 7.32 -- 5G Base Station RAN Pipeline
-────────────────────────────────────────
- Control   RRC
- plane      │ control messages (to all
-            │ sublayers below, dashed)
-            ▼
- User    SDAP─►PDCP─►RLC─►MAC─►PHY──)))
- plane  (datagrams to/from device)
-                          Device <──►
-                       Base station
-```
-
-![[Pasted image 20260724153400.png]]
+![[Pasted image 20260724162706.png]]
 
 > **Analogy — A Cargo Ship's Loading Chain vs. a Single Dockworker:** WiFi's simple frame format is like one dockworker who personally checks, labels, and loads every crate onto a ship. The 5G RAN stack is like an entire loading chain — a QoS clerk sorting crates by priority (SDAP), a compression crew shrink-wrapping and sealing them (PDCP), a reliability inspector who re-sends anything damaged in transit (RLC), and a scheduling foreman deciding which crane loads which crate onto which cargo slot and when (MAC) — with a dockmaster (RRC) issuing standing instructions to every stage of the chain at once.
 
@@ -448,18 +255,7 @@ Fig 7.32 -- 5G Base Station RAN Pipeline
 
 In earlier 2G, 3G, and 4G networks, a RAN's cellular base station was implemented as a **monolithic** unit — essentially a specialized, single-vendor "box" implementing that generation's standardized functions end to end. Beginning with 5G, there has been a deliberate move to **disaggregate** RAN functions into multiple functional units that interoperate through standardized interfaces. This disaggregated architecture allows multiple vendors to offer competing implementations of individual pieces of the base station, lowering the barrier to entry and increasing competition and innovation — a motivation genuinely similar to the one behind SDN's development (Chapter 5).
 
-```
-Fig 7.33 -- Base Station Split: CU | DU | RU
-────────────────────────────────────────
- Central Unit | Distributed | Radio
-    (CU)      |  Unit (DU)  | Unit (RU)
- Ctrl: RRC    |             |
- User: SDAP,  | RLC, MAC,   | D/A conv,
-       PDCP   | (part) PHY  | RF front end
- |<-- near-real-time -->|<-- real-time -->|
-```
-
-![[Pasted image 20260724153600.png]]
+![[Pasted image 20260724162840.png]]
 
 The base station's functions are split into three units: the **Central Unit (CU)** hosts RRC (control plane) and SDAP/PDCP (user plane); the **Distributed Unit (DU)** hosts RLC, MAC, and part of the physical layer; and the **Radio Unit (RU)** hosts the remaining physical-layer functions closest to the antenna (D/A conversion, RF front end). _Where_ each functional unit is actually situated — co-located at the base station, in an edge cloud, or in a central cloud — is an implementation decision, typically driven by communication delays and real-time requirements: functions closer to the RU generally demand tighter, more real-time coordination than functions closer to the CU. The RU/DU/CU split is part of the 3GPP 5G specification itself; the O-RAN Alliance takes this disaggregation one step further by specifying additional interfaces among these units.
 
@@ -475,20 +271,7 @@ The base station's functions are split into three units: the **Central Unit (CU)
 
 The RU/DU/CU split is only _one_ of two disaggregations found in 5G. A second arises within the control plane itself. Because the RRC control plane is architecturally separate from the user plane — in much the same way the Internet's control and data planes are separate — it becomes possible to implement the standardized RRC functions in a genuinely modern, SDN-like manner.
 
-```
-Fig 7.34 -- SD-RAN Control Plane
-────────────────────────────────────────
- Control-plane proxy <──► RIC (xApps:
-   (interface to           load balancing,
-    5G Core's                handover, QoS)
-    control plane)              │
-        │  control msgs      R-NIB
-        ▼
- SDAP─►PDCP─►RLC─►MAC─►PHY──))) tower
-        (data plane, unchanged)
-```
-
-![[Pasted image 20260724153800.png]]
+![[Pasted image 20260724163009.png]]
 
 An **SD-RAN** controller re-factors the monolithic RRC into: a **control-plane proxy**, implementing a 3GPP-compliant, well-defined service-based interface to each of the 5G Core's Core Network Functions; and a **Real-Time Intelligent Controller (RIC)**, serving a role directly analogous to an SDN controller. The RIC itself has three major components — a lower-layer communication component that issues commands to the data-plane RAN components; a RAN-wide state-management layer holding up-to-date channel state, connection state, device identity, and QoS requirements in a local **RAN Node Information Base (R-NIB)**; and an interface to a set of application-layer control processes.
 
@@ -519,21 +302,7 @@ Wireless network standards don't specify the algorithm a device uses to select _
 
 After scanning for available networks and selecting an AP to associate with, a WiFi device sends an 802.11 **association request** frame to that AP; the AP responds with an **association response** frame.
 
-```
-Fig 7.35 -- Associating with a WiFi Network
-────────────────────────────────────────
-  BSS 1                       BSS 2
- (())AP1   1:beacon    AP2(())  1:beacon
-        \                    /
-         \ 2:assoc request  /
-          \      H1        /
-           \  3:assoc     /
-            \  response  /
-     (H1 picks an AP, sends the request,
-      receives the response)
-```
-
-![[Pasted image 20260724154000.png]]
+![[Pasted image 20260724163155.png]]
 
 The device will also authenticate itself to the network using **WPA (WiFi Protected Access)** security after receiving a beacon, either before or after association. Once associated with a WiFi AP, the device will want to join the subnet (in the IP-addressing sense of Section 4.3.3) to which the AP belongs, so it typically sends a DHCP discovery message into the subnet via the AP to obtain an IP address. Once that address is obtained, the rest of the world simply views the device as another ordinary device with an IP address in that subnet.
 
@@ -545,18 +314,7 @@ The process by which a device attaches to a 5G network to obtain its own collisi
 2. Suppose the device decides it wants to associate with this network. The base station, however, isn't yet even aware of the device's existence, and the device hasn't yet been allocated any uplink RBs it could use to communicate. The device therefore uses the cell's upstream random-access channel (PRACH) to send a **Radio Resource Control (RRC) connection setup request** to the base station — similar in spirit to the 802.11 association request frame.
 3. The base station responds to the device's connection setup request with an **RRC connection setup response** message — similar in spirit to the 802.11 association response frame.
 
-```
-Fig 7.36 -- Associating with a 5G Network
-────────────────────────────────────────
- Network 1                  Network 2
- BaseSta.1  1:SSB,SIBs   BaseSta.2(())
-   (())  ───broadcast───►    │
-                   H1 ◄──────┘
-             2:RRC conn setup req───►
-             3:RRC conn setup resp◄──
-```
-
-![[Pasted image 20260724154200.png]]
+![[Pasted image 20260724163302.png]]
 
 At this point, the user device and base station can exchange control messages with each other in the RAN — but the device _still_ hasn't actually joined the 5G network, since it hasn't yet identified or authenticated itself, nor does it have an IP address. Completing that process requires the 5G Core (Section 7.4) and authentication mechanisms (Section 8.8), covered later.
 
@@ -589,22 +347,7 @@ Four key considerations shape any MAC scheduling algorithm:
 
 Thousands of research papers, and nearly as many MAC scheduling algorithms, have been proposed over the years. Four representative algorithms are described below (Figure 7.37), all scheduling downstream transmissions from a base station to six associated user devices — though the same considerations apply symmetrically to the base station's scheduling of upstream channel resources. With an OFDMA downstream channel, the scheduler's decision at each scheduling instant determines which device's queued frames get transmitted in which Resource Blocks before the next scheduling instant. In 4G/5G systems, scheduling decisions are made roughly every 1 ms; in WiFi 6, the interval between scheduling decisions can be even shorter.
 
-```
-Fig 7.37 -- Four MAC Scheduling Algorithms
-────────────────────────────────────────
- a. RR:  UE1..UE6 queues -> Scheduler
-         (equal RBs to each, no estimate)
- b. MT:  queues + channel-quality est.
-         -> Scheduler (best channel wins)
- c. BET: queues + per-UE avg throughput
-         -> Scheduler (lowest throughput
-                        device wins)
- d. PF:  queues + channel est. + avg
-         throughput -> Scheduler (best
-         quality-to-throughput ratio wins)
-```
-
-![[Pasted image 20260724154400.png]]
+![[Pasted image 20260724163430.png]]
 
 ### Round Robin (RR) Scheduling
 
@@ -678,20 +421,7 @@ Just as with WiFi, a 5G user device's radio has no reason to stay continuously "
 
 The light sleep cycle, known as **Discontinuous Reception (DRX)** in the Connected State, has two phases — a **short DRX cycle** and a **long DRX cycle** — differing only in how long the device sleeps between wake-checks, trading latency (delay until a buffered datagram is delivered) against the energy cost of periodically powering the radio back up.
 
-```
-Fig 7.38 -- 5G Light Sleep: Short & Long DRX
-────────────────────────────────────────
-active  short-DRX cycles   long-DRX cycles  active
- t0    t1            t2              t3,t4  t5
- │ Rx   │inactivity   │  periodic wake, │  pkt
- │      │timeout ->   │  nothing to    │  arrives
- │      │short DRX    │  send/recv ->  │  buffered
- │      │             │  long DRX      │  at t3,
- │starts│                              │  delivered
- │timer │                              │  at t4/t5
-```
-
-![[Pasted image 20260724152800.png]]
+![[Pasted image 20260724163619.png]]
 
 Walking through the example: at _t₀_, the device receives a transmission and starts an **activity timer**. At _t₁_, having neither received nor sent anything since _t₀_, the inactivity timer expires and the device enters a short DRX sleep cycle, waking periodically to check for pending traffic. After several such short cycles with no activity, the device transitions to a _longer_ DRX cycle at _t₂_. At _t₃_, a packet destined for the device arrives at the base station and is **buffered**, since the device is asleep. Only at the end of the current long sleep cycle, _t₄_, does the device wake, discover the base station is advertising a pending transmission, enter the active state, receive the packet at _t₅_, and restart its activity timer. The added latency this sleep cycle imposes on the arriving packet is exactly _t₅ − t₃_.
 
@@ -707,20 +437,7 @@ Beyond DRX, a device can enter still deeper **Idle** or **Inactive** states afte
 
 **LoRa** is a low-power, low-bitrate wireless networking technology built for simple IoT devices, whose typical job is reporting sensor measurements to a nearby gateway, usually within a few kilometers. The simplest LoRa device type, **Class A**, uses its radio in a purely uncoordinated, wake-and-send fashion: it wakes up entirely on its own schedule, transmits its data without any prior coordination with — or even necessarily any awareness of — a gateway, optionally waits a brief window for any downlink data the gateway might have queued for it, and then goes back to sleep. Device-energy conservation is the first-class design priority here, with the device's default sleep state disturbed only by its own self-initiated wake-ups.
 
-```
-Fig 7.39 -- LoRa Wake-and-Send
-────────────────────────────────────────
- Gateway                    │LoRa frame│
-                             (queued msg,
-                              sent after
-                              next wake)
- IoT device: t0  t1    t2  t3    t4  t5
-   wakes,   sends  sleeps  wakes, sends
-   checks   frame          checks msgs,
-   for msgs                receives at t4
-```
-
-![[Pasted image 20260724153000.png]]
+![[Pasted image 20260724163716.png]]
 
 At _t₀_, the device wakes and sends a LoRa frame (e.g., a sensor reading) to the gateway, then briefly listens for any messages the gateway might have — hearing none, it returns to sleep at _t₁_. At _t₂_, the gateway acquires a message destined for the device but must wait until the device's _next_ self-initiated contact to deliver it. That contact happens at _t₃_, when the device again wakes and sends data; the gateway's queued message is finally delivered following _t₃_, received by the device at _t₄_, which then returns to sleep at _t₅_.
 

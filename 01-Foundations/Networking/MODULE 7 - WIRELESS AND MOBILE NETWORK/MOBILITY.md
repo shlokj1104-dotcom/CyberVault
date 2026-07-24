@@ -30,17 +30,7 @@ The chapter is deliberately careful in defining mobility, since the word could m
 
 ### The Three Degrees of Mobility — Figure 7.43
 
-```
-Fig 7.43 -- Degrees of Mobility
-------------------------------------------------
- Limited <----------------------------> High
-   (a)          (b)              (c)
- single AN   multi-AN, ONE     multiple
- (assoc/     provider (HO,     providers
- disassoc)   same subnet)      (coord HO)
-```
-
-![[Pasted image 20260724170000.png]]
+![[Pasted image 20260724164559.png]]
 
 - **(a) Mobility only within a single access network.** At the low-mobility end of the spectrum, a device maintains connectivity only while attached to one given access network. To move between access networks, the device must fully **disconnect** from its current base station/AP and then **connect** to a new one elsewhere — no continuity is preserved across that gap. The textbook's own example: a student disconnects and powers down their laptop leaving a classroom WiFi network, walks to the dining commons, and connects fresh to that network's WiFi — then repeats the same disconnect/reconnect dance walking to the library. The device simply serially **associates** with (joins) and later **disassociates** from (leaves) each wireless network it encounters in turn. Critically, this limited case requires _no new mechanisms at all_ — it's fully handled by machinery already covered in Sections 7.3 and 7.4.
 - **(b) Mobility among access networks within a single provider network.** This is where real interest in device mobility begins: a device moves among _multiple_ access networks belonging to one provider, while continuing to send and receive datagrams _and_ while maintaining higher-layer connections (e.g., an ongoing TCP session) throughout. This requires the network to provide **handover** — a transfer of responsibility for forwarding a device's datagrams from one base station to another, as the device moves among WLANs or RANs. Because the handover happens entirely within one provider's network, that single provider can orchestrate it end-to-end, on its own, without needing to coordinate with anyone else.
@@ -80,24 +70,7 @@ The IEEE 802.11 WiFi standard adopts a decidedly **link-layer-only** approach to
 
 Recall from Section 7.3.2 that the traditional WiFi network, the **Basic Service Set (BSS)**, contains a single AP and one or more attached wireless devices. An **Extended Service Set (ESS)** consists of _multiple_ BSSs — for example BSS₂ and BSS₃ below — and their respective access points, AP₂ and AP₃.
 
-```
-Fig 7.44 -- WiFi: handover within the ESS
---------------------------------------------
-              Internet
-                 |
-              Router R1
-                 |
-              Switch S1
-             /          \
-          BSS1        Switch S2
-          (AP1)        /      \
-                    BSS2      BSS3
-                    (AP2)     (AP3)
-                     o ---> o   (device moves)
-        [       Extended Service Set (ESS)      ]
-```
-
-![[Pasted image 20260724170200.png]]
+![[Pasted image 20260724164756.png]]
 
 Assuming every AP in the ESS uses the same **SSID**, the entire ESS appears logically to be just a single WLAN — both from the device's point of view and from the network layer's point of view — because every device and every AP within that ESS shares the same **layer-3 subnet**. This is the crucial, almost counter-intuitive fact underlying Figure 7.44: a device moving between BSS₂ and BSS₃ is not even "mobile" from a network-layer perspective at all, since it _never leaves its own subnet_ the whole time. Because IP routing decisions only ever look as deep as the subnet, and the device's subnet membership never changes, no network-layer mobility mechanism is needed here whatsoever — ordinary link-layer association/disassociation and switch forwarding-table updates are sufficient.
 
@@ -127,27 +100,7 @@ Consider an active 5G device currently associated with a base station in one RAN
 
 ### Figure 7.45: The Three Phases of 5G Handover
 
-```
-Fig 7.45 -- 5G Handover: RAN and Core Actions
-------------------------------------------------
-Device  SrcBS   TgtBS    AMF   SMF   UPF
- |<--data-->|                        |
- |--meas-->|                         |    Phase 1:
- |         |--HO request-->|        |    Handover
- |         |<--accept?-----|        |    decision
- |<-RRC reconfig-|                  |
- |--detach, attach------->|         |    Phase 2:
- |         |--xfer status, buffer-->|    RAN
- |--RRC reconfig complete->|         |    transfer
- |         |--HO success------------>|
- |         |    (data end marker)<---|
- |<===== device data via target BS =====>|
-                |                    |    Phase 3:
-                |--path switch-->|--mod req/resp-->  Core
-                |<--path switch ack--|<--response---  update
-```
-
-![[Pasted image 20260724170400.png]]
+![[Pasted image 20260724165004.png]]
 
 **Phase 1 — Making the handover decision.** Handover begins in the RAN, with the device measuring the quality of the radio channels of every base station it can hear, then reporting these measurements back to the source base station (recall CQI reporting from Section 7.5.1). If the source base station judges a handover to be desirable, it sends a handover request message to the target base station, which then decides whether or not to accept the handover and returns that decision (a positive acknowledgment, in the textbook's own worked example) to the source base station.
 
