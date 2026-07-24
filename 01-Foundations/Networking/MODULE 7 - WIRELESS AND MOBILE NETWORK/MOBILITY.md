@@ -267,4 +267,4 @@ Mobile Internet connectivity today is provided via a **dual-technology solution*
 
 ---
 
-→ Next: [[8 Security in Computer Networks]]
+→ Next: [[BLUETOOTH, IOT AND SATELLITE]]

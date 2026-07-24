@@ -821,4 +821,4 @@ Like LoRa, **Bluetooth Low Energy (BLE)** and **4G LTE Narrowband IoT (NB-IoT)**
 
 ---
 
-→ Next: [[7.3.4 WiFi and Cellular Network Discovery]]
+→ Next: [[WIRELESS CORE NETWORK]]
