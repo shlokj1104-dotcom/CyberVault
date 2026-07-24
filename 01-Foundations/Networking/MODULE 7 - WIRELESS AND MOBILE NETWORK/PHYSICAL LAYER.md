@@ -51,7 +51,7 @@ Fig 7.2 -- EM Wave: Amplitude, Wavelength, Phase
    Phase(deg):  0   90  180  270  360
 ```
 
-![[Pasted image 20260724140000.png]]
+![[Pasted image 20260724151720.png]]
 
 Electromagnetic waves have a **direction** and propagate at approximately the speed of light, 3 × 10⁸ m/sec.
 
