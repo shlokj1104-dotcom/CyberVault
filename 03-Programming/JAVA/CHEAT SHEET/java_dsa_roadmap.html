@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java DSA Master Roadmap · Shlok</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0A0A0C;--s1:#131316;--s2:#191A1E;--s3:#222226;
+  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.16);
+  --text:#A8A9AE;--text-b:#F4F3F0;--text-dim:#65666C;
+  --green:#34D399;--gdim:rgba(52,211,153,0.1);--gborder:rgba(52,211,153,0.25);
+  --amber:#FBBF24;--adim:rgba(251,191,36,0.1);--aborder:rgba(251,191,36,0.25);
+  --blue:#60A5FA;--bdim:rgba(96,165,250,0.1);--bborder:rgba(96,165,250,0.25);
+  --purple:#A78BFA;--pdim:rgba(167,139,250,0.1);--pborder:rgba(167,139,250,0.25);
+  --red:#E8392E;--rdim:rgba(232,57,46,0.12);--rborder:rgba(232,57,46,0.3);
+  --cyan:#22D3EE;--cdim:rgba(34,211,238,0.1);--cborder:rgba(34,211,238,0.25);
+  --orange:#FB923C;--odim:rgba(251,146,60,0.1);--oborder:rgba(251,146,60,0.25);
+  --paper:#EFEDE7;--paper-ink:#17171A;--paper-sub:#5C5C61;
+  --display:'Anton',sans-serif;
+  --body:'Inter',sans-serif;
+  --mono:'DM Mono',monospace;
+  --nav-h:64px;
+  --r-lg:20px;--r-md:14px;--r-sm:9px;--r-pill:999px;
+}
+body{font-family:var(--body);background:var(--bg);color:var(--text);font-size:14px;line-height:1.7;font-weight:400;min-height:100vh}
+::-webkit-scrollbar{width:3px;height:3px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2)}
+.nav{position:sticky;top:0;z-index:300;background:rgba(10,10,12,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);height:var(--nav-h);display:flex;align-items:center;padding:0 1.75rem;gap:1.5rem}
+.nav-brand{display:flex;align-items:center;gap:9px;font-family:var(--display);font-size:1.15rem;letter-spacing:.03em;color:var(--text-b);white-space:nowrap;flex-shrink:0}
+.nav-dot{width:9px;height:9px;border-radius:50%;background:var(--red);flex-shrink:0;box-shadow:0 0 10px rgba(232,57,46,.6)}
+.nav-brand small{display:block;font-family:var(--body);font-weight:500;font-size:.56rem;color:var(--text-dim);letter-spacing:.16em;text-transform:uppercase;margin-top:-3px}
+.nav-tabs{display:flex;align-items:center;gap:.4rem;flex:1;overflow-x:auto;scrollbar-width:none;height:100%}
+.nav-tabs::-webkit-scrollbar{display:none}
+.tab{font-family:var(--body);font-size:.74rem;font-weight:500;letter-spacing:.01em;color:var(--text-dim);background:none;border:1px solid transparent;border-radius:var(--r-pill);padding:.5rem 1.05rem;cursor:pointer;white-space:nowrap;transition:all .15s}
+.tab:hover{color:var(--text-b);border-color:var(--border2)}
+.tab.active{color:#fff;background:var(--red);border-color:var(--red)}
+.pane{display:none;max-width:1280px;margin:0 auto;padding:0 1.75rem 5rem}
+.pane.active{display:block}
+.hero{padding:3.5rem 0 2.25rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem;position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;flex-wrap:wrap}
+.hero-main{flex:1;min-width:280px;position:relative;z-index:1}
+.hero-bg{position:absolute;right:-.02em;bottom:-.12em;font-family:var(--display);font-size:clamp(9rem,16vw,16rem);color:rgba(255,255,255,.025);letter-spacing:-.02em;line-height:1;user-select:none;pointer-events:none}
+.eyebrow{display:flex;align-items:center;gap:8px;font-family:var(--body);font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.9rem}
+.edot{width:7px;height:7px;border-radius:50%;background:var(--red);flex-shrink:0;box-shadow:0 0 8px rgba(232,57,46,.7)}
+.hero-title{font-family:var(--display);font-size:clamp(3rem,6.5vw,6.2rem);letter-spacing:.01em;line-height:.92;color:var(--text-b);margin-bottom:1rem;position:relative;z-index:1}
+.hero-sub{font-size:.88rem;color:var(--text);max-width:560px;line-height:1.8;font-family:var(--body);font-weight:400}
+.hero-callout{background:var(--s1);border:1px solid var(--border2);border-radius:var(--r-lg);padding:1.2rem 1.35rem;max-width:230px;flex-shrink:0;position:relative;z-index:1}
+.hero-callout-icon{width:32px;height:32px;border-radius:50%;background:var(--rdim);border:1px solid var(--rborder);display:flex;align-items:center;justify-content:center;margin-bottom:.7rem;color:var(--red);font-family:var(--display);font-size:1rem}
+.hero-callout-title{font-family:var(--body);font-weight:700;font-size:.86rem;color:var(--text-b);margin-bottom:.4rem;letter-spacing:.01em}
+.hero-callout-desc{font-size:.74rem;color:var(--text-dim);line-height:1.65}
+.sec{display:flex;align-items:center;gap:.85rem;margin:2.25rem 0 1rem}
+.sec-title{font-family:var(--display);font-size:1.5rem;letter-spacing:.02em;color:var(--text-b);white-space:nowrap}
+.sec-rule{flex:1;height:1px;background:var(--border)}
+.sec-num{font-family:var(--mono);font-size:.55rem;color:var(--text-dim);letter-spacing:.1em}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r-md);padding:1.35rem;margin-bottom:.85rem;border-top:2px solid var(--border2)}
+.card-g{border-top-color:var(--green)}.card-a{border-top-color:var(--amber)}.card-b{border-top-color:var(--blue)}.card-p{border-top-color:var(--purple)}.card-c{border-top-color:var(--cyan)}.card-r{border-top-color:var(--red)}.card-o{border-top-color:var(--orange)}
+.card-title{font-family:var(--body);font-weight:600;font-size:.66rem;letter-spacing:.13em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.85rem;padding-bottom:.6rem;border-bottom:1px solid var(--border)}
+.card-title.g{color:var(--green)}.card-title.a{color:var(--amber)}.card-title.b{color:var(--blue)}.card-title.p{color:var(--purple)}.card-title.c{color:var(--cyan)}.card-title.r{color:var(--red)}.card-title.o{color:var(--orange)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.85rem}
+@media(max-width:720px){.g2,.g3{grid-template-columns:1fr}}
+.row{display:flex;gap:10px;align-items:flex-start;padding:.5rem 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:none}
+.dot{width:6px;height:6px;border-radius:50%;margin-top:6px;flex-shrink:0;background:var(--border2)}
+.dot-g{background:var(--green)}.dot-a{background:var(--amber)}.dot-b{background:var(--blue)}.dot-p{background:var(--purple)}.dot-c{background:var(--cyan)}.dot-r{background:var(--red)}.dot-o{background:var(--orange)}
+.row-body{font-size:.81rem;line-height:1.65;color:var(--text)}
+.row-sub{font-size:.71rem;font-family:var(--body);color:var(--text-dim);margin-top:3px;display:block;line-height:1.55}
+.badge{display:inline-block;font-family:var(--body);font-weight:600;font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:var(--r-pill);border:1px solid;margin:1px}
+.bg{color:var(--green);border-color:var(--gborder);background:var(--gdim)}
+.ba{color:var(--amber);border-color:var(--aborder);background:var(--adim)}
+.bb{color:var(--blue);border-color:var(--bborder);background:var(--bdim)}
+.bp{color:var(--purple);border-color:var(--pborder);background:var(--pdim)}
+.bc{color:var(--cyan);border-color:var(--cborder);background:var(--cdim)}
+.br{color:var(--red);border-color:var(--rborder);background:var(--rdim)}
+.bo{color:var(--orange);border-color:var(--oborder);background:var(--odim)}
+.bx{color:var(--text-dim);border-color:var(--border2);background:var(--s3)}
+.alert{padding:.85rem 1.15rem;border-radius:var(--r-sm);border-left:3px solid;margin-bottom:.85rem;font-size:.81rem;line-height:1.75;font-family:var(--body)}
+.alert-g{background:var(--gdim);border-color:var(--green);color:#A8E6CC}
+.alert-a{background:var(--adim);border-color:var(--amber);color:#E0C078}
+.alert-b{background:var(--bdim);border-color:var(--blue);color:#A8CCEF}
+.alert-p{background:var(--pdim);border-color:var(--purple);color:#CBBBF9}
+.alert-r{background:var(--rdim);border-color:var(--red);color:#F3A39D}
+.code{background:var(--s2);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:var(--r-sm);padding:1rem 1.25rem;font-family:var(--mono);font-size:.71rem;color:#8EC9A4;line-height:2;margin-bottom:.85rem;overflow-x:auto}
+.code-c{color:#5b5c63;font-style:italic}.code-k{color:var(--amber);font-weight:500}.code-s{color:var(--green)}.code-v{color:var(--blue)}.code-p{color:var(--purple)}
+.tbl{width:100%;border-collapse:collapse;font-size:.79rem;margin-bottom:.85rem;font-family:var(--body)}
+.tbl th{font-family:var(--body);font-weight:600;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);border-bottom:1px solid var(--border2);padding:.5rem .65rem;text-align:left}
+.tbl td{border-bottom:1px solid var(--border);padding:.55rem .65rem;color:var(--text);vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--s2)}
+.mono{font-family:var(--mono)}
+.tag{display:inline-block;font-family:var(--mono);font-size:.62rem;padding:1px 7px;background:var(--s2);border:1px solid var(--border2);border-radius:5px;color:var(--text-dim)}
+.tl-row{display:flex;gap:.85rem;align-items:stretch;padding-bottom:0}
+.tl-left{min-width:64px;font-family:var(--mono);font-size:.55rem;color:var(--text-dim);text-align:right;padding-top:4px;letter-spacing:.07em}
+.tl-spine{display:flex;flex-direction:column;align-items:center;width:14px;flex-shrink:0}
+.tl-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.tl-line{width:1px;flex:1;background:var(--border);margin-top:3px}
+.tl-body{flex:1;padding-bottom:1.1rem}
+.tl-t{font-family:var(--body);font-size:.84rem;font-weight:700;color:var(--text-b);margin-bottom:3px;letter-spacing:.01em}
+.tl-d{font-size:.78rem;color:var(--text-dim);line-height:1.75;font-family:var(--body)}
+.book-block{background:var(--s1);border:1px solid var(--border);border-radius:var(--r-md);margin-bottom:1.25rem;overflow:hidden}
+.book-head{display:flex;align-items:center;gap:1rem;padding:.85rem 1.25rem;border-bottom:1px solid var(--border);background:var(--s2)}
+.book-num{font-family:var(--display);font-size:2.2rem;color:var(--border2);line-height:1;flex-shrink:0}
+.book-name{font-family:var(--display);font-size:1.05rem;letter-spacing:.01em;color:var(--text-b)}
+.book-abbr{font-family:var(--body);font-weight:500;font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);margin-top:2px}
+.book-verdict{font-family:var(--body);font-weight:600;font-size:.62rem;padding:4px 12px;border-radius:var(--r-pill);border:1px solid;flex-shrink:0;margin-left:auto;letter-spacing:.04em}
+.book-body{padding:1rem 1.25rem}
+.ch-tbl{width:100%;border-collapse:collapse;font-size:.78rem;font-family:var(--body)}
+.ch-tbl th{font-family:var(--body);font-weight:600;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);border-bottom:1px solid var(--border2);padding:.4rem .55rem;text-align:left}
+.ch-tbl td{border-bottom:1px solid var(--border);padding:.46rem .55rem;color:var(--text);vertical-align:top}
+.ch-tbl tr:last-child td{border-bottom:none}
+.ch-tbl tr:hover td{background:var(--s2)}
+.status{display:inline-flex;align-items:center;gap:4px;font-family:var(--body);font-weight:700;font-size:.58rem;letter-spacing:.04em;padding:3px 9px;border-radius:var(--r-pill);border:1px solid;white-space:nowrap}
+.s-read{color:var(--green);border-color:var(--gborder);background:var(--gdim)}
+.s-skim{color:var(--amber);border-color:var(--aborder);background:var(--adim)}
+.s-skip{color:var(--text-dim);border-color:var(--border2);background:var(--s3)}
+.s-gold{color:var(--cyan);border-color:var(--cborder);background:var(--cdim)}
+.stage-pill{display:inline-flex;align-items:center;gap:5px;font-family:var(--body);font-weight:600;font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:var(--r-pill);border:1px solid}
+.flow{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin:.85rem 0}
+.flow-box{background:var(--s2);border:1px solid var(--border2);border-radius:var(--r-pill);padding:.5rem .95rem;font-family:var(--body);font-weight:500;font-size:.71rem;color:var(--text-b);white-space:nowrap}
+.flow-arr{font-family:var(--body);font-size:.75rem;color:var(--text-dim);padding:0 6px}
+.flow-box.g{border-color:var(--gborder);color:var(--green)}
+.flow-box.a{border-color:var(--aborder);color:var(--amber)}
+.flow-box.b{border-color:var(--bborder);color:var(--blue)}
+.flow-box.p{border-color:var(--pborder);color:var(--purple)}
+.flow-box.c{border-color:var(--cborder);color:var(--cyan)}
+.flow-box.r{border-color:var(--rborder);color:var(--red)}
+.flow-box.o{border-color:var(--oborder);color:var(--orange)}
+.dsa-card{background:var(--s1);border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:var(--r-md);padding:1rem 1.25rem;margin-bottom:.7rem}
+.dsa-title{font-family:var(--body);font-weight:700;font-size:.82rem;color:var(--cyan);margin-bottom:.35rem}
+.dsa-body{font-size:.8rem;color:var(--text);line-height:1.75;font-family:var(--body)}
+.lib-row{display:flex;gap:12px;padding:.65rem 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.lib-row:last-child{border-bottom:none}
+.lib-name{font-family:var(--mono);font-size:.74rem;font-weight:500;color:var(--text-b);min-width:150px;flex-shrink:0}
+.lib-desc{font-size:.79rem;color:var(--text-dim);line-height:1.65;font-family:var(--body)}
+.big{font-family:var(--display);font-size:2.8rem;letter-spacing:.01em;line-height:1}
+em{font-style:normal;color:var(--text-b);font-weight:600}
+strong{color:var(--text-b);font-weight:700}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem;margin-bottom:.85rem}
+.stat-box{background:var(--s1);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.3rem 1.4rem}
+.stat-label{font-family:var(--body);font-weight:600;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.6rem}
+.stat-num{font-family:var(--display);font-size:2.5rem;color:var(--text-b);line-height:1}
+.stat-num span{color:var(--red)}
+@media(max-width:720px){.stats-row{grid-template-columns:1fr 1fr}}
+.feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:.85rem}
+.feature-item{background:var(--paper);border-radius:var(--r-lg);padding:1.35rem 1.45rem}
+.feature-icon{width:36px;height:36px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;margin-bottom:.75rem;color:var(--red);font-size:1.05rem;font-weight:700}
+.feature-title{font-weight:700;font-size:.92rem;margin-bottom:.4rem;color:var(--paper-ink);font-family:var(--body)}
+.feature-desc{font-size:.78rem;line-height:1.65;color:var(--paper-sub);font-family:var(--body)}
+@media(max-width:720px){.feature-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand"><span class="nav-dot"></span>SHLOK<small>Java DSA Roadmap</small></div>
+  <div class="nav-tabs">
+    <button class="tab active" data-tab="plan">Master Plan</button>
+    <button class="tab" data-tab="topics">Topic Roadmap</button>
+    <button class="tab" data-tab="books">Books</button>
+    <button class="tab" data-tab="practice">Practice Arena</button>
+    <button class="tab" data-tab="certs">Certifications</button>
+    <button class="tab" data-tab="quick">Quick Ref</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- TAB 1: MASTER PLAN                             -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="pane active" id="tab-plan">
+  <div class="hero">
+    <div class="hero-main">
+      <div class="hero-bg">01</div>
+      <div class="eyebrow" style="color:var(--amber)"><span class="edot"></span>The Problem · The Fix · Eight Stages</div>
+      <div class="hero-title">MASTER<br>PLAN</div>
+      <div class="hero-sub">You already know Java — loops, classes, basic collections. What's missing isn't ability, it's structure: one topic at a time, one book per stage, one sheet to follow. This is that structure. Follow it stage by stage and stop wondering what to study next.</div>
+    </div>
+    <div class="hero-callout">
+      <div class="hero-callout-icon">01</div>
+      <div class="hero-callout-title">Discipline</div>
+      <div class="hero-callout-desc">Seven stages, in fixed order. No sheet-hopping, no skipping ahead — one topic owns one stage at a time.</div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">Why This Roadmap Works</div><div class="sec-num">01</div><div class="sec-rule"></div></div>
+  <div class="feature-grid">
+    <div class="feature-item">
+      <div class="feature-icon">①</div>
+      <div class="feature-title">Structured Order</div>
+      <div class="feature-desc">Every topic is sequenced by prerequisite — you never hit Graphs or DP before the recursion and hashing underneath them are automatic.</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">②</div>
+      <div class="feature-title">Java-Native Tools</div>
+      <div class="feature-desc">Every structure is mapped to the exact java.util class you'd actually reach for — ArrayDeque, PriorityQueue, HashMap — not generic pseudocode.</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">③</div>
+      <div class="feature-title">Verified Resources</div>
+      <div class="feature-desc">Three real books, chapter-by-chapter, marked GOLD / READ / SKIM / SKIP against their actual published tables of contents.</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">④</div>
+      <div class="feature-title">Real Practice Targets</div>
+      <div class="feature-desc">Every topic has a problem-count target and a named sheet — never "practice more," always "solve 15 more on hashing."</div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">Stats Defining This Roadmap</div><div class="sec-num">02</div><div class="sec-rule"></div></div>
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-label">Core Stages</div><div class="stat-num"><span>7</span></div></div>
+    <div class="stat-box"><div class="stat-label">Core Books</div><div class="stat-num"><span>3</span></div></div>
+    <div class="stat-box"><div class="stat-label">Practice Problems</div><div class="stat-num"><span>450</span>+</div></div>
+    <div class="stat-box"><div class="stat-label">To Interview-Ready</div><div class="stat-num">~<span>6</span> mo</div></div>
+  </div>
+
+  <div class="sec"><div class="sec-title">The Core Problem</div><div class="sec-num">03</div><div class="sec-rule"></div></div>
+  <div class="g3">
+    <div class="card card-r">
+      <div class="card-title" style="color:var(--red)">Problem 1 · Syntax ≠ DSA</div>
+      <div style="font-size:.82rem;line-height:1.8;color:var(--text)">Knowing Java's <span class="tag">for</span> loops, <span class="tag">ArrayList</span>, and OOP doesn't mean you know data structures and algorithms. DSA is a separate skill — recognizing which structure fits a problem and reasoning about time/space complexity. Java is just the language you express that reasoning in. <em>Don't mistake fluency in one for fluency in the other.</em></div>
+    </div>
+    <div class="card card-r">
+      <div class="card-title" style="color:var(--red)">Problem 2 · LeetCode Before Theory</div>
+      <div style="font-size:.82rem;line-height:1.8;color:var(--text)">Jumping straight into random LeetCode problems before learning the underlying structure means every "Easy" array problem feels like trial and error. <strong>Build the mental model first</strong> — how a pointer moves through an array, how a collision is resolved in a hash table — then problems start looking familiar instead of new.</div>
+    </div>
+    <div class="card card-r">
+      <div class="card-title" style="color:var(--red)">Problem 3 · Sheet-Hopping</div>
+      <div style="font-size:.82rem;line-height:1.8;color:var(--text)">Switching between Striver's sheet, a YouTube playlist, and GeeksforGeeks every few weeks because progress feels slow. <em>Pick one sheet, one book, one platform per stage</em> and stay with it until that stage is actually done — not until it feels boring.</div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">Book Verdict</div><div class="sec-num">04</div><div class="sec-rule"></div></div>
+  <div class="alert alert-g">Your three books aren't competing for the same job — each owns exactly one stage. Use the reference book to convert Java knowledge into DSA foundations, the intermediate book to turn foundations into interview patterns, and the advanced book once placements stop being the bottleneck.</div>
+  <div class="g2">
+    <div>
+      <div class="card card-g">
+        <div class="card-title g">✅ Data Structures &amp; Algorithms in Java — Lafore (Book 1 · Reference)</div>
+        <div style="font-size:.81rem;line-height:1.8;color:var(--text)"><strong>Use for:</strong> Stage 0–4 foundations. You already know Java syntax, so this book moves fast past setup and spends its time building every classic structure from scratch with full working Java code, not pseudocode. <strong>Skip:</strong> Ch 1 (Java/OOP review) and Ch 9–10 (Red-Black Trees, 2-3-4 Trees) on a first pass — return to them later if curious.</div>
+      </div>
+      <div class="card card-g">
+        <div class="card-title g">✅ Cracking the Coding Interview — McDowell (Book 2 · Intermediate)</div>
+        <div style="font-size:.81rem;line-height:1.8;color:var(--text)"><strong>Use for:</strong> Stage 2–6, once foundations are solid. The bridge from "I know what a linked list is" to "I can solve a 30-minute interview problem live, in Java." <strong>Skip:</strong> Ch 9 (System Design), Ch 11 (Testing), Ch 14 (Databases) — not relevant to DSA-focused campus placements yet.</div>
+      </div>
+    </div>
+    <div>
+      <div class="card card-a">
+        <div class="card-title a">⚠️ Algorithms, 4th Ed — Sedgewick &amp; Wayne (Book 3 · Advanced)</div>
+        <div style="font-size:.81rem;line-height:1.8;color:var(--text)"><strong>Use for:</strong> Stage 4–6, once BFS/DFS and basic sorting are second nature. Written entirely in Java with a free companion course. <strong>Unique value:</strong> rigorous Union-Find, balanced trees, and graph algorithms with real proofs. <strong>Skip now:</strong> Ch 6 "Context" (B-trees, suffix arrays, max-flow, intractability) until well past placement-level DSA.</div>
+      </div>
+      <div class="card card-r">
+        <div class="card-title" style="color:var(--red)">❌ What's Genuinely Missing</div>
+        <div style="font-size:.81rem;line-height:1.8;color:var(--text)">None of your three books are a problem-bank — they teach structures, not interview pattern recognition at scale. You need a sheet (Striver's A2Z) and a platform (LeetCode) running in parallel from Stage 0 onward. See the Practice Arena tab.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">Eight Stages — Master Sequence</div><div class="sec-num">05</div><div class="sec-rule"></div></div>
+  <div class="alert alert-b">Each stage has a <em>dominant book</em> and a clear goal. Don't jump to Graphs because it sounds more impressive — Stage 4 only works if Stage 2's hashing and Stage 1's recursion are already automatic.</div>
+
+  <div>
+    <div class="tl-row">
+      <div class="tl-left" style="color:var(--text-dim)">2–5 DAYS</div>
+      <div class="tl-spine"><div class="tl-dot" style="background:var(--text-dim)"></div><div class="tl-line"></div></div>
+      <div class="tl-body">
+        <div class="tl-t" style="color:var(--text-dim)">Stage –1 · Java Fundamentals Refresher <span class="badge bx" style="margin-left:4px">OPTIONAL</span></div>
+        <div class="tl-d"><strong>Only if Java is rusty</strong> — variables/types, if-else, loops, arrays, methods, basic OOP. This isn't part of the DSA curriculum itself; it's getting your fingers back on the keyboard before Stage 0. <strong>Dominant resource:</strong> Head First Java (3rd Ed.) Ch 1–6. <strong>Self-test:</strong> from a blank file, write FizzBuzz, reverse a string, check if a string is a palindrome, find the max of an <span class="tag">int[]</span>, and a <span class="tag">Student</span> class with a constructor and a print method. If you do all five without pausing to look up syntax, skip straight to Stage 0.</div>
+        <div style="margin-top:6px"><span class="badge bx">Head First Java Ch 1–6</span><span class="badge bx">for/if-else/arrays/methods</span></div>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-left">3–5 DAYS</div>
+      <div class="tl-spine"><div class="tl-dot" style="background:var(--green)"></div><div class="tl-line"></div></div>
+      <div class="tl-body">
+        <div class="tl-t" style="color:var(--green)">Stage 0 · Java Refresher for DSA</div>
+        <div class="tl-d"><strong>Dominant resource:</strong> Lafore Ch 1 (skim) + a focused pass over <span class="tag">ArrayList</span>, <span class="tag">HashMap</span>/<span class="tag">HashSet</span>, <span class="tag">LinkedList</span>, <span class="tag">ArrayDeque</span>, <span class="tag">PriorityQueue</span>, <span class="tag">Comparator</span>/<span class="tag">Comparable</span>, and <span class="tag">StringBuilder</span>. Goal: write a Comparator-based custom sort and a small generic class without looking anything up. Don't linger here — this is a refresher, not a destination.</div>
+        <div style="margin-top:6px"><span class="badge bg">Lafore Ch 1</span><span class="badge bx">Java Collections</span></div>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-left">3–4 WKS</div>
+      <div class="tl-spine"><div class="tl-dot" style="background:var(--green)"></div><div class="tl-line"></div></div>
+      <div class="tl-body">
+        <div class="tl-t" style="color:var(--green)">Stage 1 · Foundations</div>
+        <div class="tl-d"><strong>Dominant book:</strong> Lafore Ch 2–3, 6 (Arrays, Simple Sorting, Recursion) + CTCI's Big O chapter and Ch 1. Topics: time/space complexity, 1D/2D arrays, strings, binary search and its variants, basic sorting, recursion, basic bit manipulation. Goal: solve 40+ Easy problems on arrays/strings/binary search without checking a solution for more than 10 minutes.</div>
+        <div style="margin-top:6px"><span class="badge bg">Lafore Ch 2–3, 6</span><span class="badge ba">CTCI Big-O + Ch 1</span><span class="badge bc">Striver A2Z Steps 1–4</span></div>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-left">3–4 WKS</div>
+      <div class="tl-spine"><div class="tl-dot" style="background:var(--amber)"></div><div class="tl-line"></div></div>
+      <div class="tl-body">
+        <div class="tl-t" style="color:var(--amber)">Stage 2 · Linear Data Structures</div>
+        <div class="tl-d"><strong>Dominant book:</strong> Lafore Ch 4–5, 11 (Stacks &amp; Queues, Linked Lists, Hash Tables) + CTCI Ch 2–3. Topics: singly/doubly linked lists, stack, queue/deque, hashing, two pointers, sliding window, prefix sums. Goal: implement a linked list and a stack by hand once, then switch to <span class="tag">java.util</span> for everything after.</div>
+        <div style="margin-top:6px"><span class="badge ba">Lafore Ch 4–5, 11</span><span class="badge bg">CTCI Ch 2–3</span><span class="badge bc">Striver A2Z Steps 5–7</span></div>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-left">4–5 WKS</div>
+      <div class="tl-spine"><div class="tl-dot" style="background:var(--amber)"></div><div class="tl-line"></div></div>
+      <div class="tl-body">
+        <div class="tl-t" style="color:var(--amber)">Stage 3 · Trees, Heaps &amp; Tries</div>
+        <div class="tl-d"><strong>Dominant book:</strong> Lafore Ch 7–9, 12 (Advanced Sorting, Binary Trees, Red-Black Trees, Heaps) + CTCI Ch 4 (trees portion). Topics: tree traversals, BST, heap/priority queue, tries, merge/quick/heap sort. Goal: write all four traversals from memory and implement a min-heap manually once.</div>
+        <div style="margin-top:6px"><span class="badge ba">Lafore Ch 7–9, 12</span><span class="badge bg">CTCI Ch 4 (trees)</span><span class="badge bc">Striver A2Z Step 8</span></div>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-left">4–5 WKS</div>
+      <div class="tl-spine"><div class="tl-dot" style="background:var(--red)"></div><div class="tl-line"></div></div>
+      <div class="tl-body">
+        <div class="tl-t" style="color:var(--red)">Stage 4 · Graphs</div>
+        <div class="tl-d"><strong>Dominant book:</strong> Lafore Ch 13–14 (Graphs, Weighted Graphs) + CTCI Ch 4 (graphs portion) + Sedgewick &amp; Wayne Ch 4 (selective). Topics: BFS, DFS, topological sort, Union-Find, Dijkstra, Bellman-Ford, Kruskal/Prim. Goal: implement BFS and DFS on an adjacency list from scratch, then use them to solve "number of islands" and "course schedule."</div>
+        <div style="margin-top:6px"><span class="badge br">Lafore Ch 13–14</span><span class="badge bb">Sedgewick Ch 4</span><span class="badge bc">Striver Graph Series</span></div>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-left">5–6 WKS</div>
+      <div class="tl-spine"><div class="tl-dot" style="background:var(--red)"></div><div class="tl-line"></div></div>
+      <div class="tl-body">
+        <div class="tl-t" style="color:var(--red)">Stage 5 · Dynamic Programming, Greedy &amp; Backtracking</div>
+        <div class="tl-d"><strong>Dominant book:</strong> CTCI Ch 8 (Recursion and DP) + Ch 16's moderate problem bank. Topics: 1D/2D DP, knapsack patterns, LIS/LCS, DP on grids, greedy algorithms, backtracking (N-Queens, subsets, permutations). Goal: solve 30+ DP problems, always writing the recurrence relation on paper before opening the editor.</div>
+        <div style="margin-top:6px"><span class="badge br">CTCI Ch 8, 16</span><span class="badge bc">Striver DP Series</span></div>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-left">ONGOING</div>
+      <div class="tl-spine"><div class="tl-dot" style="background:var(--purple)"></div></div>
+      <div class="tl-body">
+        <div class="tl-t" style="color:var(--purple)">Stage 6 · Interview Readiness &amp; Contests</div>
+        <div class="tl-d">By now DSA has been the main track for 5–6 months. Stage 6 is sustained practice: mixed mock interviews, Codeforces/CodeChef contests every couple of weeks, revisiting weak topics, and a GitHub repo of solved problems for your resume. No new theory — just volume, speed, and communication.</div>
+        <div style="margin-top:6px"><span class="badge bp">Mock Interviews</span><span class="badge bo">Codeforces Div 3–4</span><span class="badge bg">GitHub Portfolio</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">Practice Runs Alongside, Not After</div><div class="sec-num">06</div><div class="sec-rule"></div></div>
+  <div class="alert alert-a"><strong>Critical rule:</strong> problem-solving isn't a reward for finishing a stage — it runs in parallel with it, starting Stage 0. Solve problems on whatever topic you're currently reading about, every single day, even if it's only 3–4 problems. See the Practice Arena tab for the exact platform and sheet to use at each stage.</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- TAB 2: TOPIC ROADMAP                           -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="pane" id="tab-topics">
+  <div class="hero">
+    <div class="hero-main">
+      <div class="hero-bg">02</div>
+      <div class="eyebrow" style="color:var(--cyan)"><span class="edot"></span>Stage-by-Stage Curriculum · Java Tools · Practice Targets</div>
+      <div class="hero-title">TOPIC<br>ROADMAP</div>
+      <div class="hero-sub">Every topic you need, in the exact order to learn it, mapped to the Java class you'll implement it with and the number of problems to clear before moving on. This is your single source of truth for "what do I study next."</div>
+    </div>
+    <div class="hero-callout">
+      <div class="hero-callout-icon">02</div>
+      <div class="hero-callout-title">Coverage</div>
+      <div class="hero-callout-desc">40+ topics, each mapped to the exact java.util class and problem count you need.</div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">The Complete Topic Curriculum</div><div class="sec-num">01</div><div class="sec-rule"></div></div>
+  <div class="alert alert-a">Topics are ordered by difficulty and prerequisite dependency — master each stage before advancing. The Java Tool column shows exactly which class to reach for; the Practice Target is the minimum before moving on. <strong>Stage –1 is optional</strong> — only do it if Java syntax itself feels rusty; skip straight to Stage 0 if it doesn't.</div>
+  <table class="tbl">
+    <thead><tr><th>Stage</th><th>Topic</th><th>Java Tool</th><th>Practice Target</th><th>Priority</th></tr></thead>
+    <tbody>
+      <tr><td class="mono" style="color:var(--text-dim)">–1</td><td>Variables, Types &amp; Casting <span class="badge bx" style="margin-left:4px">OPTIONAL</span></td><td><span class="tag">int, double, boolean, char</span></td><td>5 quick snippets</td><td><span class="badge bx">IF RUSTY</span></td></tr>
+      <tr><td class="mono" style="color:var(--text-dim)">–1</td><td>If-Else, Switch &amp; Loops <span class="badge bx" style="margin-left:4px">OPTIONAL</span></td><td><span class="tag">for, while, do-while, switch</span></td><td>rewrite all loop types from a blank file</td><td><span class="badge bx">IF RUSTY</span></td></tr>
+      <tr><td class="mono" style="color:var(--text-dim)">–1</td><td>Arrays Basics (1D) <span class="badge bx" style="margin-left:4px">OPTIONAL</span></td><td><span class="tag">int[], String[]</span></td><td>print / sum / max of an array</td><td><span class="badge bx">IF RUSTY</span></td></tr>
+      <tr><td class="mono" style="color:var(--text-dim)">–1</td><td>Methods &amp; Parameters <span class="badge bx" style="margin-left:4px">OPTIONAL</span></td><td>static methods, overloading</td><td>write 5 small methods</td><td><span class="badge bx">IF RUSTY</span></td></tr>
+      <tr><td class="mono" style="color:var(--text-dim)">–1</td><td>Basic OOP (Classes &amp; Objects) <span class="badge bx" style="margin-left:4px">OPTIONAL</span></td><td><span class="tag">class, this, constructor</span></td><td>write 1 simple class with a constructor</td><td><span class="badge bx">IF RUSTY</span></td></tr>
+      <tr><td class="mono" style="color:var(--text-dim)">–1</td><td>Scanner &amp; Basic I/O <span class="badge bx" style="margin-left:4px">OPTIONAL</span></td><td><span class="tag">Scanner, try/catch</span></td><td>read and print 2 inputs</td><td><span class="badge bx">NICE</span></td></tr>
+      <tr><td class="mono" style="color:var(--green)">0</td><td>Java Collections Refresher</td><td><span class="tag">ArrayList, HashMap, HashSet, ArrayDeque</span></td><td>10 warm-up problems using only built-ins</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--green)">0</td><td>Comparator &amp; Comparable</td><td><span class="tag">Comparator.comparing(), compareTo()</span></td><td>write 2 custom sorts</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--green)">1</td><td>Time &amp; Space Complexity</td><td>mental model, no code</td><td>analyze 10 of your own snippets</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--green)">1</td><td>Arrays (1D &amp; 2D)</td><td><span class="tag">int[], Arrays utility class</span></td><td>25 problems</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--green)">1</td><td>Strings</td><td><span class="tag">String, StringBuilder, char[]</span></td><td>20 problems</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--green)">1</td><td>Binary Search + Variants</td><td><span class="tag">Arrays.binarySearch / manual</span></td><td>15 problems</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--green)">1</td><td>Basic Sorting (bubble/selection/insertion)</td><td>manual implementation</td><td>implement all 3 once</td><td><span class="badge ba">IMPORTANT</span></td></tr>
+      <tr><td class="mono" style="color:var(--green)">1</td><td>Recursion Basics</td><td>function call stack</td><td>15 problems</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--green)">1</td><td>Bit Manipulation Basics</td><td><span class="tag">&amp;, |, ^, &lt;&lt;, &gt;&gt;</span></td><td>10 problems</td><td><span class="badge ba">IMPORTANT</span></td></tr>
+      <tr><td class="mono" style="color:var(--green)">1</td><td>Math (GCD/LCM/Primes/Sieve)</td><td>manual</td><td>10 problems</td><td><span class="badge bo">NICE</span></td></tr>
+      <tr><td class="mono" style="color:var(--amber)">2</td><td>Linked List (singly/doubly/circular)</td><td>custom <span class="tag">Node&lt;T&gt;</span> class</td><td>implement once + 20 problems</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--amber)">2</td><td>Stack</td><td><span class="tag">ArrayDeque</span> as stack</td><td>15 problems</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--amber)">2</td><td>Queue / Circular Queue / Deque</td><td><span class="tag">ArrayDeque</span></td><td>15 problems</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--amber)">2</td><td>Hashing (HashMap/HashSet)</td><td><span class="tag">HashMap&lt;K,V&gt;, HashSet&lt;T&gt;</span></td><td>25 problems</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--amber)">2</td><td>Two Pointers</td><td>index manipulation</td><td>15 problems</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--amber)">2</td><td>Sliding Window</td><td>index manipulation</td><td>15 problems</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--amber)">2</td><td>Prefix Sum / Difference Array</td><td><span class="tag">int[]</span></td><td>10 problems</td><td><span class="badge ba">IMPORTANT</span></td></tr>
+      <tr><td class="mono" style="color:var(--amber)">3</td><td>Binary Trees</td><td>custom <span class="tag">Node&lt;T&gt;</span></td><td>20 problems</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--amber)">3</td><td>Binary Search Trees</td><td>custom <span class="tag">Node&lt;T&gt;</span></td><td>implement insert/delete/search + 15 problems</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--amber)">3</td><td>Tree Traversals (in/pre/post/level)</td><td>recursion + <span class="tag">ArrayDeque</span></td><td>implement all 4 from memory</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--amber)">3</td><td>Heaps / Priority Queue</td><td><span class="tag">java.util.PriorityQueue</span></td><td>20 problems</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--amber)">3</td><td>Tries</td><td>custom Node + <span class="tag">HashMap&lt;Character,Node&gt;</span></td><td>10 problems</td><td><span class="badge ba">IMPORTANT</span></td></tr>
+      <tr><td class="mono" style="color:var(--amber)">3</td><td>Advanced Sorting (merge/quick/heap)</td><td>manual implementation</td><td>implement all 3 + complexity proof</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--red)">4</td><td>Graph Representation</td><td><span class="tag">List&lt;List&lt;Integer&gt;&gt; / int[][]</span></td><td>implement both</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--red)">4</td><td>BFS</td><td><span class="tag">ArrayDeque</span> as queue</td><td>15 problems</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--red)">4</td><td>DFS</td><td>recursion / explicit stack</td><td>15 problems</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--red)">4</td><td>Topological Sort</td><td>Kahn's algorithm / DFS-based</td><td>8 problems</td><td><span class="badge ba">IMPORTANT</span></td></tr>
+      <tr><td class="mono" style="color:var(--red)">4</td><td>Union-Find (DSU)</td><td><span class="tag">int[] parent array</span></td><td>implement + 8 problems</td><td><span class="badge ba">IMPORTANT</span></td></tr>
+      <tr><td class="mono" style="color:var(--red)">4</td><td>Shortest Path (Dijkstra/Bellman-Ford/Floyd-Warshall)</td><td><span class="tag">PriorityQueue / 2D DP table</span></td><td>12 problems</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--red)">4</td><td>Minimum Spanning Tree (Kruskal/Prim)</td><td>Union-Find / PriorityQueue</td><td>6 problems</td><td><span class="badge bo">NICE</span></td></tr>
+      <tr><td class="mono" style="color:var(--red)">5</td><td>1D Dynamic Programming</td><td>memoization (HashMap) / tabulation (int[])</td><td>15 problems</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--red)">5</td><td>2D Dynamic Programming</td><td><span class="tag">int[][]</span></td><td>15 problems</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--red)">5</td><td>Knapsack Patterns (0/1, unbounded, subset-sum)</td><td><span class="tag">int[][]</span></td><td>10 problems</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--red)">5</td><td>LIS / LCS Family</td><td><span class="tag">int[] / int[][]</span></td><td>8 problems</td><td><span class="badge ba">IMPORTANT</span></td></tr>
+      <tr><td class="mono" style="color:var(--red)">5</td><td>DP on Grids / Trees</td><td>recursion + memo</td><td>8 problems</td><td><span class="badge bo">NICE</span></td></tr>
+      <tr><td class="mono" style="color:var(--red)">5</td><td>Greedy Algorithms</td><td>sorting + heuristic</td><td>12 problems</td><td><span class="badge ba">IMPORTANT</span></td></tr>
+      <tr><td class="mono" style="color:var(--red)">5</td><td>Backtracking (N-Queens, subsets, permutations, Sudoku)</td><td>recursion</td><td>15 problems</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--purple)">6</td><td>Mixed Mock Interviews</td><td>timed, verbalized</td><td>5+ mocks</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td class="mono" style="color:var(--purple)">6</td><td>Contest Participation</td><td>Codeforces / CodeChef</td><td>1 contest / 2 weeks</td><td><span class="badge ba">IMPORTANT</span></td></tr>
+      <tr><td class="mono" style="color:var(--purple)">6</td><td>Light OOP / Low-Level Design</td><td>interfaces, design patterns</td><td>3–5 design questions</td><td><span class="badge bo">NICE</span></td></tr>
+      <tr><td class="mono" style="color:var(--purple)">6</td><td>Resume Portfolio</td><td>organized GitHub repo</td><td>1 complete repo</td><td><span class="badge ba">IMPORTANT</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec"><div class="sec-title">Java Tool Cheat-Sheet</div><div class="sec-num">02</div><div class="sec-rule"></div></div>
+  <div class="g3">
+    <div class="card card-g">
+      <div class="card-title g">Linear Structures</div>
+      <div class="lib-row"><div class="lib-name" style="color:var(--green)">ArrayList&lt;T&gt;</div><div class="lib-desc">Dynamic array, O(1) amortized append, O(n) insert/delete in the middle. Your default choice for "just store a list of things."</div></div>
+      <div class="lib-row"><div class="lib-name" style="color:var(--green)">LinkedList&lt;T&gt;</div><div class="lib-desc">Implements both List and Deque. Rarely beats ArrayList in practice — matters when a problem explicitly needs O(1) insert/delete at a known node.</div></div>
+      <div class="lib-row"><div class="lib-name" style="color:var(--green)">ArrayDeque&lt;T&gt;</div><div class="lib-desc">Preferred over Stack and LinkedList for both stack and queue use. Faster, no legacy synchronization overhead.</div></div>
+      <div class="lib-row"><div class="lib-name" style="color:var(--green)">Stack&lt;T&gt;</div><div class="lib-desc">Legacy class from Java 1.0. Works fine, but ArrayDeque is the modern idiomatic choice unless a problem expects the Stack API specifically.</div></div>
+    </div>
+    <div class="card card-a">
+      <div class="card-title a">Hashing &amp; Sets</div>
+      <div class="lib-row"><div class="lib-name" style="color:var(--amber)">HashMap&lt;K,V&gt;</div><div class="lib-desc">O(1) average lookup/insert. The single most-used data structure in interview solutions — when stuck, ask "can a HashMap make this faster?"</div></div>
+      <div class="lib-row"><div class="lib-name" style="color:var(--amber)">HashSet&lt;T&gt;</div><div class="lib-desc">O(1) membership check. Use for "have I seen this before" patterns.</div></div>
+      <div class="lib-row"><div class="lib-name" style="color:var(--amber)">TreeMap / TreeSet</div><div class="lib-desc">Sorted key order, O(log n) operations. Use when you need ordering plus lookup — "closest value," "next greater key."</div></div>
+      <div class="lib-row"><div class="lib-name" style="color:var(--amber)">LinkedHashMap&lt;K,V&gt;</div><div class="lib-desc">Preserves insertion order. The standard building block for an LRU cache implementation.</div></div>
+    </div>
+    <div class="card card-r">
+      <div class="card-title" style="color:var(--red)">Trees, Heaps &amp; Graphs</div>
+      <div class="lib-row"><div class="lib-name" style="color:var(--red)">PriorityQueue&lt;T&gt;</div><div class="lib-desc">Min-heap by default. Pass a Comparator for a max-heap or any custom ordering.</div></div>
+      <div class="lib-row"><div class="lib-name" style="color:var(--red)">Custom Node&lt;T&gt;</div><div class="lib-desc">For binary trees, BSTs, and linked lists, you write these yourself — Java has no built-in tree class.</div></div>
+      <div class="lib-row"><div class="lib-name" style="color:var(--red)">List&lt;List&lt;Integer&gt;&gt;</div><div class="lib-desc">The standard adjacency-list representation for a graph.</div></div>
+      <div class="lib-row"><div class="lib-name" style="color:var(--red)">boolean[] visited</div><div class="lib-desc">The essential companion to every BFS and DFS you'll ever write.</div></div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">The Per-Topic Learning Loop</div><div class="sec-num">03</div><div class="sec-rule"></div></div>
+  <div class="flow" style="flex-wrap:wrap;gap:4px">
+    <div class="flow-box c">Read theory (1 source)</div><div class="flow-arr">→</div>
+    <div class="flow-box c">Implement structure once, by hand</div><div class="flow-arr">→</div>
+    <div class="flow-box g">Solve 5 Easy</div><div class="flow-arr">→</div>
+    <div class="flow-box a">Solve 5–10 Medium</div><div class="flow-arr">→</div>
+    <div class="flow-box r">Log mistakes in tracker</div><div class="flow-arr">→</div>
+    <div class="flow-box p">Next topic</div>
+  </div>
+  <div class="alert alert-a">Don't move to the next topic until you can implement the current structure from a blank file in under 10 minutes. Speed at implementing the structure is what later lets you focus all your thinking on the actual problem, not on remembering syntax.</div>
+
+  <div class="sec"><div class="sec-title">Mini Projects To Cement Each Stage</div><div class="sec-num">04</div><div class="sec-rule"></div></div>
+  <div class="g2">
+    <div class="dsa-card">
+      <div class="dsa-title">Custom Generic ArrayList</div>
+      <div class="dsa-body">Build your own <span class="tag">MyArrayList&lt;T&gt;</span> backed by a raw <span class="tag">Object[]</span>, implementing add/get/remove/resize. Watch what happens to performance when you forget to double the capacity on resize. Stage 1 project.</div>
+    </div>
+    <div class="dsa-card">
+      <div class="dsa-title">LRU Cache — Twice</div>
+      <div class="dsa-body">First implement it using only <span class="tag">LinkedHashMap</span> (5 lines). Then implement it again from scratch using a HashMap + a hand-built doubly linked list. Comparing the two is exactly how interviewers test whether you understand what the built-in does for you. Stage 2–3 project.</div>
+    </div>
+    <div class="dsa-card">
+      <div class="dsa-title">Word Search Autocomplete (Trie)</div>
+      <div class="dsa-body">Build a Trie supporting <span class="tag">insert(word)</span> and a <span class="tag">getSuggestions(prefix)</span> method returning all matching words, sorted. This is the actual data structure behind every autocomplete you've used. Stage 3 project.</div>
+    </div>
+    <div class="dsa-card">
+      <div class="dsa-title">Maze Pathfinder (Grid BFS/DFS)</div>
+      <div class="dsa-body">Take a 2D char grid (# wall, . open), find the shortest path from start to end using BFS, then count total reachable cells using DFS. Print the grid with the path marked. Stage 4 project.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- TAB 3: BOOKS                                   -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="pane" id="tab-books">
+  <div class="hero">
+    <div class="hero-main">
+      <div class="hero-bg">03</div>
+      <div class="eyebrow" style="color:var(--green)"><span class="edot"></span>Reference · Intermediate · Advanced · Section-by-Section</div>
+      <div class="hero-title">BOOKS</div>
+      <div class="hero-sub">Three books, three jobs. The reference book turns Java you already know into DSA foundations. The intermediate book turns foundations into interview-pattern recognition. The advanced book is for after placements stop being the bottleneck.</div>
+    </div>
+    <div class="hero-callout">
+      <div class="hero-callout-icon">03</div>
+      <div class="hero-callout-title">Selectivity</div>
+      <div class="hero-callout-desc">Every chapter marked GOLD / READ / SKIM / SKIP — so you never wonder what to read next.</div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">Optional — If Java Itself Is Rusty</div><div class="sec-num">00</div><div class="sec-rule"></div></div>
+  <div class="alert alert-b">This isn't one of your three core books — it's a stepping stone before them. Only pick this up if Stage –1's self-test (FizzBuzz, reverse a string, a simple class) gave you trouble. If Java syntax already feels fine, skip straight to Lafore below.</div>
+  <div class="book-block" style="border-top:2px solid var(--border2)">
+    <div class="book-head">
+      <div class="book-num" style="color:var(--text-dim)">00</div>
+      <div>
+        <div class="book-name" style="color:var(--text-dim)">Head First Java</div>
+        <div class="book-abbr">Sierra, Bates &amp; Gee · 3rd Edition · Pre-Requisite — Stage –1 (Optional)</div>
+      </div>
+      <div class="book-verdict" style="color:var(--text-dim);border-color:var(--border2)">Optional · Skip If Not Rusty</div>
+    </div>
+    <div class="book-body">
+      <table class="ch-tbl">
+        <thead><tr><th>Ch</th><th>Title</th><th>Status</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">1</td><td>Java ABCs</td><td><span class="status s-gold">★ GOLD</span></td><td>Write/compile/run your first program, intro to loops and branching. Read this if it's genuinely been years — gets the syntax muscle memory back fast.</td></tr>
+          <tr><td class="mono">2</td><td>I Was Told There'd Be Objects</td><td><span class="status s-read">✓ READ</span></td><td>Classes vs. objects — the core OOP mental model, explained gently.</td></tr>
+          <tr><td class="mono">3</td><td>Primitive &amp; Reference Variables</td><td><span class="status s-gold">★ GOLD</span></td><td>int/double/boolean/char, casting — exactly what's under "Variables &amp; Types" in your refresher list.</td></tr>
+          <tr><td class="mono">4</td><td>State Affects Behavior</td><td><span class="status s-read">✓ READ</span></td><td>Instance variables and methods working together.</td></tr>
+          <tr><td class="mono">5</td><td>Methods, Operators &amp; Loops</td><td><span class="status s-gold">★ GOLD</span></td><td>The single most important chapter for this refresher — for/while/do-while, operators, building a small game. Don't skip this one.</td></tr>
+          <tr><td class="mono">6</td><td>The Java API</td><td><span class="status s-skim">~ SKIM</span></td><td>Just enough to know prebuilt classes exist — Stage 0 of the main roadmap covers this properly.</td></tr>
+          <tr><td class="mono">7–9</td><td>Inheritance, Interfaces, Object Lifecycle</td><td><span class="status s-skip">✗ SKIP</span></td><td>Useful eventually, not needed to start the DSA roadmap. Revisit later if curious.</td></tr>
+          <tr><td class="mono">10–13</td><td>Autoboxing, Collections, Streams, Exceptions</td><td><span class="status s-skip">✗ SKIP</span></td><td>Stage 0 of the main roadmap covers Collections properly — don't duplicate the effort here.</td></tr>
+          <tr><td class="mono">14–18</td><td>GUI/Swing, Serialization, Networking, Threading</td><td><span class="status s-skip">✗ SKIP</span></td><td>Not used anywhere in this roadmap. Skip permanently unless a different project needs them.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">The Three Core Books</div><div class="sec-num">01</div><div class="sec-rule"></div></div>
+  <!-- BOOK 1: LAFORE -->
+  <div class="book-block">
+    <div class="book-head">
+      <div class="book-num">01</div>
+      <div>
+        <div class="book-name">Data Structures and Algorithms in Java</div>
+        <div class="book-abbr">Lafore · 2nd Edition · Reference — Stage 0–4</div>
+      </div>
+      <div class="book-verdict" style="color:var(--green);border-color:var(--gborder)">Reference · Read Most of It</div>
+    </div>
+    <div class="book-body">
+      <div class="alert alert-g" style="margin-bottom:1rem">This is the book that converts your existing Java fluency into DSA fluency. It moves through Java/OOP review fast — you already know it — and spends its real time on full working implementations of every classic structure, not pseudocode.</div>
+      <table class="ch-tbl">
+        <thead><tr><th>Ch</th><th>Title</th><th>Status</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">1</td><td>Overview</td><td><span class="status s-skim">~ SKIM</span></td><td>Java/OOP refresher, "no pointers in Java" section, an overview table of which structure to use when. Worth 20 minutes, skip the rest.</td></tr>
+          <tr><td class="mono">2</td><td>Arrays</td><td><span class="status s-gold">★ GOLD</span></td><td>Ordered arrays, linear vs. binary search in real code. Do every workshop exercise.</td></tr>
+          <tr><td class="mono">3</td><td>Simple Sorting</td><td><span class="status s-gold">★ GOLD</span></td><td>Bubble, selection, insertion sort. This is where Big-O intuition actually clicks — don't skip the comparisons.</td></tr>
+          <tr><td class="mono">4</td><td>Stacks and Queues</td><td><span class="status s-gold">★ GOLD</span></td><td>Stack, Queue, Circular Queue, Priority Queue intro, Deque, infix-to-postfix conversion. Stage 2 core.</td></tr>
+          <tr><td class="mono">5</td><td>Linked Lists</td><td><span class="status s-gold">★ GOLD</span></td><td>Singly, double-ended, sorted, and doubly linked lists, all with full Java code. Implement each once.</td></tr>
+          <tr><td class="mono">6</td><td>Recursion</td><td><span class="status s-gold">★ GOLD</span></td><td>Towers of Hanoi, mergesort intro, recursion vs. iteration. Read before Stage 2's recursive problems.</td></tr>
+          <tr><td class="mono">7</td><td>Advanced Sorting</td><td><span class="status s-gold">★ GOLD</span></td><td>Shellsort, quicksort and partitioning in detail. The quicksort walkthrough here is excellent.</td></tr>
+          <tr><td class="mono">8</td><td>Binary Trees</td><td><span class="status s-gold">★ GOLD</span></td><td>BST insert, find, and all 3 deletion cases, plus traversal. Core Stage 3 chapter.</td></tr>
+          <tr><td class="mono">9</td><td>Red-Black Trees</td><td><span class="status s-skim">~ SKIM</span></td><td>Useful for understanding what TreeMap/TreeSet do internally. Not required to solve placement-level problems — skim for intuition, return later if curious.</td></tr>
+          <tr><td class="mono">10</td><td>2-3-4 Trees and External Storage</td><td><span class="status s-skip">✗ SKIP</span></td><td>Multiway trees and disk-based storage — relevant to database internals, not DSA interviews. Skip entirely for now.</td></tr>
+          <tr><td class="mono">11</td><td>Hash Tables</td><td><span class="status s-gold">★ GOLD</span></td><td>Linear probing, quadratic probing, separate chaining — the internals behind <span class="tag">HashMap</span>. Read alongside Stage 2's hashing problems.</td></tr>
+          <tr><td class="mono">12</td><td>Heaps</td><td><span class="status s-gold">★ GOLD</span></td><td>Heap as a priority-queue implementation, heapsort. Read before Stage 3's heap problems.</td></tr>
+          <tr><td class="mono">13</td><td>Graphs</td><td><span class="status s-gold">★ GOLD</span></td><td>Adjacency representation, DFS, BFS, minimum spanning tree, topological sorting. Core Stage 4 chapter.</td></tr>
+          <tr><td class="mono">14</td><td>Weighted Graphs</td><td><span class="status s-gold">★ GOLD</span></td><td>Dijkstra's shortest path, weighted MST. The second half of Stage 4.</td></tr>
+          <tr><td class="mono">15</td><td>When to Use What</td><td><span class="status s-read">✓ READ</span></td><td>A summary table comparing every structure in the book by strengths/weaknesses. Excellent revision chapter — re-read after Stage 4.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- BOOK 2: CTCI -->
+  <div class="book-block">
+    <div class="book-head">
+      <div class="book-num">02</div>
+      <div>
+        <div class="book-name">Cracking the Coding Interview</div>
+        <div class="book-abbr">McDowell · 6th Edition · Intermediate — Stage 1–6</div>
+      </div>
+      <div class="book-verdict" style="color:var(--amber);border-color:var(--aborder)">Intermediate · Read Selectively</div>
+    </div>
+    <div class="book-body">
+      <div class="alert alert-a" style="margin-bottom:1rem">Solutions throughout this book are written in Java. Use it to convert "I know what a tree is" into "I can solve a fresh tree problem out loud in 30 minutes." Read the introductory chapters on the interview process and Big O once, cover to cover, before anything else.</div>
+      <table class="ch-tbl">
+        <thead><tr><th>Ch</th><th>Title</th><th>Status</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">Intro</td><td>Big O Notation</td><td><span class="status s-gold">★ GOLD</span></td><td>Read this before Stage 1. The clearest treatment of best/worst/expected-case analysis across all 3 books.</td></tr>
+          <tr><td class="mono">1</td><td>Arrays and Strings</td><td><span class="status s-gold">★ GOLD</span></td><td>Pattern-based approach to array/string problems — pairs perfectly with Lafore Ch 2 once that's done.</td></tr>
+          <tr><td class="mono">2</td><td>Linked Lists</td><td><span class="status s-gold">★ GOLD</span></td><td>Runner technique, cycle detection. Read during Stage 2.</td></tr>
+          <tr><td class="mono">3</td><td>Stacks and Queues</td><td><span class="status s-gold">★ GOLD</span></td><td>Stack-based problems (min stack, queue via stacks). Read during Stage 2.</td></tr>
+          <tr><td class="mono">4</td><td>Trees and Graphs</td><td><span class="status s-gold">★ GOLD</span></td><td>The single most important chapter in this book for you. Read the trees half in Stage 3, the graphs half in Stage 4.</td></tr>
+          <tr><td class="mono">5</td><td>Bit Manipulation</td><td><span class="status s-read">✓ READ</span></td><td>Good supplement to Lafore's brief bit-manipulation coverage. Read during Stage 1.</td></tr>
+          <tr><td class="mono">6</td><td>Math and Logic</td><td><span class="status s-skim">~ SKIM</span></td><td>Occasionally asked, low priority for most campus placement rounds.</td></tr>
+          <tr><td class="mono">7</td><td>Object-Oriented Design</td><td><span class="status s-skim">~ SKIM</span></td><td>Only relevant if your target companies ask low-level design questions — revisit in Stage 6 if so.</td></tr>
+          <tr><td class="mono">8</td><td>Recursion and Dynamic Programming</td><td><span class="status s-gold">★ GOLD</span></td><td>The most important chapter in the whole book for Stage 5. Read it slowly, twice.</td></tr>
+          <tr><td class="mono">9</td><td>System Design and Scalability</td><td><span class="status s-skip">✗ SKIP</span></td><td>Relevant to experienced-hire interviews, not typical fresher DSA rounds. Skip for now.</td></tr>
+          <tr><td class="mono">10</td><td>Sorting and Searching</td><td><span class="status s-gold">★ GOLD</span></td><td>Binary search variants and a clean comparison of sorting algorithms. Read in Stage 1 and again in Stage 3.</td></tr>
+          <tr><td class="mono">11</td><td>Testing</td><td><span class="status s-skip">✗ SKIP</span></td><td>Not relevant to DSA interviews.</td></tr>
+          <tr><td class="mono">12–13</td><td>Language-Specific (C/C++, Java)</td><td><span class="status s-skip">✗ SKIP</span></td><td>Every solution in the book already uses Java — these chapters add nothing you don't already have.</td></tr>
+          <tr><td class="mono">14</td><td>Databases</td><td><span class="status s-skip">✗ SKIP</span></td><td>Not DSA. Skip entirely.</td></tr>
+          <tr><td class="mono">15</td><td>Threads and Locks</td><td><span class="status s-skim">~ SKIM</span></td><td>Only if a target company explicitly asks basic concurrency questions — Stage 6, optional.</td></tr>
+          <tr><td class="mono">16</td><td>Moderate (problem bank)</td><td><span class="status s-gold">★ GOLD</span></td><td>Your main problem bank for Stage 4–6. Work through these alongside your sheet.</td></tr>
+          <tr><td class="mono">17</td><td>Hard (problem bank)</td><td><span class="status s-read">✓ READ</span></td><td>Attempt once Medium-level LeetCode problems feel comfortable — Stage 5–6.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- BOOK 3: SEDGEWICK & WAYNE -->
+  <div class="book-block">
+    <div class="book-head">
+      <div class="book-num">03</div>
+      <div>
+        <div class="book-name">Algorithms, 4th Edition</div>
+        <div class="book-abbr">Sedgewick &amp; Wayne · Advanced — Stage 4–6</div>
+      </div>
+      <div class="book-verdict" style="color:var(--red);border-color:rgba(248,113,113,.2)">Advanced · Read Selectively</div>
+    </div>
+    <div class="book-body">
+      <div class="alert alert-r" style="margin-bottom:1rem">Written entirely in Java with a free companion library (algs4.jar) and a Coursera course (Algorithms Part I &amp; II). Don't open this before Stage 4 — it assumes BFS, DFS, and basic sorting are already automatic. This book trades placement-speed for genuine depth.</div>
+      <table class="ch-tbl">
+        <thead><tr><th>Section</th><th>Title</th><th>Status</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">1.1</td><td>Basic Programming Model</td><td><span class="status s-skip">✗ SKIP</span></td><td>Their introduction to Java itself — you don't need this.</td></tr>
+          <tr><td class="mono">1.2</td><td>Data Abstraction</td><td><span class="status s-skim">~ SKIM</span></td><td>A good refresher on interfaces and generics in the context of building algorithms.</td></tr>
+          <tr><td class="mono">1.3</td><td>Bags, Queues, and Stacks</td><td><span class="status s-read">✓ READ</span></td><td>Clean, idiomatic Java implementations — read after you've built your own by hand in Lafore.</td></tr>
+          <tr><td class="mono">1.4</td><td>Analysis of Algorithms</td><td><span class="status s-gold">★ GOLD</span></td><td>The rigorous version of Big-O that CTCI and Lafore only touch lightly. Worth the time.</td></tr>
+          <tr><td class="mono">1.5</td><td>Case Study: Union-Find</td><td><span class="status s-gold">★ GOLD</span></td><td>The best treatment of Union-Find/DSU available anywhere. Read this for Stage 4.</td></tr>
+          <tr><td class="mono">2.1</td><td>Elementary Sorts</td><td><span class="status s-skip">✗ SKIP</span></td><td>Already covered by Lafore Ch 3 — no need to repeat.</td></tr>
+          <tr><td class="mono">2.2</td><td>Mergesort</td><td><span class="status s-gold">★ GOLD</span></td><td>A rigorous proof of the O(n log n) bound via recursion tree — deepens what Lafore Ch 6 introduced.</td></tr>
+          <tr><td class="mono">2.3</td><td>Quicksort</td><td><span class="status s-gold">★ GOLD</span></td><td>Partitioning deep-dive and worst-case analysis — deepens Lafore Ch 7.</td></tr>
+          <tr><td class="mono">2.4</td><td>Priority Queues</td><td><span class="status s-read">✓ READ</span></td><td>Binary heap implementation, ties back to Lafore Ch 12.</td></tr>
+          <tr><td class="mono">2.5</td><td>Applications</td><td><span class="status s-skip">✗ SKIP</span></td><td>Niche sorting-based applications — optional.</td></tr>
+          <tr><td class="mono">3.1–3.2</td><td>Symbol Tables, Binary Search Trees</td><td><span class="status s-skim">~ SKIM</span></td><td>Deepens Lafore Ch 8 — skim unless BST analysis feels shaky.</td></tr>
+          <tr><td class="mono">3.3</td><td>Balanced Search Trees</td><td><span class="status s-gold">★ GOLD</span></td><td>Red-black trees done properly — this is what explains TreeMap/TreeSet internals.</td></tr>
+          <tr><td class="mono">3.4</td><td>Hash Tables</td><td><span class="status s-gold">★ GOLD</span></td><td>Separate chaining vs. linear probing, load-factor analysis — what explains HashMap internals.</td></tr>
+          <tr><td class="mono">3.5</td><td>Applications</td><td><span class="status s-skip">✗ SKIP</span></td><td>Optional.</td></tr>
+          <tr><td class="mono">4.1–4.2</td><td>Undirected &amp; Directed Graphs</td><td><span class="status s-gold">★ GOLD</span></td><td>DFS/BFS with full rigor, connected components, topological sort, strong connectivity. Core Stage 4 reading.</td></tr>
+          <tr><td class="mono">4.3</td><td>Minimum Spanning Trees</td><td><span class="status s-gold">★ GOLD</span></td><td>Kruskal's and Prim's algorithms with real correctness proofs.</td></tr>
+          <tr><td class="mono">4.4</td><td>Shortest Paths</td><td><span class="status s-gold">★ GOLD</span></td><td>Dijkstra and Bellman-Ford on edge-weighted graphs — the deepest treatment of the three books.</td></tr>
+          <tr><td class="mono">5.2</td><td>Tries</td><td><span class="status s-gold">★ GOLD</span></td><td>The best treatment of tries across all three books. Pairs with the Trie mini-project in the Topic Roadmap tab.</td></tr>
+          <tr><td class="mono">5.1, 5.3–5.5</td><td>String Sorts, Substring Search, Regex, Compression</td><td><span class="status s-skip">✗ SKIP</span></td><td>Interesting, but not priority for placement-level DSA. Revisit only if going deep into competitive programming.</td></tr>
+          <tr><td class="mono">6.1–6.6</td><td>Context (Simulation, B-trees, Suffix Arrays, Max-Flow, Reductions, Intractability)</td><td><span class="status s-skip">✗ SKIP</span></td><td>Graduate-level / CS-theory territory. Skip entirely unless you go deep into competitive programming later.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">Bonus — Optional Resources</div><div class="sec-num">02</div><div class="sec-rule"></div></div>
+  <div class="g2">
+    <div class="card card-a">
+      <div class="card-title a">Worth Adding Later</div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body"><strong>Competitive Programmer's Handbook</strong> — Antti Laaksonen (free PDF, cpbook.net)<span class="row-sub">Segment trees, Fenwick trees (BIT), advanced DP, number theory, bitmask DP — none of your 3 books go here. Only needed if you go past placement-level DSA into rated Codeforces/CodeChef contests.</span></div></div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body"><strong>GeeksforGeeks</strong> — not a book, but a free reference site<span class="row-sub">Useful for quick theory lookups when stuck on one specific topic. Don't use it as your primary learning path — it encourages topic-hopping.</span></div></div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body"><strong>NeetCode YouTube channel</strong> — free video walkthroughs<span class="row-sub">Covers almost every common pattern in clean Java/Python/C++. Good for when a CTCI explanation doesn't click.</span></div></div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body"><strong>Beyond Cracking the Coding Interview</strong> (2025) — the official CTCI sequel<span class="row-sub">Adds 13 newer topics (sliding windows, prefix sums, monotonic stacks, topological sort) CTCI 6th Ed. doesn't cover as deeply, plus salary-negotiation guidance. In-book solutions are Python; Java solutions are online. Worth it for Stage 5–6 once CTCI feels thin — not a replacement for it.</span></div></div>
+    </div>
+    <div class="card card-g">
+      <div class="card-title g">What You Don't Need Yet</div>
+      <div class="row"><div class="dot dot-g"></div><div class="row-body"><strong>Introduction to Algorithms (CLRS)</strong><span class="row-sub">The theoretical "bible," but pseudocode-based and extremely proof-heavy. Overkill unless aiming for CS grad school. Sedgewick &amp; Wayne already gives you Java-based rigor for less effort.</span></div></div>
+      <div class="row"><div class="dot dot-g"></div><div class="row-body"><strong>Data Structures and Algorithms Made Easy</strong> — Karumanchi<span class="row-sub">A popular Indian alternative to Lafore. Fine if you already own it, but don't buy it alongside Lafore — they cover the same ground.</span></div></div>
+      <div class="row"><div class="dot dot-g"></div><div class="row-body"><strong>Java: The Complete Reference</strong> — Schildt<span class="row-sub">An excellent Java language reference, but not a DSA book. You already know enough Java — spend the time on Lafore instead.</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- TAB 4: PRACTICE ARENA                          -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="pane" id="tab-practice">
+  <div class="hero">
+    <div class="hero-main">
+      <div class="hero-bg">04</div>
+      <div class="eyebrow" style="color:var(--orange)"><span class="edot"></span>Platforms · Sheets · Contest Track</div>
+      <div class="hero-title">PRACTICE<br>ARENA</div>
+      <div class="hero-sub">Reading builds understanding. Solving builds speed. Here's exactly which platform to use at each stage, which sheet to follow so you're never randomly picking problems, and how to start contests once you're ready.</div>
+    </div>
+    <div class="hero-callout">
+      <div class="hero-callout-icon">04</div>
+      <div class="hero-callout-title">Focus</div>
+      <div class="hero-callout-desc">One primary sheet, one platform per stage. Everything else is noise.</div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">Pick ONE Primary Sheet</div><div class="sec-num">01</div><div class="sec-rule"></div></div>
+  <div class="alert alert-r"><strong>Critical rule:</strong> pick exactly one sheet as your primary source of "what to solve next." Running two sheets simultaneously is the #1 reason progress feels slow — you re-solve the same Easy problems twice and never reach Graphs or DP.</div>
+  <div class="g3">
+    <div class="card card-c">
+      <div class="card-title c">1. Striver's A2Z DSA Sheet</div>
+      <div style="font-size:.81rem;line-height:1.8;color:var(--text)"><strong>By:</strong> Raj (takeUforward.org)<br><strong>Cost:</strong> Free<br><strong>For:</strong> Your primary sheet, Stage 0 onward<br><br>~450 problems organized in almost exactly this roadmap's stage order — basics, sorting, arrays, binary search, strings, linked list, recursion, BSTs, heaps, greedy, graphs, DP, tries. Free video explanations for every problem. <strong>Use this as your main sheet.</strong></div>
+    </div>
+    <div class="card card-c">
+      <div class="card-title c">2. NeetCode 150</div>
+      <div style="font-size:.81rem;line-height:1.8;color:var(--text)"><strong>By:</strong> NeetCode (neetcode.io)<br><strong>Cost:</strong> Free (core list)<br><strong>For:</strong> Secondary sheet / pattern cross-check<br><br>A tighter, pattern-organized list of 150 problems with free video walkthroughs. Use once Striver's sheet starts feeling slow, or to double-check you've internalized a pattern rather than memorized one problem.</div>
+    </div>
+    <div class="card card-c">
+      <div class="card-title c">3. LeetCode Top Interview 150 / Blind 75</div>
+      <div style="font-size:.81rem;line-height:1.8;color:var(--text)"><strong>By:</strong> LeetCode / community<br><strong>Cost:</strong> Free<br><strong>For:</strong> Time-constrained revision, Stage 5–6<br><br>A shorter, denser list if placements are close and you need maximum signal per problem solved. Don't start here — start with Striver's sheet, use this for final revision.</div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">Platform-by-Stage Table</div><div class="sec-num">02</div><div class="sec-rule"></div></div>
+  <table class="tbl">
+    <thead><tr><th>Stage</th><th>Platform</th><th>What To Do There</th><th>Priority</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge bg">Stage 0–1</span></td><td>LeetCode (Easy filter)</td><td>Solve directly from the Array/String tags, 30-min sessions, daily</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td><span class="badge bg">Stage 1–2</span></td><td>GeeksforGeeks</td><td>Theory reference only when stuck on a specific topic — not your primary problem source</td><td><span class="badge ba">IMPORTANT</span></td></tr>
+      <tr><td><span class="badge ba">Stage 2–3</span></td><td>LeetCode (Easy → Medium)</td><td>Follow Striver's sheet order; tag every solved problem with its pattern</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td><span class="badge br">Stage 4</span></td><td>LeetCode Graphs tag + Striver Graph Series (YouTube)</td><td>BFS/DFS/Topo-sort/Dijkstra problems specifically</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td><span class="badge br">Stage 5</span></td><td>LeetCode DP tag + Striver's DP playlist (56 problems)</td><td>Write the recurrence on paper before every single problem</td><td><span class="badge bg">MUST</span></td></tr>
+      <tr><td><span class="badge br">Stage 4–6</span></td><td>Codeforces</td><td>Start with Div 3/4 rounds; do virtual contests for rounds you missed live</td><td><span class="badge ba">IMPORTANT</span></td></tr>
+      <tr><td><span class="badge br">Stage 4–6</span></td><td>CodeChef</td><td>Beginner-friendly Starters and Long Challenge — gentler pace than Codeforces, a good first CP platform</td><td><span class="badge bo">NICE</span></td></tr>
+      <tr><td><span class="badge bp">Stage 6</span></td><td>AtCoder Beginner Contest (ABC)</td><td>Clean problem statements, weekly contests, great for raw algorithmic speed</td><td><span class="badge bo">NICE</span></td></tr>
+      <tr><td><span class="badge bp">Stage 5–6</span></td><td>InterviewBit</td><td>Structured, free, aligned to Indian campus placement patterns — good secondary sheet</td><td><span class="badge bo">NICE</span></td></tr>
+      <tr><td><span class="badge bp">Stage 6</span></td><td>Exponent Practice (formerly Pramp)</td><td>Peer mock interviews — free tier capped at 5 credits/month, practice explaining your approach out loud</td><td><span class="badge ba">IMPORTANT</span></td></tr>
+      <tr><td><span class="badge bp">Stage 6</span></td><td>HackerRank</td><td>Beginner-friendly practice problems, plus free skill certifications you can add to your resume later</td><td><span class="badge bo">NICE</span></td></tr>
+      <tr><td><span class="badge bp">Stage 6</span></td><td>interviewing.io</td><td>Paid ($179+/session) mocks with senior engineers — worth it only for final-stage polish, not early practice</td><td><span class="badge bo">NICE</span></td></tr>
+      <tr><td><span class="badge bp">Stage 6</span></td><td>GitHub</td><td>Push a solved-problems repo with short notes per problem — this becomes your resume portfolio link</td><td><span class="badge ba">IMPORTANT</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec"><div class="sec-title">How To Actually Use LeetCode</div><div class="sec-num">03</div><div class="sec-rule"></div></div>
+  <div class="alert alert-a">LeetCode is a tool, not a scoreboard. Rating-chasing and streak-collecting are distractions — the goal is pattern recognition, not a green calendar.</div>
+  <div class="g2">
+    <div class="dsa-card">
+      <div class="dsa-title">The 25-Minute Rule</div>
+      <div class="dsa-body">Set a 25-minute timer. If you haven't found the approach, look at a hint — not the solution. If you're still stuck, read the solution, understand it fully, close it, and re-write it yourself from a blank file.</div>
+    </div>
+    <div class="dsa-card">
+      <div class="dsa-title">The Pattern Tag</div>
+      <div class="dsa-body">After solving, write one line: "this is a sliding-window problem because ___." That sentence is what transfers to a new problem with different surface details — the code itself doesn't.</div>
+    </div>
+    <div class="dsa-card">
+      <div class="dsa-title">The Revisit Rule</div>
+      <div class="dsa-body">Mark every problem you struggled with. Revisit it after 3 days, then after 2 weeks. If you can solve it cold both times, the pattern is actually yours — not just memorized.</div>
+    </div>
+    <div class="dsa-card">
+      <div class="dsa-title">The No-Copy Rule</div>
+      <div class="dsa-body">Never copy-paste a solution — not from a forum, not from your own old code. Type it out by hand every time. Typing engages a different kind of memory than reading does.</div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">Building a Contest Track (Optional)</div><div class="sec-num">04</div><div class="sec-rule"></div></div>
+  <div class="alert alert-b">Contests aren't required for placements, but they sharpen speed and pressure-handling that untimed practice never will. Only start once Stage 4 (Graphs) is comfortable.</div>
+  <div class="flow" style="flex-wrap:wrap;gap:4px">
+    <div class="flow-box g">LeetCode/Striver mastery (Stage 0–3)</div><div class="flow-arr">→</div>
+    <div class="flow-box a">Codeforces Div 4/3 (rating &lt;1200)</div><div class="flow-arr">→</div>
+    <div class="flow-box o">CodeChef Starters</div><div class="flow-arr">→</div>
+    <div class="flow-box r">Codeforces Div 2 (1200–1600)</div><div class="flow-arr">→</div>
+    <div class="flow-box b">AtCoder ABC/ARC</div><div class="flow-arr">→</div>
+    <div class="flow-box p">Sustained rated participation</div>
+  </div>
+  <div class="alert alert-g">Contests are about consistent participation over months, not single-contest heroics. Ratings fluctuate constantly — focus on solving 2–3 problems cleanly rather than rushing all 5–6 and submitting buggy code.</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- TAB 6: CERTIFICATIONS                          -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="pane" id="tab-certs">
+  <div class="hero">
+    <div class="hero-main">
+      <div class="hero-bg">05</div>
+      <div class="eyebrow" style="color:var(--blue)"><span class="edot"></span>NPTEL · Oracle Java · Free Certs · GATE</div>
+      <div class="hero-title">CERTIFI<br>CATIONS</div>
+      <div class="hero-sub">NPTEL gives you an IIT-backed certificate for a few hundred rupees. Oracle gives you an industry-recognized professional credential. HackerRank gives you free resume badges in an afternoon. None of this gates your progress through the roadmap — treat it as a bonus track layered on top.</div>
+    </div>
+    <div class="hero-callout">
+      <div class="hero-callout-icon">05</div>
+      <div class="hero-callout-title">Optional</div>
+      <div class="hero-callout-desc">Nothing here is required to finish the roadmap. It's a bonus track, not a prerequisite.</div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">NPTEL — IIT-Backed, Exam-Based</div><div class="sec-num">01</div><div class="sec-rule"></div></div>
+  <div class="alert alert-b">NPTEL (run jointly by the IITs and IISc, under the Ministry of Education) is free to learn from. A certificate requires registering for a proctored exam at a physical centre — typically around ₹1000, with exam windows roughly every January and July semester. Check nptel.ac.in for the current cycle's dates and fee, since these shift each semester. Your final score is 25% assignment average + 75% exam score.</div>
+  <table class="tbl">
+    <thead><tr><th>Score</th><th>Certificate</th></tr></thead>
+    <tbody>
+      <tr><td>40 – 59%</td><td>Successfully Completed</td></tr>
+      <tr><td>60 – 74%</td><td><span class="badge bb">Elite</span></td></tr>
+      <tr><td>75 – 89%</td><td><span class="badge bg">Elite + Silver</span></td></tr>
+      <tr><td>90 – 100%</td><td><span class="badge ba">Elite + Gold</span></td></tr>
+      <tr><td>Elite-eligible + top 1–5% of cohort</td><td><span class="badge bp">Topper</span> (rank shown on certificate)</td></tr>
+    </tbody>
+  </table>
+  <div class="g2">
+    <div class="card card-b">
+      <div class="card-title b">Most Relevant — Java-Specific</div>
+      <div class="row"><div class="dot dot-b"></div><div class="row-body"><strong>Data Structure and Algorithms using Java</strong> — Prof. Debasis Samanta, IIT Kharagpur<span class="row-sub">Java OOP/generics refresher, the Collections Framework, stacks/queues/linked lists, trees, hashing, searching &amp; sorting — examined entirely in Java. Maps closely to Stage 0–3. Best taken once you're partway through Stage 2.</span></div></div>
+      <div class="row"><div class="dot dot-b"></div><div class="row-body"><strong>Algorithmic Graph Theory and Data Structures</strong> — IIT Kharagpur<span class="row-sub">A newer, more advanced course covering hashing, BSTs, red-black trees, augmented data structures, and graph algorithms in depth. Good Stage 4–5 companion if you want exam-validated rigor beyond the book chapters.</span></div></div>
+    </div>
+    <div class="card card-b">
+      <div class="card-title b">Worth Knowing About</div>
+      <div class="row"><div class="dot dot-b"></div><div class="row-body"><strong>Introduction to Data Structures and Algorithms</strong> — Prof. Naveen Garg, IIT Delhi<span class="row-sub">Theory-heavy and language-agnostic, covering the same ground as Sedgewick &amp; Wayne. A rigorous Stage 1–4 companion if you want the proofs validated by an exam.</span></div></div>
+      <div class="row"><div class="dot dot-b"></div><div class="row-body"><strong>Programming, Data Structures and Algorithms using Python</strong> — IIT Madras<span class="row-sub">Not Java, but NPTEL's most popular DSA course by enrollment. Only relevant as a cross-reference — it isn't part of this Java track.</span></div></div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">Oracle Certified Professional — The Industry Standard</div><div class="sec-num">02</div><div class="sec-rule"></div></div>
+  <div class="alert alert-a">Oracle simplified its Java path for modern versions: there's no separate "Associate" exam anymore for Java 11/17/21 — one single exam certifies you end-to-end, with no prerequisite.</div>
+  <div class="g2">
+    <div class="card card-a">
+      <div class="card-title a">Current — Take This One</div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body"><strong>Oracle Certified Professional: Java SE 17 Developer</strong> (Exam 1Z0-829)<span class="row-sub">The current standard professional Java credential. One exam, no prerequisite — covers core language, Collections, generics, lambdas/streams, and concurrency basics. Target this once Stage 4 is comfortable.</span></div></div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body"><strong>Oracle Certified Professional: Java SE 21 Developer</strong><span class="row-sub">Same format, newer LTS version. Equally valid — pick whichever JDK version matches what you've been practicing with.</span></div></div>
+    </div>
+    <div class="card card-a">
+      <div class="card-title a">Good To Know</div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body"><strong>Cost &amp; format</strong><span class="row-sub">Proctored exam, paid (price varies by country, typically $150–245 USD), can be taken at a test centre or from home. Valid indefinitely once passed — no renewal needed.</span></div></div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body"><strong>Legacy path (Java 8 only)</strong><span class="row-sub">Oracle still runs the older two-tier OCA (1Z0-808) → OCP (1Z0-809) path for Java 8 specifically. No reason to take this route as a new learner — the single Java 17/21 Developer exam is the current, simpler choice.</span></div></div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">Free Certifications You Can Get This Weekend</div><div class="sec-num">03</div><div class="sec-rule"></div></div>
+  <div class="g3">
+    <div class="card card-g">
+      <div class="card-title g">HackerRank — Java (Basic)</div>
+      <div style="font-size:.81rem;line-height:1.8;color:var(--text)">Free, ~60–90 min timed test covering classes, data structures, inheritance, and exception handling. Pass/fail with a shareable badge for LinkedIn and your resume. Take it around Stage 2.</div>
+    </div>
+    <div class="card card-g">
+      <div class="card-title g">HackerRank — Problem Solving</div>
+      <div style="font-size:.81rem;line-height:1.8;color:var(--text)">Free, Basic and Intermediate tiers. Tests exactly the pattern-recognition this roadmap builds — hash maps, stacks, queues, and optimal-solution thinking. Take Basic after Stage 2, Intermediate after Stage 4.</div>
+    </div>
+    <div class="card card-g">
+      <div class="card-title g">Coursera — Algorithms, Part I &amp; II</div>
+      <div style="font-size:.81rem;line-height:1.8;color:var(--text)">Sedgewick &amp; Wayne's own companion course to your Stage 4–6 book — 100% free to audit, entirely in Java. Princeton opted out of issuing a certificate for this course, so there's no credential at the end — do it for the content, not the paper.</div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">If You're Also Eyeing GATE or Grad School</div><div class="sec-num">04</div><div class="sec-rule"></div></div>
+  <div class="alert alert-p">GATE CS gives Programming &amp; Data Structures and Algorithms a combined ~17% of total marks — most of Stages 1–5 in this roadmap overlaps directly with GATE's DSA syllabus. A good GATE score opens M.Tech seats at IITs and direct recruitment at PSUs (BHEL, ONGC, ISRO, and others). This isn't required for software placements, but if grad school or a PSU role is even a maybe for you, your roadmap progress is already GATE progress — the gap to fill later is mostly OS, DBMS, Computer Networks, and Theory of Computation, not DSA.</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- TAB 7: QUICK REFERENCE                         -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="pane" id="tab-quick">
+  <div class="hero">
+    <div class="hero-main">
+      <div class="hero-bg">06</div>
+      <div class="eyebrow" style="color:var(--purple)"><span class="edot"></span>Master Order · Rules · Milestones · Print This</div>
+      <div class="hero-title">QUICK<br>REF</div>
+      <div class="hero-sub">Everything in one place. The order to follow, the resource to use at each stage, and the checkpoints that tell you you're ready to move on. Bookmark this tab — it's the answer to "what do I do next."</div>
+    </div>
+    <div class="hero-callout">
+      <div class="hero-callout-icon">06</div>
+      <div class="hero-callout-title">Printable</div>
+      <div class="hero-callout-desc">Every stage, every rule, every milestone — one tab, one scroll.</div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">Master Stage Order</div><div class="sec-num">01</div><div class="sec-rule"></div></div>
+  <table class="tbl">
+    <thead><tr><th>Stage</th><th>Topics</th><th>Book</th><th>Sheet / Platform</th><th>Problem Target</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge bx">Stage –1</span></td><td>Variables, If-Else, Loops, Arrays, Methods, Basic OOP <em style="color:var(--text-dim);font-size:.7rem">(optional)</em></td><td>Head First Java Ch 1–6</td><td>—</td><td>5-problem self-test</td></tr>
+      <tr><td><span class="badge bg">Stage 0</span></td><td>Java Collections Refresher</td><td>Lafore Ch 1 (skim)</td><td>—</td><td>n/a</td></tr>
+      <tr><td><span class="badge bg">Stage 1</span></td><td>Big-O, Arrays, Strings, Binary Search, Recursion, Basic Sort</td><td>Lafore Ch 2–3, 6 + CTCI Big-O, Ch 1, Ch 10</td><td>Striver A2Z Steps 1–4</td><td>40+ Easy</td></tr>
+      <tr><td><span class="badge ba">Stage 2</span></td><td>LinkedList, Stack, Queue, Hashing, 2-Pointer/Window</td><td>Lafore Ch 4–5, 11 + CTCI Ch 2–3</td><td>Striver A2Z Steps 5–7</td><td>55+ Easy/Medium</td></tr>
+      <tr><td><span class="badge ba">Stage 3</span></td><td>Trees, BST, Traversals, Heaps, Tries, Adv. Sorting</td><td>Lafore Ch 7–9, 12 + CTCI Ch 4 (trees)</td><td>Striver A2Z Step 8</td><td>50+ Medium</td></tr>
+      <tr><td><span class="badge br">Stage 4</span></td><td>BFS, DFS, Topo Sort, Union-Find, Dijkstra, MST</td><td>Lafore Ch 13–14 + Sedgewick Ch 4</td><td>Striver Graph Series + LeetCode</td><td>35+ Medium</td></tr>
+      <tr><td><span class="badge br">Stage 5</span></td><td>1D/2D DP, Knapsack, LIS/LCS, Greedy, Backtracking</td><td>CTCI Ch 8, 16</td><td>Striver DP Series (56 problems)</td><td>40+ Medium/Hard</td></tr>
+      <tr><td><span class="badge bp">Stage 6</span></td><td>Mocks, Contests, Mixed Review, Portfolio</td><td>CTCI full review</td><td>Exponent Practice + Codeforces Div 3/4</td><td>Full sheet cleared</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec"><div class="sec-title">Five Unbreakable Rules</div><div class="sec-num">02</div><div class="sec-rule"></div></div>
+  <div class="g2">
+    <div class="card card-p">
+      <div class="card-title p">Foundation Rules</div>
+      <div class="row"><div class="dot dot-p"></div><div class="row-body"><strong>Rule 1:</strong> Don't touch Graphs or DP until Stage 2 (Linked List/Stack/Queue/Hashing) is fully done.<span class="row-sub">Most learners skip ahead and get stuck because recursion and hashing aren't automatic yet.</span></div></div>
+      <div class="row"><div class="dot dot-p"></div><div class="row-body"><strong>Rule 2:</strong> Always write the brute-force solution first, even when you already know a better one.<span class="row-sub">Understanding why the brute force is slow is what teaches you to recognize the optimization next time.</span></div></div>
+      <div class="row"><div class="dot dot-p"></div><div class="row-body"><strong>Rule 3:</strong> One sheet at a time. Pick Striver's A2Z sheet as your single source of "what to solve next."<span class="row-sub">Don't also run NeetCode 150 or GFG 160 simultaneously — finish one before starting another.</span></div></div>
+      <div class="row"><div class="dot dot-p"></div><div class="row-body"><strong>Rule 4:</strong> Re-solve any problem you couldn't crack in 25 minutes, 3 days later, without looking at your old solution.<span class="row-sub">If you can't redo it cold, you memorized the answer, not the pattern.</span></div></div>
+    </div>
+    <div class="card card-p">
+      <div class="card-title p">Practice Rules</div>
+      <div class="row"><div class="dot dot-p"></div><div class="row-body"><strong>Rule 5:</strong> Every topic needs at least 15 problems solved on that exact topic before you move on.<span class="row-sub">Theory without volume practice doesn't build real pattern recognition.</span></div></div>
+      <div class="row"><div class="dot dot-p"></div><div class="row-body"><strong>DSA Rule:</strong> Log every problem in your Obsidian vault — pattern used, time taken, mistake made.<span class="row-sub">Review the log weekly, not just when you remember to.</span></div></div>
+      <div class="row"><div class="dot dot-p"></div><div class="row-body"><strong>Contest Rule:</strong> Once Stage 4 is done, do at least one Codeforces Div 3/4 contest every 2 weeks.<span class="row-sub">Even solving only 1–2 problems builds speed under pressure that untimed practice never will.</span></div></div>
+      <div class="row"><div class="dot dot-p"></div><div class="row-body"><strong>Java Rule:</strong> Use java.util classes for actually solving problems — only hand-build a structure once, for learning.<span class="row-sub">Interviewers want correct, idiomatic Java, not a reinvented wheel.</span></div></div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-title">What You're Building Toward</div><div class="sec-num">03</div><div class="sec-rule"></div></div>
+  <div class="flow" style="flex-wrap:wrap;gap:4px">
+    <div class="flow-box" style="border-color:var(--border2);color:var(--text-dim)">Java Fundamentals (optional)</div><div class="flow-arr">→</div>
+    <div class="flow-box g">Java Collections Refresher</div><div class="flow-arr">→</div>
+    <div class="flow-box g">Arrays/Strings/Binary Search</div><div class="flow-arr">→</div>
+    <div class="flow-box a">LinkedList/Stack/Queue/Hashing</div><div class="flow-arr">→</div>
+    <div class="flow-box a">Trees/Heaps/Tries</div><div class="flow-arr">→</div>
+    <div class="flow-box r">Graphs</div><div class="flow-arr">→</div>
+    <div class="flow-box r">DP/Greedy/Backtracking</div><div class="flow-arr">→</div>
+    <div class="flow-box p">Interview-Ready</div>
+  </div>
+  <div class="flow" style="flex-wrap:wrap;gap:4px">
+    <div class="flow-box" style="border-color:var(--border2);color:var(--text-dim)">Head First Java (optional)</div><div class="flow-arr">→</div>
+    <div class="flow-box g">Lafore (Foundations)</div><div class="flow-arr">→</div>
+    <div class="flow-box a">CTCI (Patterns)</div><div class="flow-arr">→</div>
+    <div class="flow-box r">Sedgewick &amp; Wayne (Depth)</div><div class="flow-arr">→</div>
+    <div class="flow-box c">Striver A2Z Sheet</div><div class="flow-arr">→</div>
+    <div class="flow-box o">Codeforces / CodeChef</div><div class="flow-arr">→</div>
+    <div class="flow-box p">Placement / Contest Ready</div>
+  </div>
+
+  <div class="sec"><div class="sec-title">At Each Stage You Should Be Able To...</div><div class="sec-num">04</div><div class="sec-rule"></div></div>
+  <div class="g2">
+    <div class="card card-g">
+      <div class="card-title g">After Stage 0–1 (Foundations)</div>
+      <div class="row"><div class="dot dot-g"></div><div class="row-body">Explain the time and space complexity of any 5-line loop you write, on the spot</div></div>
+      <div class="row"><div class="dot dot-g"></div><div class="row-body">Implement binary search (and its first/last-occurrence variants) without bugs</div></div>
+      <div class="row"><div class="dot dot-g"></div><div class="row-body">Solve a 2D array traversal problem (matrix rotation, spiral print) cleanly</div></div>
+      <div class="row"><div class="dot dot-g"></div><div class="row-body">Write a recursive function and trace its call stack on paper</div></div>
+      <div class="row"><div class="dot dot-g"></div><div class="row-body">Have 40+ Easy problems solved on Arrays/Strings/Binary Search</div></div>
+    </div>
+    <div class="card card-a">
+      <div class="card-title a">After Stage 2 (Linear DS)</div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body">Reverse a linked list iteratively and recursively, from memory</div></div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body">Implement a stack-based solution for "valid parentheses" and "next greater element"</div></div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body">Use a HashMap to bring an O(n²) solution down to O(n)</div></div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body">Solve a sliding-window problem (longest substring without repeating characters) in one pass</div></div>
+      <div class="row"><div class="dot dot-a"></div><div class="row-body">Know exactly when to reach for ArrayDeque vs. LinkedList vs. HashMap in Java</div></div>
+    </div>
+    <div class="card card-r">
+      <div class="card-title" style="color:var(--red)">After Stage 3–4 (Trees, Heaps, Graphs)</div>
+      <div class="row"><div class="dot dot-r"></div><div class="row-body">Write all 4 tree traversals (in/pre/post/level-order) without referencing notes</div></div>
+      <div class="row"><div class="dot dot-r"></div><div class="row-body">Implement BFS and DFS on an adjacency list and explain when each is the right choice</div></div>
+      <div class="row"><div class="dot dot-r"></div><div class="row-body">Use a PriorityQueue to solve "Kth largest element" and a Dijkstra-based problem</div></div>
+      <div class="row"><div class="dot dot-r"></div><div class="row-body">Detect a cycle in a directed graph using DFS and a recursion stack</div></div>
+      <div class="row"><div class="dot dot-r"></div><div class="row-body">Explain Union-Find well enough to use it inside Kruskal's MST</div></div>
+    </div>
+    <div class="card card-p">
+      <div class="card-title p">After Stage 5–6 (DP + Interview-Ready)</div>
+      <div class="row"><div class="dot dot-p"></div><div class="row-body">Write the recurrence relation for a brand-new DP problem before writing any code</div></div>
+      <div class="row"><div class="dot dot-p"></div><div class="row-body">Convert a recursive brute-force solution into a memoized or tabulated DP solution</div></div>
+      <div class="row"><div class="dot dot-p"></div><div class="row-body">Solve a fresh LeetCode Medium in under 30 minutes, talking through your approach out loud</div></div>
+      <div class="row"><div class="dot dot-p"></div><div class="row-body">Have completed Striver's A2Z sheet end-to-end</div></div>
+      <div class="row"><div class="dot dot-p"></div><div class="row-body">Hold your own in a timed Codeforces Div 3 contest, solving at least 2 problems</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-'+tab.dataset.tab).classList.add('active');
+    window.scrollTo(0,0);
+  });
+});
+</script>
+</body>
+</html>

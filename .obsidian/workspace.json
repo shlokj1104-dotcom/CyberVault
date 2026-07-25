@@ -11,10 +11,14 @@
             "id": "957f1a7ff8e9ae06",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Graph view"
+              "type": "markdown",
+              "state": {
+                "file": "03-Programming/JAVA/02-OOPS/INHERITANCE.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "INHERITANCE"
             }
           }
         ]
@@ -246,10 +250,27 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "2f001bc9f3951aa9",
+  "active": "8fcd1ab0efc64805",
   "lastOpenFiles": [
-    "03-Programming/JAVA",
-    "03-Programming/Python/PYTHON CRASH COURSE.pdf",
+    "03-Programming/Python/CHEAT SHEET",
+    "03-Programming/Python/08-CODE",
+    "03-Programming/Python/07-MALWARE ANALYSIS",
+    "03-Programming/Python/06-WEB",
+    "03-Programming/Python/05-CRYPTOGRAPHY",
+    "03-Programming/Python/04-AUTOMATION",
+    "03-Programming/Python/03-SCAPY",
+    "03-Programming/Python/Untitled/Untitled",
+    "03-Programming/Python/02-SOCKET PROGRAMMING",
+    "03-Programming/JAVA/02-OOPS/CLASSES.md",
+    "03-Programming/JAVA/02-OOPS/INHERITANCE.md",
+    "03-Programming/Python/01-NETWORKING",
+    "03-Programming/JAVA/RESOURCES",
+    "03-Programming/JAVA/DSA/Untitled.md",
+    "03-Programming/JAVA/01-BASICS/ARRAY.md",
+    "03-Programming/JAVA/01-BASICS/LOOPS.md",
+    "03-Programming/JAVA/01-BASICS/VARIABLE.md",
+    "03-Programming/JAVA/00-ROADMAP/RESOURCES.md",
+    "03-Programming/JAVA/00-ROADMAP/JAVA ROADMAP.md",
     "01-Foundations/Networking/MODULE 7 - WIRELESS AND MOBILE NETWORK/BLUETOOTH, IOT AND SATELLITE.md",
     "03-Programming/Python/PYTHON BASICS/INTRODUCTION.md",
     "Images/Pasted image 20260724170133.png",
@@ -269,7 +290,6 @@
     "01-Foundations/Networking/MODULE 7 - WIRELESS AND MOBILE NETWORK/INTRODUCTION TO WIRELESS LINK.md",
     "01-Foundations/Networking/MODULE 6 - LINK LAYER/SWITCHED LANS.md",
     "01-Foundations/Networking/MODULE 6 - LINK LAYER/WEBPAGE REQUEST.md",
-    "01-Foundations/Networking/MODULE 7 - WIRELESS AND MOBILE NETWORK",
     "01-Foundations/Networking/Untitled.md",
     "01-Foundations/Networking/MODULE 6 - LINK LAYER/DATA CENTER NETWORKING.md",
     "01-Foundations/Networking/MODULE 6 - LINK LAYER/LINK VIRTUALIZATION.md",
@@ -278,22 +298,6 @@
     "01-Foundations/Networking/MODULE 6 - LINK LAYER/INTRODUCTION TO LINK LAYER.md",
     "01-Foundations/Networking/MODULE 5 - THE NETWORK LAYER (CONTROL PLANE)/NETWORK MANAGEMENT.md",
     "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/INTERNET.md",
-    "Templates/Project.md",
-    "01-Foundations/Networking/MODULE 6 - LINK LAYER",
-    "01-Foundations/Networking/MODULE 5 - THE NETWORK LAYER (CONTROL PLANE)/ICMP.md",
-    "01-Foundations/Networking/MODULE 5 - THE NETWORK LAYER (CONTROL PLANE)/SDN CONTROL PLANE.md",
-    "01-Foundations/Networking/MODULE 5 - THE NETWORK LAYER (CONTROL PLANE)/ROUTING AMONG ISPS - BGP.md",
-    "01-Foundations/Networking/MODULE 5 - THE NETWORK LAYER (CONTROL PLANE)/OSPF.md",
-    "01-Foundations/Networking/MODULE 5 - THE NETWORK LAYER (CONTROL PLANE)/ROUTING ALGORITHM.md",
-    "01-Foundations/Networking/MODULE 5 - THE NETWORK LAYER (CONTROL PLANE)/INTRODUCTION - CONTROL PLANE.md",
-    "01-Foundations/Networking/MODULE 1 - COMPUTER NETWORKS & INTERNET/THE NETWORK EDGE.md",
-    "01-Foundations/Networking/MODULE 5 - THE NETWORK LAYER (CONTROL PLANE)",
-    "02-CSE/Data-Structures/JAVA",
-    "01-Foundations/Networking/MODULE 4 - THE NETWORK LAYER (DATA PLANE)/Untitled",
-    "01-Foundations/Networking/MODULE 4 - THE NETWORK LAYER (DATA PLANE)",
-    "01-Foundations/Networking/BOOK 1 - TOP DOWN APPROACH.pdf",
-    "01-Foundations/Networking/MODULE 3 - TRANSPORT LAYER",
-    "01-Foundations/Networking/BOOK 1 - KUROSE ROSS.pdf",
     "Untitled.canvas",
     "Canvas/Untitled.canvas"
   ]
