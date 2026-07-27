@@ -842,3 +842,5 @@ document.querySelectorAll('.tab').forEach(tab => {
 /08-Projects/
 /08-Projects/
 /08-Projects/
+# Ignore Obsidian workspace layout
+.obsidian/workspace.json
