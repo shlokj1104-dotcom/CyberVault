@@ -113,9 +113,9 @@ This means Windows has no idea where the interpreter lives. Locating the install
 
 ![[Pasted image 20260728154257.png]] _Geany's Set Build Commands dialog — Compile and Execute both explicitly call `python3`._
 
-![[Figure 1-2.png]] _The Windows installer's Add Python to PATH checkbox — easy to miss, and the direct cause of the "not recognized" error above if left unchecked._
+![[Pasted image 20260728154812.png]] _The Windows installer's Add Python to PATH checkbox — easy to miss, and the direct cause of the "not recognized" error above if left unchecked._
 
-![[Figure 1-3.png]] _The same Geany dialog on Windows, with the full install-folder path (`C:/Python35/python`) baked into every command since PATH wasn't configured._
+![[Pasted image 20260728154825.png]] _The same Geany dialog on Windows, with the full install-folder path (`C:/Python35/python`) baked into every command since PATH wasn't configured._
 
 ## When to use it
 
