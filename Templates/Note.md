@@ -1,8 +1,10 @@
 ---
-title: "<% tp.file.title %>"
+title: <% tp.file.title %>
 date: <% tp.date.now("YYYY-MM-DD") %>
 phase: phase-1
-tags: [concept, networking]
+tags:
+  - concept
+  - networking
 links: []
 status: learning
 ---
