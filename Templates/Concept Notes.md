@@ -2,9 +2,9 @@
 
 ## title: <% tp.file.title %> date: <% tp.date.now("YYYY-MM-DD") %> language: <% language %> phase: <% phase %> tags: [concept] status: learning links: []
 
-> [!summary] One-liner <% tp.file.cursor(1) %>
+> **One-line summary:** <% tp.file.cursor(1) %>
 
-## Explanation
+## Core idea
 
 ## Example
 
