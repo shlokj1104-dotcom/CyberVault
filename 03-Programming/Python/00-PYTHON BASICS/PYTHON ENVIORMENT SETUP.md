@@ -111,7 +111,7 @@ operable program or batch file.
 
 This means Windows has no idea where the interpreter lives. Locating the install folder (e.g. `C:\Python35\python`) and testing that full path first, before configuring the editor around it, is the fix.
 
-![[Figure 1-1.png]] _Geany's Set Build Commands dialog — Compile and Execute both explicitly call `python3`._
+![[Pasted image 20260728154257.png]] _Geany's Set Build Commands dialog — Compile and Execute both explicitly call `python3`._
 
 ![[Figure 1-2.png]] _The Windows installer's Add Python to PATH checkbox — easy to miss, and the direct cause of the "not recognized" error above if left unchecked._
 
