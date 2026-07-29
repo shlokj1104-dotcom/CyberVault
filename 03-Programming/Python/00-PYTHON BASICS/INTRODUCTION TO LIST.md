@@ -28,20 +28,20 @@ Every element has two addresses: a positive index counted from the front, starti
 
 ## Mechanics / reference
 
-|Operation|Syntax|Effect|
-|---|---|---|
-|Read by position|`lst[i]`|Returns the element at index `i`; no brackets/quotes in the result|
-|Read from the end|`lst[-1]`|Returns the last element, regardless of list length|
-|Overwrite an element|`lst[i] = value`|Replaces the element at index `i` in place|
-|Add to the end|`lst.append(value)`|Grows the list by one, at the tail|
-|Add at a position|`lst.insert(i, value)`|Shifts everything at and after `i` one slot right, then inserts|
-|Delete by position|`del lst[i]`|Removes the element at `i`; that value is gone for good|
-|Remove and keep the value|`lst.pop()` / `lst.pop(i)`|Removes the last element (or the one at `i`) and returns it|
-|Delete by value|`lst.remove(value)`|Finds the first match and deletes it; later duplicates are untouched|
-|Sort permanently|`lst.sort()` / `lst.sort(reverse=True)`|Reorders the list itself, ascending or descending|
-|Sort temporarily|`sorted(lst)`|Returns a new sorted list; the original keeps its order|
-|Flip order|`lst.reverse()`|Reverses the current order in place (not alphabetical)|
-|Count elements|`len(lst)`|Returns how many items the list holds|
+| Operation                 | Syntax                                  | Effect                                                               |
+| ------------------------- | --------------------------------------- | -------------------------------------------------------------------- |
+| Read by position          | `lst[i]`                                | Returns the element at index `i`; no brackets/quotes in the result   |
+| Read from the end         | `lst[-1]`                               | Returns the last element, regardless of list length                  |
+| Overwrite an element      | `lst[i] = value`                        | Replaces the element at index `i` in place                           |
+| Add to the end            | `lst.append(value)`                     | Grows the list by one, at the tail                                   |
+| Add at a position         | `lst.insert(i, value)`                  | Shifts everything at and after `i` one slot right, then inserts      |
+| Delete by position        | `del lst[i]`                            | Removes the element at `i`; that value is gone for good              |
+| Remove and keep the value | `lst.pop()` / `lst.pop(i)`              | Removes the last element (or the one at `i`) and returns it          |
+| Delete by value           | `lst.remove(value)`                     | Finds the first match and deletes it; later duplicates are untouched |
+| Sort permanently          | `lst.sort()` / `lst.sort(reverse=True)` | Reorders the list itself, ascending or descending                    |
+| Sort temporarily          | `sorted(lst)`                           | Returns a new sorted list; the original keeps its order              |
+| Flip order                | `lst.reverse()`                         | Reverses the current order in place (not alphabetical)               |
+| Count elements            | `len(lst)`                              | Returns how many items the list holds                                |
 
 ## When to use it
 
@@ -49,10 +49,10 @@ Reach for a list whenever the data is a dynamic, ordered set of items that will 
 
 ## Why it matters for security
 
-|Concept|Attacker's perspective|Defender's perspective|
-|---|---|---|
-|Unchecked indexing|Feeding malformed or short input can trigger an out-of-range read, crashing the process (a denial-of-service) or leaking implementation detail through an unhandled traceback|Validate length before indexing, or wrap access in a try/except, and avoid surfacing (bringing something up into view or attention) raw traceback text to end users|
-|Mutability and shared references|If a function hands back a direct reference to an internal list (say, an access list), calling code can silently mutate the original, potentially altering security-relevant state|Return a copy (`list(original)` or `original[:]`) when exposing an internal collection so the source stays protected|
+| Concept                          | Attacker's perspective                                                                                                                                                             | Defender's perspective                                                                                                                                              |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Unchecked indexing               | Feeding malformed or short input can trigger an out-of-range read, crashing the process (a denial-of-service) or leaking implementation detail through an unhandled traceback      | Validate length before indexing, or wrap access in a try/except, and avoid surfacing (bringing something up into view or attention) raw traceback text to end users |
+| Mutability and shared references | If a function hands back a direct reference to an internal list (say, an access list), calling code can silently mutate the original, potentially altering security-relevant state | Return a copy (`list(original)` or `original[:]`) when exposing an internal collection so the source stays protected                                                |
 
 ## Worked example
 
