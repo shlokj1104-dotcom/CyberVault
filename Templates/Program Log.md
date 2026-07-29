@@ -4,8 +4,6 @@ date: <% tp.date.now("YYYY-MM-DD") %>
 language:
 phase: phase-1
 tags:
-  - concept
-  - networking
 status: learning
 links: []
 source:
