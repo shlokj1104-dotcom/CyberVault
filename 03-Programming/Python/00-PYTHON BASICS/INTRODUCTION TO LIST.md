@@ -2,7 +2,7 @@
 title: INTRODUCTION TO LIST
 date: 2026-07-29
 language: Python
-phase: phase-1
+phase: Phase 0 · Setup
 tags:
   - python
 links: []
