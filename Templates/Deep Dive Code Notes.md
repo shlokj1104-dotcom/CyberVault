@@ -37,9 +37,9 @@ _(a concrete walkthrough with real numbers/labels — not just the abstract desc
 
 _(delete if there's no real security angle — plenty of notes won't have one)_
 
-|Concept|Attacker's perspective|Defender's perspective|
-|---|---|---|
-||||
+| Concept | Attacker's perspective | Defender's perspective |
+| ------- | ---------------------- | ---------------------- |
+|         |                        |                        |
 
 ## Pitfalls
 
