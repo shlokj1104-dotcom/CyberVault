@@ -8,150 +8,154 @@ tags:
 links: []
 status: learning
 ---
-> [!summary] `pip` installs packages into a Python interpreter. `venv` gives each project its own isolated interpreter+packages so installs don't collide across projects. `requirements.txt` records what to reinstall. `.env` stores secrets — unrelated mechanism to venv, easy to conflate because the names look similar.
+> [!summary] `pip` = an app store for Python (downloads and installs packages). `venv` = a separate toybox per project so packages don't mix between projects. `requirements.txt` = a shopping list of what to reinstall. `.env` = a locked diary for secrets — totally separate from venv, easy to mix up because the names sound alike.
 
-## 1. pip
+## 1. pip — installing packages
 
-Installs third-party packages from PyPI that aren't in the standard library (unlike `math`, `os`, etc., which ship with Python).
-
-```
-py -m pip install <package>                  # download and install a package
-py -m pip install <package>==<version>       # install one specific version, not just the latest
-py -m pip install --upgrade <package>        # replace an installed package with its newest version (or -U)
-py -m pip uninstall <package>                # remove an installed package
-py -m pip list                               # show every package installed in this interpreter
-py -m pip show <package>                     # show details for one package: version, location, dependencies
-py -m pip install --upgrade pip              # update pip itself, not a project package
-```
-
-**Why `py -m pip` instead of bare `pip`:** on a machine with multiple Python installs, a bare `pip` on PATH can silently belong to the wrong interpreter, so the package installs somewhere your current `python`/`py` won't see it. `py -m pip` forces pip to run _as a module of the interpreter you just invoked_ — install and interpreter always match.
-
-By default, everything installs into the _global_ site-packages of that interpreter. That's the problem venv solves.
-
-## 2. Virtual environments (venv)
+Think of pip as an app store built into Python. Some tools (`math`, `os`) already come with Python — no install needed. Anything else (like a package to talk to a website, or read Excel files) you get through pip.
 
 ```
-py -m venv .venv       # create a new isolated environment in a folder named .venv
+py -m pip install <package>                  # download this package and add it to Python, like installing an app
+py -m pip install <package>==<version>       # install one exact version, not whatever is newest right now
+py -m pip install --upgrade <package>        # update it to the newest version (or -U for short)
+py -m pip uninstall <package>                # remove it, like uninstalling an app
+py -m pip list                               # show every package you currently have installed
+py -m pip show <package>                     # show one package's info card: version, where it lives, what it needs
+py -m pip install --upgrade pip              # this one updates the app-store app itself, not a package
 ```
 
-Creates a `.venv/` folder containing its own isolated copy of the interpreter + a private `site-packages`. Packages installed while it's active don't touch the global install and don't leak into other projects.
+**Why type `py -m pip` instead of just `pip`?** A computer can sometimes have more than one copy of Python on it. Typing `pip` alone can accidentally talk to the wrong copy — so the package gets installed somewhere your code can't find it. `py -m pip` says "use the pip that belongs to _this exact_ Python I'm about to run" — no mix-up.
 
-**Activation (Windows PowerShell — your setup):**
+By default, everything you install goes onto one shared shelf that every Python project on your computer can see. That's the problem `venv` solves, below.
 
-```
-.venv\Scripts\Activate.ps1     # switch this terminal session into the .venv environment
-```
+## 2. Virtual environments (venv) — a separate toybox per project
 
-**Windows cmd:**
+> [!example] Analogy Imagine every project gets its own toybox instead of sharing one big shelf. Project A can keep an old toy (package version) in its box while Project B keeps a brand-new one in its box — they never bump into each other. Without separate boxes, updating a toy for one project could break a different project that needed the old one.
 
 ```
-.venv\Scripts\activate.bat     # same switch, cmd.exe syntax
+py -m venv .venv       # create a new empty toybox for this project, in a folder called .venv
+```
+
+This makes a `.venv/` folder with its own private copy of Python's package shelf inside it. Anything you install _while inside this box_ only affects this project.
+
+**Step into the box (activate) — Windows PowerShell, your setup:**
+
+```
+.venv\Scripts\Activate.ps1     # step into the .venv toybox — installs now go here, not the shared shelf
+```
+
+**Windows cmd (if you're not using PowerShell):**
+
+```
+.venv\Scripts\activate.bat     # same thing, cmd.exe version
 ```
 
 **Git Bash / WSL / Linux / macOS:**
 
 ```
-source .venv/Scripts/activate     # same switch, Git Bash on Windows
-source .venv/bin/activate         # same switch, Linux/macOS (note: bin, not Scripts)
+source .venv/Scripts/activate     # same thing, Git Bash on Windows
+source .venv/bin/activate         # same thing, Linux/macOS (folder is bin, not Scripts, here)
 ```
 
-**Deactivate (same on all):**
+**Step back out (deactivate) — same everywhere:**
 
 ```
-deactivate      # switch back to the global interpreter, leave .venv
+deactivate      # leave the toybox, go back to the shared shelf
 ```
 
-> [!note] PowerShell gotcha If `Activate.ps1` gets blocked with an execution-policy error, run once per session: `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` This only affects the current shell process, not the whole system.
+> [!note] PowerShell gotcha Sometimes PowerShell refuses to run `Activate.ps1` and shows a red "execution policy" error. This just means PowerShell is being extra cautious about running scripts. Fix it for the current window only by running: `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` This doesn't change any permanent setting — just allows scripts for this one terminal session.
 
-When active, your prompt shows `(.venv)` — that's your only visual confirmation you're not installing into the global interpreter.
+When you're "inside the box," your terminal prompt shows `(.venv)` at the start of the line. That's the only visible sign — always check for it before installing something.
 
-> [!example] Analogy Global install = one shared garage toolbox for every project in the house — swap a wrench (package version) for one project and every other project feels it. venv = each project gets its own toolbox. Nothing leaks between them.
+## 3. requirements.txt — a shopping list for your toybox
 
-## 3. requirements.txt
-
-```
-py -m pip freeze > requirements.txt      # snapshot exact installed versions
-py -m pip install -r requirements.txt    # reinstall that exact snapshot elsewhere
-```
-
-You never push `.venv/` to GitHub — it's large and platform-specific (a Windows `.venv` won't run on Linux). Instead you commit `requirements.txt`; anyone cloning the repo runs `venv` + `install -r` to rebuild an equivalent environment locally.
-
-## 4. .env
-
-Stores secrets/config: API keys, DB credentials, tokens. Unrelated to venv — venv isolates _code execution_, `.env` isolates _configuration_. Typically read via a library:
+> [!example] Analogy `pip freeze` writes down everything currently sitting in your toybox onto a shopping list. `pip install -r` reads that list somewhere else and buys everything on it, rebuilding the same toybox from scratch.
 
 ```
-py -m pip install python-dotenv      # library that reads a .env file into your program
+py -m pip freeze > requirements.txt      # write down every package + version currently installed, into this file
+py -m pip install -r requirements.txt    # read that file and install everything on it
+```
+
+Why this matters: you never upload the `.venv/` folder itself to GitHub — it's huge, and a toybox built on Windows won't even work on Linux. Instead, you upload just the _list_ (`requirements.txt`). Anyone else (or future you, on a new laptop) makes their own empty toybox and runs the install command to rebuild an identical one.
+
+## 4. .env — a locked diary for secrets
+
+Stores things you don't want anyone else to see: API keys, passwords, database logins. This has nothing to do with `venv` — venv keeps _packages_ separate, `.env` keeps _secrets_ separate. Easy to confuse because of the similar name.
+
+```
+py -m pip install python-dotenv      # install a small helper package that knows how to read .env files
 ```
 
 ```python
 from dotenv import load_dotenv
 import os
 
-load_dotenv()                        # reads .env in the project root and loads it into the environment
-api_key = os.environ["API_KEY"]      # fetch one value by the name defined in .env
+load_dotenv()                        # open the .env file and load everything in it into memory
+api_key = os.environ["API_KEY"]      # grab one specific secret by the name you gave it in .env
 ```
 
-## 5. .gitignore — the piece that ties it together
+## 5. .gitignore — "don't pack these when mailing the box"
+
+> [!example] Analogy When you upload a project to GitHub, `.gitignore` is your packing list of things to leave behind — junk you can regenerate, or secrets you don't want mailed out with the package.
 
 ```
-.venv/
-.env
-__pycache__/
-*.pyc
+.venv/           # leave the whole toybox behind — it's rebuildable from requirements.txt
+.env              # leave your secrets diary behind — never mail this out
+__pycache__/      # leave Python's auto-generated scratch files behind
+*.pyc              # leave any leftover compiled files behind
 ```
 
-`.venv/` is excluded because it's rebuildable junk (that's what `requirements.txt` is for). `.env` is excluded because it's a secrets leak waiting to happen. A common pattern: commit a `.env.example` with dummy keys so teammates know what variables are needed, without exposing real ones.
+Common habit: also make a `.env.example` file with fake placeholder values, and _do_ upload that one — it tells others "you'll need an API_KEY and a DB_PASSWORD here" without giving away your real ones.
 
-## 6. pipx — for CLI tools, not project dependencies
-
-```
-py -m pip install pipx
-pipx install black
-```
-
-`pip` inside a venv is for _project dependencies_. `pipx` is for _global command-line tools_ (formatters, linters, `httpie`, etc.) — each tool gets its own isolated environment automatically, but the command is available globally, without polluting your system Python's site-packages.
-
-## 7. Managing Python versions (Windows py launcher)
+## 6. pipx — tools you want everywhere, not just in one project
 
 ```
-py --list                 # show installed Python versions
-py -3.11 -m venv .venv    # create a venv with a specific version
+py -m pip install pipx      # install pipx itself, once
+pipx install black          # install "black" (a code formatter) as a tool you can run from anywhere
 ```
 
-You're already using `py` as your launcher, so this is the same tool — just pass a version flag when you need a non-default interpreter for a project.
+Regular `pip` inside a venv installs things _for one project_. `pipx` is for things you want available _everywhere_, like a screwdriver you keep in your main toolbox instead of packing a spare into every single toybox. Each tool still gets kept separate behind the scenes, but the command works globally.
 
-## Comparison table
+## 7. Managing Python versions — the py launcher
 
-|Tool|Scope|Purpose|
+```
+py --list                 # show every Python version installed on this computer
+py -3.11 -m venv .venv    # make a toybox using Python 3.11 specifically, not whatever the default is
+```
+
+You're already using `py` to run your code — this is the same tool, just telling it "use this specific version" when a project needs one.
+
+## Quick comparison
+
+|Tool|What it's for, in plain terms|
+|---|---|
+|`pip`|the app store — install/remove packages|
+|`venv`|a separate toybox per project|
+|`requirements.txt`|the shopping list to rebuild a toybox|
+|`.env`|the locked diary for secrets|
+|`pipx`|install a tool once, use it from any project|
+
+## Security notes (why this matters for you specifically)
+
+|Risk|In plain terms|What to do|
 |---|---|---|
-|`pip`|interpreter-wide|install/remove packages|
-|`venv`|per-project folder|isolate an interpreter + its packages|
-|`requirements.txt`|file, committed to git|reproduce an environment elsewhere|
-|`.env`|file, gitignored|store secrets/config, unrelated to venv|
-|`pipx`|system-wide, per-tool isolated|install CLI tools without touching project envs|
-
-## Security implications
-
-|Risk|Why it matters|Mitigation|
-|---|---|---|
-|Committing `.env` to git|Leaks API keys/credentials, often permanently in history|`.gitignore` it; commit `.env.example` instead|
-|Installing from PyPI without checking|Typosquatting/supply-chain attacks (malicious package with a similar name)|Double-check spelling, maintainer, download counts before installing|
-|Global (non-venv) installs|Version conflicts can silently break unrelated projects or system tools|Default to venv per project|
-|Stale dependencies|Known CVEs sit unpatched in installed packages|`py -m pip list --outdated`; `pip-audit` (below)|
+|Uploading `.env` by accident|Your passwords/keys become visible to anyone who can see the GitHub repo, forever in its history|Put `.env` in `.gitignore` _before_ your first commit; share an `.env.example` instead|
+|Installing a package without checking|Someone can name a fake package almost identically to a real one, hoping you mistype and install theirs instead|Double check the exact spelling and that it has real downloads/maintainers before installing|
+|Skipping venv, installing everything globally|One project's update can quietly break a totally different project|Always make a venv per project|
+|Never updating packages|Old versions can have known security holes|Check with the commands below occasionally|
 
 ```
-py -m pip install pip-audit
-py -m pip-audit          # scans installed packages against known vulnerability DBs
+py -m pip install pip-audit    # install a tool that checks your packages for known security holes
+py -m pip-audit                # run the check — it lists anything risky it finds
 ```
 
-## Workflow
+## The full workflow, start to finish
 
 ```
 py -m venv .venv
         |
         v
-   activate .venv               (prompt shows "(.venv)")
+   step into .venv               (prompt shows "(.venv)")
         |
         v
 py -m pip install <packages>
@@ -160,18 +164,18 @@ py -m pip install <packages>
 py -m pip freeze > requirements.txt
         |
         v
-        ... work, commit requirements.txt + .env.example, NOT .venv/ or .env ...
+        ... do your work, upload requirements.txt + .env.example, NOT .venv/ or .env ...
         |
         v
    deactivate
 ```
 
-## 8. Project structure convention
+## 8. How a typical project folder is laid out
 
 ```
 project/
-├── .venv/                    [gitignored]
-├── .env                      [gitignored]
+├── .venv/                    [never uploaded]
+├── .env                      [never uploaded]
 ├── .gitignore
 ├── README.md
 ├── LICENSE
@@ -186,21 +190,23 @@ project/
     └── test_module.py
 ```
 
-**src-layout vs flat-layout:** putting your package under `src/` (instead of loose files in the project root) stops Python from silently importing your uncompiled local folder instead of the actually-installed package — matters once you `pip install -e .` (below). For a single script or small tool, flat layout (files straight in the root) is fine — don't over-engineer a 50-line script.
+**Do you need the `src/` folder?** Only once a project grows into something with several files that import each other. For a single script, just keep it as a plain file in the folder — don't build a whole house for one toy.
 
-**README.md** — at minimum: what the project does, how to set it up (`venv` + `pip install -r requirements.txt`), how to run it. This is the first thing anyone (including future you) reads.
+**README.md** is basically a note taped to the front of the box explaining what's inside: what the project does, how to set it up, how to run it. First thing anyone (including future you, six months from now) reads.
 
-## 9. pyproject.toml
+## 9. pyproject.toml — the project's info card
 
-The modern standard config file — replacing the older `setup.py`/`setup.cfg`. One file holds build metadata, dependencies, and tool config (black, ruff, pytest settings, etc.) instead of scattering them across many dotfiles. You don't need this for standalone scripts, but expect to see it in most tutorials/repos going forward, and you'll want it once a project grows into something installable.
+A single file that describes the project: its name, what it needs to run, and settings for other tools. It's slowly replacing older, messier setup files. You won't need one for a quick script, but you'll start seeing it in most repos and tutorials, so it's worth recognizing.
 
-## 10. Separating dev deps from runtime deps
+## 10. Two shopping lists: what to run it vs. what to work on it
+
+> [!example] Analogy `requirements.txt` is the list of ingredients the recipe actually needs. `requirements-dev.txt` is your list of kitchen tools (thermometer, extra bowls) — helpful while cooking, but not something you'd hand to someone just eating the meal.
 
 ```
-# requirements.txt        <- what the program needs to run
+# requirements.txt        <- what the program needs to actually run
 requests==2.30.0
 
-# requirements-dev.txt    <- what you need to work on it
+# requirements-dev.txt    <- extra tools just for you, while building it
 -r requirements.txt
 pytest
 black
@@ -208,57 +214,57 @@ mypy
 ```
 
 ```
-py -m pip install -r requirements-dev.txt
+py -m pip install -r requirements-dev.txt    # installs your dev tools AND everything requirements.txt needs
 ```
 
-Keeps testing/linting tools out of what you'd actually ship or hand to someone running the program.
+## 11. VS Code needs to be told which toybox to use, separately
 
-## 11. VS Code + venv
+Activating `.venv` in the terminal doesn't automatically tell VS Code's editor (the part that gives you autocomplete and underlines errors) to look in that same box. If you see red squiggly lines under imports that should work: `Ctrl+Shift+P` → **Python: Select Interpreter** → pick the one inside `.venv`.
 
-Activating `.venv` in the terminal and having VS Code use it for linting/imports are two separate settings. If imports show red squiggles despite an active venv: `Ctrl+Shift+P` → **Python: Select Interpreter** → pick the one under `.venv`.
-
-## 12. Editable installs
+## 12. Editable installs — "watch this folder live"
 
 ```
-py -m pip install -e .
+py -m pip install -e .    # install your own project as a package, but linked to your live source files
 ```
 
-Installs your own local package in "link" mode — edits to source are picked up immediately, no reinstall needed. Requires a `pyproject.toml` (or `setup.py`) defining the package. Useful once you're building something with more than one file that imports from itself.
+Normally, installing a package copies a snapshot of it. `-e` (editable) instead links directly to your working folder — so when you edit your own code, the change is instantly "installed," no reinstalling needed. Useful once your project has multiple files that import from each other.
 
-## 13. Pre-commit hooks (secret-scanning tie-in)
+## 13. Pre-commit hooks — a bag check before you leave the house
+
+`.gitignore` only stops files from being uploaded _if you remembered to list them first_. If a `.env` accidentally gets uploaded once, it's stuck in the project's history forever, even if you delete it in a later update.
 
 ```
-py -m pip install pre-commit
+py -m pip install pre-commit    # install a tool that runs automatic checks before every commit
 ```
 
-`.gitignore` only stops files you haven't `git add`ed yet — if a `.env` gets committed once by mistake, it's in history permanently even after you delete it later. A pre-commit hook (e.g. `detect-secrets` or `gitleaks`) scans staged changes _before_ the commit completes and blocks it if it sees something that looks like a key or token. Set up once per repo with a `.pre-commit-config.yaml`, then `pre-commit install`.
+A pre-commit hook is like a bag check at the door before you leave the house — it looks at what you're about to upload and blocks it if it spots something that looks like a password or key, catching the mistake before it ever leaves your computer. Set up once per project with a `.pre-commit-config.yaml` file, then run `pre-commit install`.
 
-## 14. Alternatives you'll see referenced
+## 14. Other names you'll run into
 
 |Tool|What it does differently|
 |---|---|
-|**Poetry**|Replaces pip+venv as one tool: manages dependencies, venv, and packaging natively through `pyproject.toml`|
-|**Conda**|Manages non-Python dependencies too (C libraries, etc.); separate package index from PyPI, common in data-science tooling|
+|**Poetry**|Does the job of pip + venv together, as one tool|
+|**Conda**|Similar idea, but can also install non-Python software (not just PyPI packages) — common in data science|
 
-pip + venv is the portable baseline and what most documentation assumes — fine to stay on it; just recognize these names when tutorials use them instead.
+pip + venv is the default everyone assumes you're using, and what most tutorials teach first — fine to stick with it. Just recognize these other names when you see them.
 
 ## Try this
 
-- [ ] Create a venv, activate it, confirm `(.venv)` shows in the PowerShell prompt
-- [ ] Install one package, run `pip freeze`, then `deactivate` and confirm `pip list` outside the venv doesn't show it
-- [ ] Write a `.gitignore` with `.venv/`, `.env`, `__pycache__/` before your next project's first commit
+- [ ] Make a venv, step into it, confirm `(.venv)` shows up in your PowerShell prompt
+- [ ] Install one package, run `pip freeze`, then step out (`deactivate`) and confirm `pip list` outside the box doesn't show it
+- [ ] Write a `.gitignore` with `.venv/`, `.env`, `__pycache__/` before your very first commit on a new project
 - [ ] Run `pip-audit` on an existing project and see what it flags
 
-## Key terms
+## Key terms, in plain words
 
-- **PyPI** — Python Package Index, the default package source for pip
-- **site-packages** — the folder where installed packages actually live for a given interpreter
-- **venv** — a self-contained interpreter + site-packages folder, isolated per project
-- **requirements.txt** — a pinned list of package==version, used to reproduce an environment
-- **.env** — a file storing secrets/config, read at runtime, not related to venv isolation
-- **pipx** — installs CLI tools each in their own isolated environment, exposed globally
-- **execution policy** — PowerShell setting that can block running `.ps1` scripts like `Activate.ps1`
-- **pyproject.toml** — modern single config file for build metadata, dependencies, and tool settings
-- **editable install** (`pip install -e .`) — links your local source into site-packages so edits apply without reinstalling
-- **pre-commit hook** — a check that runs automatically before a commit completes; catches issues (e.g. leaked secrets) before they enter git history
-- **src-layout** — placing your package under `src/` to avoid accidentally importing an uninstalled local copy
+- **PyPI** — the actual app store pip downloads from
+- **site-packages** — the "shelf" where installed packages physically sit
+- **venv** — your project's own private toybox
+- **requirements.txt** — the shopping list to rebuild a toybox elsewhere
+- **.env** — the locked diary for secrets, unrelated to venv
+- **pipx** — installs a tool once, usable from any project
+- **execution policy** — PowerShell's caution setting that can block running `.ps1` scripts
+- **pyproject.toml** — the project's info card / settings file
+- **editable install** — links your live code instead of copying a snapshot of it
+- **pre-commit hook** — an automatic bag check before every commit
+- **src-layout** — keeping your package's code inside a `src/` folder, for bigger projects
