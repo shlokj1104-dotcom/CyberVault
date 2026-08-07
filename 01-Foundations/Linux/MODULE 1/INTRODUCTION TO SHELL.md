@@ -3,7 +3,6 @@ title: INTRODUCTION TO SHELL
 date: 2026-08-07
 phase: phase-1
 tags:
-  - concept
   - linux
 links: []
 status: learning
@@ -148,4 +147,4 @@ Two things this tree makes clear. First, which terminal emulator and which shell
 
 ---
 
-→ Next: [[1.2 - Navigating the Filesystem]]
+→ Next: [[NAVIGATING THE FILESYSTEM]]
