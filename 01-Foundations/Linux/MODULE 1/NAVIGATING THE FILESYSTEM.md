@@ -167,4 +167,4 @@ A handful of rules govern how Linux treats filenames, several of which differ me
 
 ---
 
-→ Next: [[1.3 - Exploring the System]]
+→ Next: [[EXPLORING THE SYSTEM]]
