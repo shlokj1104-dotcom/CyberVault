@@ -50,31 +50,21 @@ source.java --(compiler)--> bytecode --(JVM)--> runs on any platform
 
 ## The Java buzzwords
 
-|Buzzword|What it actually means|
-|---|---|
-|Simple|Familiar C/C++ syntax and OOP concepts make it an easy transition _if_ you already know one of those — not necessarily easy for a total beginner|
-|Object-Oriented|Not built to be source-compatible with any earlier language — a clean-slate design that balances "everything is an object" purity with pragmatism (primitive types like `int` stay high-performance non-objects)|
-|Robust|Strict typing checked at _both_ compile time and runtime, closing off a huge class of bugs before they can even happen|
-|Multithreaded|Built-in support for programs that do multiple things at once, with a clean synchronization model, so you can focus on your program's logic instead of building your own multitasking system|
-|Architecture-Neutral|Solves "will this even run tomorrow, on this same machine" — OS and CPU upgrades used to silently break programs; the goal was "write once, run anywhere, any time"|
-|Interpreted & High-Performance|Bytecode gives cross-platform reach without the usual performance penalty, thanks to JIT compilation|
-|Distributed|Built-in TCP/IP support means grabbing a remote resource by URL feels like opening a local file; also supports Remote Method Invocation (RMI) — calling methods on objects across a network|
-|Dynamic|Carries rich runtime type information, so new code (even small bytecode fragments) can be safely linked into a program that's already running|
-
-_(Secure and Portable are covered above under bytecode — that's the actual mechanism behind both.)_
+| Buzzword                       | What it actually means (in plain terms)                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Simple                         | Easy to learn if you already know C, C++, or basic OOP — Java reuses familiar syntax and ideas instead of inventing new ones. (Not necessarily easy for someone with zero programming background.)                                                                                                                                                                                                                                                                                     |
+| Object-Oriented                | Code is organized around objects — bundles of data plus the actions that work on that data — instead of one long list of separate functions. Java makes one practical exception: simple number types like `int` stay fast, ordinary values rather than being forced into full objects.                                                                                                                                                                                                 |
+| Robust                         | Java is built to catch your mistakes as early as possible. Because it's strict about types, most errors get caught when you compile the code, before you ever run it — and it keeps checking a smaller set of things while running too. Two classic trouble spots are handled for you automatically: memory cleanup (garbage collection, so you don't have to manually free memory) and error handling (structured `try`/`catch` instead of manually checking error codes everywhere). |
+| Multithreaded                  | A single program can do multiple things at once out of the box — like downloading a file while updating a progress bar and still responding to clicks — without you having to build your own scheduling system from scratch.                                                                                                                                                                                                                                                           |
+| Architecture-Neutral           | A Java program should keep working correctly on any machine, and keep working years later even after the OS or hardware changes underneath it. That's the "write once, run anywhere, any time" idea.                                                                                                                                                                                                                                                                                   |
+| Interpreted & High-Performance | A Java program compiles down to bytecode, not instructions for one specific machine — which would normally run slower since it has to be interpreted. But Java's JIT compiler quietly turns the bytecode that runs often into fast native instructions while the program is running, so you get close to native speed without losing the "runs everywhere" benefit.                                                                                                                    |
+| Distributed                    | Talking to something over a network — like fetching data from a URL — is built in and feels almost as easy as opening a file on your own computer. Java can even let one program call a method on an object that lives on a completely different machine (this is called RMI).                                                                                                                                                                                                         |
+| Dynamic                        | A Java program can figure out what type of object it's dealing with while it's actually running, not just when it was written — and can even safely load small new pieces of code into a program that's already running. This flexibility is part of what makes Java robust.                                                                                                                                                                                                           |
 
 **Two real memory/error problems Java's "Robust" design removes:**
 
 - Manual memory allocation mistakes (forgetting to free memory, or freeing memory something else still needs) — Java handles this automatically via garbage collection.
 - Ad-hoc, clumsy error handling for things like division-by-zero or a missing file — Java uses structured, object-oriented exception handling instead.
-
-## When to use it
-
-**Where Java's design pays off in practice:**
-
-- Cross-platform client software, where "the same code has to run everywhere" is a hard requirement.
-- Server-side applications — servlets (and the frameworks built on top of them) let one codebase serve dynamic content regardless of the underlying server OS.
-- Anywhere you need to safely run code you didn't write yourself, since the JVM's sandboxing model was built exactly for that case.
 
 ## Pitfalls
 
