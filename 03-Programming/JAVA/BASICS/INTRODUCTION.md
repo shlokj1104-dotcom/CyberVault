@@ -103,6 +103,5 @@ source.java --(compiler)--> bytecode --(JVM)--> runs on any platform
 
 ## Related
 
-[[]]
 
-→ Next: [[2 - An Overview of Java]]
+→ Next: [[JAVA OVERVIEW]]
