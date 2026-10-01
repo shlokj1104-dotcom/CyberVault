@@ -358,4 +358,4 @@ A Java program is made of whitespace, identifiers, literals, comments, operators
 
 ## Related
 
-→ Next: [[3 - Data Types, Variables, and Arrays]]
+→ Next: [[DATA TYPES, VARIABLES AND ARRAYS]]

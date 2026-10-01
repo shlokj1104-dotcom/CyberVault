@@ -451,6 +451,5 @@ Java does **not** let the programmer use pointers (no `*`, no `&`, no pointer ar
 
 ## Related
 
-[[2 - An Overview of Java]] · [[4 - Operators]]
 
 → Next: [[4 - Operators]]
