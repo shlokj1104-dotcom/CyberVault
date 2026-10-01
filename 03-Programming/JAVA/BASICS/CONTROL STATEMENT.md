@@ -165,7 +165,7 @@ Convenient, but **more expensive than switching on integers**. Use it when the d
 
 **`if` vs `switch`, summary:**
 
-||`if`|`switch`|
+| |`if`|`switch`|
 |---|---|---|
 |Tests|any boolean expression|equality with constants only|
 |Types|boolean condition|byte, short, int, char, enum, String|
