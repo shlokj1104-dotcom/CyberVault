@@ -136,8 +136,12 @@ To decode a negative number, do the same thing again (invert, add 1) and put a m
 
 **Bitwise logical operators** work on each bit position independently:
 
-| A | B | `A \| B` (OR) | `A & B` (AND) | `A ^ B` (XOR) | `~A` (NOT) | |---|---|---|---|---| | 0 | 0 | 0 | 0 | 0 | 1 | | 1 | 0 | 1 | 0 | 1 | 0 | | 0 | 1 | 1 | 0 | 1 | 1 | | 1 | 1 | 1 | 1 | 0 | 0 |
-
+| A   | B   | `A \| B` (OR) | `A & B` (AND) | `A ^ B` (XOR) | `~A` (NOT) |
+| --- | --- | ------------- | ------------- | ------------- | ---------- |
+| 0   | 0   | 0             | 0             | 0             | 1          |
+| 1   | 0   | 1             | 0             | 1             | 0          |
+| 0   | 1   | 1             | 0             | 1             | 1          |
+| 1   | 1   | 1             | 1             | 0             | 0          |
 In plain words:
 
 - **AND** `&`: 1 only if **both** bits are 1. Use it to **clear** bits or **test/extract** bits (a mask).
