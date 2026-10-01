@@ -11,7 +11,7 @@ status: learning
 
 ## What it is
 
-An **operator** is a symbol that performs an operation on one or more values called **operands**. An expression like `a + b * 2` combines operands and operators to produce a value.
+An **operator** is a symbol that performs an operation on one or more values called **operands.** An expression like `a + b * 2` combines operands and operators to produce a value.
 
 - **Unary** operators take one operand (`-x`, `!flag`, `i++`).
 - **Binary** operators take two (`a + b`, `x < y`).
