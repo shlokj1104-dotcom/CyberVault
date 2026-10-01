@@ -219,11 +219,11 @@ _(Beyond the chapter: for **objects**, `==` compares **references** (are they th
 
 These work **only on `boolean`** operands and give a `boolean`.
 
-|Operator|Meaning|Operator|Meaning|
-|---|---|---|---|
-|`&`|Logical AND|`!`|NOT|
-|`\|`|Logical OR|`&&`|**Short-circuit** AND|
-|`^`|Logical XOR|`\|`|**Short-circuit** OR|
+| Operator | Meaning     | Operator | Meaning               |
+| -------- | ----------- | -------- | --------------------- |
+| `&`      | Logical AND | `!`      | NOT                   |
+| `\|`     | Logical OR  | `&&`     | **Short-circuit** AND |
+| `^`      | Logical XOR | `\|\|`   | **Short-circuit** OR  |
 
 Truth table (same logic as bitwise, with true/false):
 
