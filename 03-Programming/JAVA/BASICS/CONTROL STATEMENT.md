@@ -225,7 +225,7 @@ do {
 
 **`while` vs `do-while`:**
 
-||`while`|`do-while`|
+| |`while`|`do-while`|
 |---|---|---|
 |Condition checked|before the body|after the body|
 |Minimum runs|0|1|
