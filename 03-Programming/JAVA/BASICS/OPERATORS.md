@@ -292,24 +292,24 @@ int ratio = (denom == 0) ? 0 : num / denom;    // avoid divide by zero
 
 **Precedence** decides which operator is applied first when an expression has several. Operators on the same row have equal precedence; higher rows bind tighter.
 
-|Level (highest at top)|Operators|
-|---|---|
-|1|`[ ]` `( )` `.` (act like operators)|
-|2|`++` `--` (postfix)|
-|3|`++` `--` (prefix), `~`, `!`, unary `+`, unary `-`, type-cast|
-|4|`*` `/` `%`|
-|5|`+` `-`|
-|6|`>>` `>>>` `<<`|
-|7|`>` `>=` `<` `<=` `instanceof`|
-|8|`==` `!=`|
-|9|`&`|
-|10|`^`|
-|11|`\|`|
-|12|`&&`|
-|13|`\|`|
-|14|`? :`|
-|15|`->` (lambda)|
-|16 (lowest)|`=` `op=`|
+| Level (highest at top) | Operators                                                     |
+| ---------------------- | ------------------------------------------------------------- |
+| 1                      | `[ ]` `( )` `.` (act like operators)                          |
+| 2                      | `++` `--` (postfix)                                           |
+| 3                      | `++` `--` (prefix), `~`, `!`, unary `+`, unary `-`, type-cast |
+| 4                      | `*` `/` `%`                                                   |
+| 5                      | `+` `-`                                                       |
+| 6                      | `>>` `>>>` `<<`                                               |
+| 7                      | `>` `>=` `<` `<=` `instanceof`                                |
+| 8                      | `==` `!=`                                                     |
+| 9                      | `&`                                                           |
+| 10                     | `^`                                                           |
+| 11                     | `\|`                                                          |
+| 12                     | `&&`                                                          |
+| 13                     | `\|`                                                          |
+| 14                     | `? :`                                                         |
+| 15                     | `->` (lambda)                                                 |
+| 16 (lowest)            | `=` `op=`                                                     |
 
 **Associativity (order among equal precedence):**
 
