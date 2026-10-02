@@ -11,7 +11,7 @@ status: learning
 
 ## What it is
 
-Chapter 6 gave you the basics of classes. Chapter 7 covers the tools you use every day once you start writing real classes:
+This chapter covers the tools you use every day once you start writing real classes:
 
 |Topic|The question it answers|
 |---|---|
