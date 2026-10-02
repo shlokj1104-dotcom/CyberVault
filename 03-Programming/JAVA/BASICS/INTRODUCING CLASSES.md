@@ -553,4 +553,4 @@ b.width = 99;       // a.width is now 99 too
 
 ## Related
 
-→ Next: [[7 - A Closer Look at Methods and Classes]]
+→ Next: [[MORE ON CLASSES]]
