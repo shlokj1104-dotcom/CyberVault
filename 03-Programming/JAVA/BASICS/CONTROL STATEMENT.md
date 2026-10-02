@@ -577,4 +577,4 @@ for (;;) { if (done()) break; }
 ## Related
 
 
-→ Next: [[6 - Introducing Classes]]
+→ Next: [[INTRODUCING CLASSES]]
