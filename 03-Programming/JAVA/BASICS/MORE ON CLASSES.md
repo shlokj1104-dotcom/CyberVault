@@ -7,7 +7,7 @@ tags:
 links: []
 status: learning
 ---
-> **One-line summary:** This chapter makes methods and classes practical. **Overloading** lets one name serve several related methods; Java passes **everything by value** (for objects, the value is a _reference_, so the method can change the object but cannot re-point your variable); **recursion** is a method calling itself and needs a base case; **access control** (`private`/`public`) hides data; **`static`** members belong to the class, not to objects; **`final`** makes constants; arrays carry **`length`**; **inner classes**, **`String`** (immutable), **command-line args** and **varargs** round it off.
+lp> **One-line summary:** This chapter makes methods and classes practical. **Overloading** lets one name serve several related methods; Java passes **everything by value** (for objects, the value is a _reference_, so the method can change the object but cannot re-point your variable); **recursion** is a method calling itself and needs a base case; **access control** (`private`/`public`) hides data; **`static`** members belong to the class, not to objects; **`final`** makes constants; arrays carry **`length`**; **inner classes**, **`String`** (immutable), **command-line args** and **varargs** round it off.
 
 ## What it is
 
