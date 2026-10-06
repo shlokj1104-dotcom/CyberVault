@@ -725,4 +725,4 @@ int n = Integer.parseInt(args[0]);
 
 ## Related
 
-→ Next: [[8 - Inheritance]]
+→ Next: [[INHERITANCE]]
