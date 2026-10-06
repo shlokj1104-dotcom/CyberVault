@@ -552,7 +552,7 @@ The overloads are legal, but **calls** can be ambiguous. The fix is usually to u
 
 ### `static` vs. instance
 
-||Instance member|`static` member|
+| |Instance member|`static` member|
 |---|---|---|
 |Belongs to|Each object|The class|
 |Copies|One per object|One total|
