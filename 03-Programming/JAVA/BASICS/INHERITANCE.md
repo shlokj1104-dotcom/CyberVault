@@ -279,10 +279,10 @@ The same line `r.callme()` runs three different methods, depending on what `r` c
 
 **Two rules, side by side (this trips people up):**
 
-|Question|Decided by|When|
-|---|---|---|
-|Which **members may I use** through this variable?|The **reference type**|Compile time|
-|Which **version of an overridden method runs**?|The **object's actual type**|Run time|
+| Question                                           | Decided by                   | When         |
+| -------------------------------------------------- | ---------------------------- | ------------ |
+| Which **members may I use** through this variable? | The **reference type**       | Compile time |
+| Which **version of an overridden method runs**?    | The **object's actual type** | Run time     |
 
 _(C++/C# readers: overridden methods in Java behave like **virtual functions**, and in Java every instance method is "virtual" by default.)_
 
