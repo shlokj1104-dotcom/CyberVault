@@ -237,12 +237,12 @@ void show() {
 
 #### Overriding vs. overloading (classic interview question)
 
-||Overloading|Overriding|
+|           |Overloading|Overriding|
 |---|---|---|
-|Where|Same class (or sub/super)|Subclass vs. superclass|
-|Signature|**Different** parameters|**Identical** name and parameters|
-|Resolved|At compile time (by argument types)|At run time (by actual object type)|
-|Purpose|Several ways to call "the same action"|Replace inherited behavior|
+| Where     |Same class (or sub/super)|Subclass vs. superclass|
+| Signature |**Different** parameters|**Identical** name and parameters|
+| Resolved  |At compile time (by argument types)|At run time (by actual object type)|
+| Purpose   |Several ways to call "the same action"|Replace inherited behavior|
 
 If the signatures differ, it is just overloading, not overriding:
 
