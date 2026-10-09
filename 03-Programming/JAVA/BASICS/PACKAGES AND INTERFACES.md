@@ -10,6 +10,7 @@ status: learning
 > **One-line summary:** **Packages** group classes and stop name clashes; they also add the _default (package-private)_ access level, and the exam favorite is how **default vs. `protected`** differ across packages. **Interfaces** declare _what_ a class must do without saying _how_; a class can `implements` many of them, implementing methods must be `public`, and an **interface reference** runs the implementing object's version at run time. Since JDK 8 interfaces can have **`default`** and **`static`** methods; if two interfaces give the same default, the class must resolve the clash itself.
 
 
+
 ## Structure
 
 ### 1. Packages
@@ -65,12 +66,6 @@ import java.util.*;             // every class in java.util (not its sub-package
 
 - `java.lang` (`String`, `System`, `Math`, `Integer`) is **imported automatically**.
 - If two star-imported packages both have a class with the same name (e.g. `java.util.Date` and `java.sql.Date`), there is no error until you _use_ the name. Then you must write the full name.
-
-**For DSA you will write this constantly:**
-
-```java
-import java.util.*;      // ArrayList, HashMap, Stack, Queue, PriorityQueue, Arrays, Collections...
-```
 
 ### 4. Interfaces: the idea
 
@@ -142,19 +137,6 @@ s.push(10);
 ```
 
 The calling code never needs to know which stack it has. **Swapping an implementation without changing the code that uses it** is the whole point.
-
-**Connection to DSA (very relevant for you):** this is exactly how the Java collections work.
-
-```java
-List<Integer> list = new ArrayList<>();      // List is an interface, ArrayList the implementation
-Map<String,Integer> map = new HashMap<>();
-Queue<Integer> q = new LinkedList<>();
-Deque<Integer> dq = new ArrayDeque<>();
-```
-
-Declaring the variable as the **interface** (`List`, `Map`, `Queue`) and creating the **implementation** (`ArrayList`, `HashMap`, ...) is standard practice. It lets you switch implementations by changing one word.
-
-_(Beyond the chapter, but constantly used in DSA: `Comparable<T>` (`compareTo`) defines a class's natural ordering, and `Comparator<T>` (`compare`) defines a custom ordering. Both are interfaces. You use them for sorting and `PriorityQueue`.)_
 
 ### 7. Extending interfaces
 
@@ -327,7 +309,6 @@ public void reset() { Alpha.super.reset(); }
 ## Open questions
 
 - [ ] When do I choose an abstract class over an interface now that interfaces have default methods?
-- [ ] How do `Comparable` and `Comparator` work, and how do I use them for custom sorting and `PriorityQueue`?
 - [ ] What is a functional interface, and how does it connect to lambdas?
 - [ ] What is the diamond problem, and why do default methods bring it back in a limited form?
 - [ ] What are the main collection interfaces (`Collection`, `List`, `Set`, `Queue`, `Map`) and how do they relate?
