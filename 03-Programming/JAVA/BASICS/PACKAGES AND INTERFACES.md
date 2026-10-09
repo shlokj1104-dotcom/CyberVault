@@ -335,4 +335,4 @@ public void reset() { Alpha.super.reset(); }
 
 ## Related
 
-← Previous: [[INHERITANCE]] → Next: [[10 - Exception Handling]]
+→ Next: [[10 - Exception Handling]]
