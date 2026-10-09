@@ -10,17 +10,6 @@ status: learning
 > **One-line summary:** **Packages** group classes and stop name clashes; they also add the _default (package-private)_ access level, and the exam favorite is how **default vs. `protected`** differ across packages. **Interfaces** declare _what_ a class must do without saying _how_; a class can `implements` many of them, implementing methods must be `public`, and an **interface reference** runs the implementing object's version at run time. Since JDK 8 interfaces can have **`default`** and **`static`** methods; if two interfaces give the same default, the class must resolve the clash itself.
 
 
-## What it is
-
-|Topic|The question it answers|Priority|
-|---|---|---|
-|Package|How do I group classes and avoid two classes with the same name colliding?|Medium|
-|`import`|Do I have to type `java.util.ArrayList` every time?|**High** (daily use)|
-|Access levels with packages|Who can see a member now that packages exist?|**High** (interview)|
-|Interface|How do I specify _what_ a class must do, independent of _how_?|**High**|
-|Interface reference|How do I write code that works with any implementing class?|**High**|
-|`default` / `static` methods|How can an interface grow without breaking old classes?|Medium-High (interview)|
-
 ## Structure
 
 ### 1. Packages

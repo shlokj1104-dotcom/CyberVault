@@ -578,4 +578,4 @@ public String toString() { return "Box[" + width + "x" + height + "x" + depth + 
 
 ## Related
 
-→ Next: [[9 - Packages and Interfaces]]
+→ Next: [[PACKAGES AND INTERFACES]]
