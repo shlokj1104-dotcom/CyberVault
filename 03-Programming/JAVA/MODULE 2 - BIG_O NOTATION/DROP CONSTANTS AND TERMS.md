@@ -75,3 +75,7 @@ O(1) < O(log x) < O(x) < O(x log x) < O(x²) < O(2ˣ) < O(x!)
 - How do you simplify `O(N² + N)`, `O(N + log N)` and `O(5·2ᴺ + 1000N¹⁰⁰)`? :: `O(N²)`, `O(N)`, `O(2ᴺ)` (drop non-dominant terms) #card
 - When can't a sum be simplified? :: When there's no known relationship between the terms, e.g. `O(B² + A)` or `O(N + M)` #card
 - Rank these slowest-growing to fastest: `N²`, `log N`, `2ᴺ`, `N`, `N!`, `N log N` :: `log N`, `N`, `N log N`, `N²`, `2ᴺ`, `N!` #card
+
+
+
+→ Next: [[ADD VS MULTIPLY]]
