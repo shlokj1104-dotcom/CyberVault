@@ -51,3 +51,6 @@ People have merged Θ and O into one idea. In an interview, "big O" means what a
 - What do Ω and Θ mean in academia? :: Ω is a **lower bound**; Θ is a **tight bound** (both `O` and `Ω`) #card
 - What does "big O" mean in industry and interviews? :: Essentially the academic Θ: the tightest description of the runtime #card
 - Is "printing an array is `O(N²)`" acceptable in an interview? :: Technically true but considered incorrect in industry; say `O(N)` #card
+
+
+→ Next: [[BEST, WORST AND EXPECTED CASE]]
