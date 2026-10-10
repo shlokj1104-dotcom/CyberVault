@@ -107,4 +107,7 @@ for (int x = 2; x <= sqrt(n); x++) { ... }
 - Why does sorting `a` strings cost `O(a·s log a)` and not `O(a log a)`? :: Each of the `O(a log a)` comparisons compares two strings, which takes `O(s)` #card
 - What is the runtime of summing all nodes in a balanced BST recursively? :: `O(N)`: each node is touched once. (`2^(log N) = N` confirms it.) #card
 - Why is `2^(log₂ N) = N`? :: By definition of log: if `P = 2^(log N)` then `log₂P = log₂N`, so `P = N` #card
-- What is the runtime of `isPrime` with loop condition `x*x <= n`? :: `O(√n)` #card
+- What is the runtime of `isPrime` with loop condition `x*x <= n`? :: `O(√n)` #
+
+
+→ Next: [[WORKED EXAMPLES - RECURSION]]

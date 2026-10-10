@@ -177,10 +177,6 @@ All but the last are equivalent to `O(N)`.
 
 - **Using one variable for two different inputs** (Example 4). Two arrays → `O(a·b)`, not `O(N²)`.
 
-## Key terms
-
-No new terms in this file.
-
 ## Flashcards
 
 - What is the runtime of two non-nested loops over an array? :: `O(N)` (drop the constant 2) #card
@@ -188,3 +184,6 @@ No new terms in this file.
 - Why is nested looping over two different arrays `O(ab)` and not `O(N²)`? :: There are two inputs with independent sizes, and both matter #card
 - Does a constant inner loop (e.g. 100,000 iterations) change the big O? :: No, 100,000 units of work is still constant #card
 - Why does `reverse(array)` that loops to `length/2` run in `O(N)`? :: Half of `N` is still `N`; constants are dropped #card
+
+
+→ Next: [[WORKED EXAMPLES -  NAMING, TREES AND PRIMES]]

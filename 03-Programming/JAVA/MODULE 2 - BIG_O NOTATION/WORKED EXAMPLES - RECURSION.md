@@ -239,3 +239,6 @@ The runtime is the number of times we can divide `50` (or `n`) by 2 until we rea
 - [ ] How exactly does the `O(1.6ᴺ)` bound for Fibonacci arise?
 - [ ] What is the tighter bound for the permutation generator, beyond `O(n² · n!)`?
 - [ ] How do I recognize when an exponential recursion can be fixed with memoization or dynamic programming?
+
+
+→ Next: [[REFERENCE]]

@@ -67,3 +67,6 @@ It doesn't matter for big O. Logs of different bases differ only by a constant f
 ## Open questions
 
 - [ ] What is the full proof that the base of a log doesn't matter? (The book points to "Bases of Logs" later in the book.)
+
+
+→ Next: [[RECURSIVE RUNTIME]]

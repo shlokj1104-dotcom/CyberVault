@@ -80,3 +80,6 @@ Space complexity of this function is `O(N)`. There are `O(2ᴺ)` nodes in the tr
 - Does the base of an exponent matter in big O? :: Yes. `8ⁿ = 2²ⁿ · 2ⁿ` differs from `2ⁿ` by a non-constant factor `2²ⁿ` #card
 - What is the space complexity of the two-branch recursion `f`? :: `O(N)`: only one root-to-leaf path of calls is on the stack at a time, even though there are `O(2ᴺ)` nodes in total #card
 - How many nodes are in a binary recursion tree of depth `N`? :: `2⁰ + 2¹ + ... + 2ᴺ = 2ᴺ⁺¹ − 1` #card
+
+
+→ Next: [[WORKED EXAMPLES - LOOPS]]
