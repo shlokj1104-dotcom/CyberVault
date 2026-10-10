@@ -74,3 +74,6 @@ So you can say "the worst case is `O(N²)`" (a bound for the worst-case scenario
 
 - [ ] Does the choice of early-exit condition change the best case, or only the constant factor?
 - [ ] How does binary search's best case (target at the middle, `O(1)`) compare with bubble sort's best case as an example of why best case is rarely useful?
+
+
+→ Next: [[SPACE COMPEXITY]]
