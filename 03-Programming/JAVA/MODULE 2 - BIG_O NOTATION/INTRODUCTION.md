@@ -78,3 +78,7 @@ Common runtimes you will see: `O(log N)`, `O(N log N)`, `O(N)`, `O(N²)`, `O(2�
 - What is the key lesson of the file-transfer analogy? :: Linear growth will eventually exceed constant, however big the constant or small the linear slope #card
 - Is there a fixed list of possible runtimes? :: No. Common ones are `O(log N)`, `O(N log N)`, `O(N)`, `O(N²)`, `O(2ᴺ)`, but any expression can occur #card
 - Can a runtime have multiple variables? :: Yes. e.g. painting a fence `w` wide, `h` high, `p` layers is `O(whp)` #card
+
+
+
+→ Next: [[BIG O, BIG THETA, BIG OMEGA]]
