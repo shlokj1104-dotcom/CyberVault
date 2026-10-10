@@ -43,3 +43,7 @@ It's very easy to mess this up in an interview, so be careful.
 
 - When do you add the runtimes of two parts? :: When the form is "do this, then when you're all done, do that" → `O(A + B)` #card
 - When do you multiply the runtimes? :: When the form is "do this for each time you do that" → `O(A * B)` #card
+
+
+
+→ Next: [[AMORTIZED TIME]]
