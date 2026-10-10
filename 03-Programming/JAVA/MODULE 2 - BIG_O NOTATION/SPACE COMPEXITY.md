@@ -81,3 +81,6 @@ There are `O(n)` calls to `pairSum`, but each one **finishes before the next sta
 ## Open questions
 
 - [ ] How do I analyze space for algorithms that allocate new arrays or strings inside recursion?
+
+
+→ Next: [[DROP CONSTANTS AND TERMS]]
