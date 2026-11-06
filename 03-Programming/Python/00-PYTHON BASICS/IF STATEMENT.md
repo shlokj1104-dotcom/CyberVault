@@ -569,4 +569,4 @@ else:
 
 ## Related
 
-→ Next: [[6 - Dictionaries]]
+→ Next: [[DICTIONARIES]]
